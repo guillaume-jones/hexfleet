@@ -1,0 +1,60 @@
+# dependencies
+node_modules
+.npm
+
+# testing
+coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+api-secrets.txt
+
+# debug
+npm-debug.log*
+.eslintcache
+
+# local env files
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+#vscode 
+.vscode
+
+# Logs
+logs
+*.log
+npm-debug.log*
+firebase-debug.log*
+firebase-debug.*.log*
+
+### Firebase
+.firebase/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled JavaScript files
+functions/lib
+
+# TypeScript v1 declaration files
+typings/

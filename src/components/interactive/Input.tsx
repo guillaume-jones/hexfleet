@@ -1,0 +1,38 @@
+import { useCallback } from 'react';
+
+export default function Input({
+  value,
+  setValue,
+  placeholder,
+  className,
+  id,
+  disabled,
+  inputProps,
+}: {
+  value: string;
+  setValue: (e: string) => void;
+  placeholder?: string;
+  className?: string;
+  id?: string;
+  disabled?: boolean;
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
+}) {
+  const onChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value),
+    [setValue],
+  );
+
+  return (
+    <input
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      disabled={disabled}
+      id={id}
+      className={`resize-none appearance-none rounded-md border-none bg-stone-50 px-3 
+        py-2 outline-none ring-1 ring-stone-300 transition-all duration-300 focus:ring-emerald-800
+          ${className ?? ''} `}
+      {...inputProps}
+    />
+  );
+}

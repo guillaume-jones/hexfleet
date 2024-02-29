@@ -1,0 +1,29 @@
+:root {
+  --scrollBarTrack: #fafaf9;
+  --scrollBarThumb: #a8a29e;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollBarThumb) var(--scrollBarTrack);
+}
+
+/* Chrome, Edge, and Safari scrollbar */
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  display: none;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollBarThumb);
+  border-radius: 100px;
+  border: 1px solid var(--scrollBarTrack);
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

@@ -1,0 +1,30 @@
+name: Release
+
+on: 
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  merge-to-production:
+    name: Push release to production
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps: 
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set Git config
+        run: |
+          git config --local user.email "release@hexfleet.com"
+          git config --local user.name "HexFleet"
+          
+      - name: Merge main to production
+        run: |
+          git fetch --unshallow
+          git checkout main
+          git pull
+          git checkout production
+          git pull
+          git merge main --allow-unrelated-histories -m "Merge main to production"
+          git push

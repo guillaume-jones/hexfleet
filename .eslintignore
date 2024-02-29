@@ -1,0 +1,13 @@
+/node_modules
+/.vscode
+/.github
+babel.config.js
+metro.config.js
+next.config.js
+index.jest
+jest.setup.js
+jest.config.js
+.eslintrc.js
+.prettierrc.js
+postcss.config.js
+tailwind.config.js
