@@ -1,26 +1,28 @@
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 
 import AlignedBox from 'src/account/AlignedBox';
 import Checkbox from 'src/components/interactive/Checkbox';
 import LargeSpinner from 'src/components/other/LargeSpinner';
-import { useSettingsContext } from 'src/context/SettingsContext';
+import { SettingsContext } from 'src/context/SettingsContext';
 
 export default function OtherBox() {
-  const [settings, updateSettings] = useSettingsContext();
+  const { isOnLeaderboard, updateSettings, settingsLoading } =
+    useContext(SettingsContext);
 
   const handleProductEmailsChange = useCallback(() => {
-    updateSettings({ receiveProductEmails: !settings?.receiveProductEmails });
-  }, [settings?.receiveProductEmails, updateSettings]);
+    updateSettings({ isOnLeaderboard: !isOnLeaderboard });
+  }, [isOnLeaderboard, updateSettings]);
 
   return (
     <>
-      {!settings && <LargeSpinner className="" />}
-      {settings && (
+      {settingsLoading ? (
+        <LargeSpinner className="" />
+      ) : (
         <AlignedBox>
           {[
             <Checkbox
               key={0}
-              checked={!!settings.receiveProductEmails}
+              checked={!!isOnLeaderboard}
               setChecked={handleProductEmailsChange}
               label={'Receive emails about new features'}
             />,

@@ -1,4 +1,4 @@
-import { initialSettings } from '../constants/UserCreationDefaults';
+import { initialSettings } from '../document-types/Settings';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 
