@@ -25,7 +25,7 @@ export default function Modal({
         show={open}
         className="fixed inset-0"
         appear>
-        <div className="h-full w-full bg-emerald-900" />
+        <div className="h-full w-full bg-violet-900" />
       </Transition>
       <Transition
         enter="transition ease-out duration-300"

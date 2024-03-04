@@ -33,22 +33,22 @@ function Button({
   const styling = `rounded-xl px-4 py-2 text-center transition-all flex items-center justify-center relative
   ${
     light
-      ? 'text-emerald-800 disabled:text-stone-600'
+      ? 'text-violet-800 disabled:text-stone-600'
       : 'text-white disabled:text-stone-300'
   }
   ${fontClassName ? fontClassName : light ? 'font-semibold' : 'font-medium'}
   ${
     fixedActive
       ? light
-        ? 'bg-emerald-400'
+        ? 'bg-violet-400'
         : danger
         ? 'bg-red-500'
-        : 'bg-emerald-500'
+        : 'bg-violet-500'
       : light
-      ? 'bg-stone-50 disabled:bg-stone-300 sm:hover:bg-emerald-200 sm:active:bg-emerald-300 sm:disabled:bg-stone-300'
+      ? 'bg-stone-50 disabled:bg-stone-300 sm:hover:bg-violet-200 sm:active:bg-violet-300 sm:disabled:bg-stone-300'
       : danger
       ? 'bg-red-600 disabled:bg-stone-400 sm:hover:bg-red-500 sm:active:bg-red-400 sm:disabled:bg-stone-400'
-      : 'bg-emerald-700 disabled:bg-stone-500 sm:hover:bg-emerald-600 sm:active:bg-emerald-500 sm:disabled:bg-stone-500'
+      : 'bg-violet-700 disabled:bg-stone-500 sm:hover:bg-violet-600 sm:active:bg-violet-500 sm:disabled:bg-stone-500'
   }
   ${fixedActive ? 'cursor-default' : ''}
   ${className ?? ''}`;

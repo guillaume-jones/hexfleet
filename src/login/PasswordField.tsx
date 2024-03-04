@@ -24,7 +24,7 @@ export default function PasswordField({
   );
 
   return (
-    <div className="w-60 text-emerald-800">
+    <div className="w-60 text-violet-800">
       <div className="relative flex">
         <Input
           value={password}
@@ -41,9 +41,9 @@ export default function PasswordField({
           onClick={invertShowPassword}
           className="absolute right-0 top-2.5 mx-2">
           {showPassword ? (
-            <EyeSlashIcon className="h-5 w-5 fill-emerald-700 transition-all duration-300 hover:fill-emerald-600" />
+            <EyeSlashIcon className="h-5 w-5 fill-violet-700 transition-all duration-300 hover:fill-violet-600" />
           ) : (
-            <EyeIcon className="h-5 w-5 fill-emerald-700 transition-all duration-300 hover:fill-emerald-600" />
+            <EyeIcon className="h-5 w-5 fill-violet-700 transition-all duration-300 hover:fill-violet-600" />
           )}
         </button>
       </div>

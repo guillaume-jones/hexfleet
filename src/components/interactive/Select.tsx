@@ -18,12 +18,12 @@ function Select<T extends string>({
     <Listbox value={value} onChange={setValue} disabled={disabled}>
       <div className={`relative z-20 ${className ?? ''}`}>
         <Listbox.Button
-          className="w-full rounded-lg bg-stone-50 text-emerald-800 transition-all  duration-300 hover:bg-emerald-200 disabled:bg-stone-300 disabled:text-stone-600 "
+          className="w-full rounded-lg bg-stone-50 text-violet-800 transition-all  duration-300 hover:bg-violet-200 disabled:bg-stone-300 disabled:text-stone-600 "
           disabled={disabled}>
           {({ open }) => (
             <div
               className={`flex w-full flex-row items-center justify-between rounded-lg border-b py-1 pl-2 pr-1 font-semibold transition-all duration-300  ${
-                open ? 'border-stone-300 bg-emerald-100' : 'border-transparent'
+                open ? 'border-stone-300 bg-violet-100' : 'border-transparent'
               }`}>
               <p>{value}</p>
               <ChevronDownIcon
@@ -46,8 +46,8 @@ function Select<T extends string>({
             {options.map((option) => (
               <Listbox.Option key={option} value={option} className="group">
                 <button
-                  className={`w-full border-b border-stone-200 px-2 py-1 text-left  text-emerald-800 transition-all duration-200 hover:bg-emerald-200 group-last:rounded-b-lg ${
-                    option === value ? 'bg-emerald-100 font-semibold' : ''
+                  className={`w-full border-b border-stone-200 px-2 py-1 text-left  text-violet-800 transition-all duration-200 hover:bg-violet-200 group-last:rounded-b-lg ${
+                    option === value ? 'bg-violet-100 font-semibold' : ''
                   }`}>
                   {option}
                 </button>

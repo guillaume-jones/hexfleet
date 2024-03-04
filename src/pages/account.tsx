@@ -26,7 +26,7 @@ export default function Account() {
       </Head>
       <div className="mx-6 mt-8 flex-1 pb-10">
         <div className="fixed hidden w-0 flex-col gap-2 sm:flex md:w-48">
-          <h1 className={'mb-2 text-3xl font-semibold text-emerald-900'}>
+          <h1 className={'mb-2 text-3xl font-semibold text-violet-900'}>
             Account
           </h1>
           <StyledLink href="#purchases" className="text-lg">
@@ -43,13 +43,13 @@ export default function Account() {
         <div className="sm:ml-48">
           <h2
             id={'security'}
-            className={'mb-2 mt-6 text-xl font-semibold text-emerald-900'}>
+            className={'mb-2 mt-6 text-xl font-semibold text-violet-900'}>
             Security
           </h2>
           <SecurityBox user={user} />
           <h2
             id={'other'}
-            className={'mb-2 mt-6 text-xl font-semibold text-emerald-900'}>
+            className={'mb-2 mt-6 text-xl font-semibold text-violet-900'}>
             Other
           </h2>
           <OtherBox />

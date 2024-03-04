@@ -30,7 +30,7 @@ export default function Input({
       disabled={disabled}
       id={id}
       className={`resize-none appearance-none rounded-md border-none bg-stone-50 px-3 
-        py-2 outline-none ring-1 ring-stone-300 transition-all duration-300 focus:ring-emerald-800
+        py-2 outline-none ring-1 ring-stone-300 transition-all duration-300 focus:ring-violet-800
           ${className ?? ''} `}
       {...inputProps}
     />

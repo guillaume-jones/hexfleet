@@ -28,8 +28,8 @@ function StyledLink({
               ? 'text-red-400 hover:text-red-500 active:text-red-600'
               : 'text-red-600 hover:text-red-500 active:text-red-700'
             : light
-            ? 'text-emerald-300 hover:text-opacity-70 active:text-opacity-50'
-            : 'text-emerald-600 hover:text-emerald-500 active:text-emerald-800'
+            ? 'text-violet-300 hover:text-opacity-70 active:text-opacity-50'
+            : 'text-violet-600 hover:text-violet-500 active:text-violet-800'
         } 
         ${className ?? ''}`}
           href={href}
@@ -46,8 +46,8 @@ function StyledLink({
                 ? 'text-red-400 hover:text-red-500 active:text-red-600'
                 : 'text-red-600 hover:text-red-500 active:text-red-700'
               : light
-              ? 'text-emerald-300 hover:text-opacity-70 active:text-opacity-50'
-              : 'text-emerald-600 hover:text-emerald-500 active:text-emerald-800'
+              ? 'text-violet-300 hover:text-opacity-70 active:text-opacity-50'
+              : 'text-violet-600 hover:text-violet-500 active:text-violet-800'
           } 
           ${className ?? ''}`}
           onClick={onClick}>

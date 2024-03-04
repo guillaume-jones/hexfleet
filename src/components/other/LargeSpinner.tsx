@@ -3,7 +3,7 @@ export default function LargeSpinner({ className }: { className?: string }) {
     <div className={className}>
       <div
         className={
-          'h-16 w-16 animate-spin rounded-full border-8 border-emerald-300 border-t-emerald-800'
+          'h-16 w-16 animate-spin rounded-full border-8 border-violet-300 border-t-violet-800'
         }
       />
     </div>

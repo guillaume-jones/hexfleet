@@ -13,7 +13,7 @@ function AlignedBox({
       ${
         light
           ? 'bg-stone-50'
-          : 'bg-gradient-to-br from-emerald-800 to-emerald-700 text-stone-50'
+          : 'bg-gradient-to-br from-violet-800 to-violet-700 text-stone-50'
       }
       ${className ?? ''}`}>
       {children?.map((row, index) => {

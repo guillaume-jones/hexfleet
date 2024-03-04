@@ -28,10 +28,10 @@ function Textarea({
 
   return (
     <div
-      className={`w-full bg-stone-50 p-1 pl-2 ring-emerald-800 transition-all duration-200 
+      className={`w-full bg-stone-50 p-1 pl-2 ring-violet-800 transition-all duration-200 
       ${
         thick
-          ? 'rounded-xl ring-2 focus-within:ring-4 sm:hover:ring-emerald-600'
+          ? 'rounded-xl ring-2 focus-within:ring-4 sm:hover:ring-violet-600'
           : 'rounded-md ring-1 ring-opacity-40 focus-within:ring-opacity-80 disabled:ring-opacity-40'
       }
       ${disabled ? 'bg-stone-100 ring-stone-700 sm:hover:ring-stone-700' : ''} 

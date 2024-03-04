@@ -17,7 +17,7 @@ export default function EmailField({
   );
 
   return (
-    <div className="w-60 text-emerald-800">
+    <div className="w-60 text-violet-800">
       <div className="flex">
         <Input
           value={email}

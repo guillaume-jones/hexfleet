@@ -4,7 +4,7 @@ import StyledLink from 'src/components/interactive/StyledLink';
 
 export default function Footer() {
   return (
-    <div className="bg-gradient-to-r from-emerald-900 to-emerald-700 px-4 py-3 text-sm text-white">
+    <div className="bg-gradient-to-r from-violet-900 to-violet-700 px-4 py-3 text-sm text-white">
       <div className="flex justify-between">
         <p className="mr-1">© 2023 Instant Header, Inc. </p>
         <div className="flex gap-4">
@@ -15,7 +15,7 @@ export default function Footer() {
             rel="noopener noreferrer">
             <Twitter
               size={24}
-              className="tranasition-all fill-emerald-300 stroke-emerald-300 p-1 duration-150 hover:fill-emerald-400 hover:stroke-emerald-400"
+              className="tranasition-all fill-violet-300 stroke-violet-300 p-1 duration-150 hover:fill-violet-400 hover:stroke-violet-400"
             />
           </a>
         </div>

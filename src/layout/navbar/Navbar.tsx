@@ -12,7 +12,7 @@ export default function Navbar() {
 
   return (
     <div className="fixed w-full">
-      <div className="flex h-14 w-full items-center bg-gradient-to-r from-emerald-900 to-emerald-700 pl-2 pr-4 shadow-md">
+      <div className="flex h-14 w-full items-center bg-gradient-to-r from-violet-900 to-violet-700 pl-2 pr-4 shadow-md">
         <PageLink
           className="ml-2 flex w-20 items-center gap-2 text-xl leading-none sm:w-full sm:text-2xl"
           href={'/'}
@@ -44,7 +44,7 @@ export default function Navbar() {
         <Menu>
           <div className="flex outline-none sm:hidden">
             <Menu.Button
-              className="ml-2 h-10 w-10 rounded-md p-1 text-stone-50 outline-none transition hover:text-emerald-300 active:text-emerald-500"
+              className="ml-2 h-10 w-10 rounded-md p-1 text-stone-50 outline-none transition hover:text-violet-300 active:text-violet-500"
               aria-label="menu">
               <Bars3Icon />
             </Menu.Button>
@@ -55,7 +55,7 @@ export default function Navbar() {
               leave="transition ease-in duration-150"
               leaveFrom="transform opacity-100 translate-x-0 "
               leaveTo="transform opacity-0 translate-x-20 ">
-              <Menu.Items className="absolute -right-4 top-12 w-36 rounded-bl-2xl bg-gradient-to-tr from-emerald-800 to-emerald-700 px-1 shadow-lg outline-none">
+              <Menu.Items className="absolute -right-4 top-12 w-36 rounded-bl-2xl bg-gradient-to-tr from-violet-800 to-violet-700 px-1 shadow-lg outline-none">
                 <div className="flex w-full flex-col divide-y divide-stone-50 divide-opacity-50">
                   {pagesList.map(({ title, path }) => {
                     return (
