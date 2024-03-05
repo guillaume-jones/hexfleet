@@ -8,7 +8,8 @@ module.exports = {
   ],
   theme: {
     fontFamily: {
-      sans: ['Mulish', 'sans-serif'],
+      sans: ['"Exo 2"', 'sans-serif'],
+      orbitron: ['Orbitron', 'sans-serif'],
     },
     extend: {
       backgroundSize: {

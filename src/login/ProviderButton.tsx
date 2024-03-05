@@ -22,7 +22,7 @@ export default function ProviderButton({
       light
       onClick={onClick}
       fixedActive={loading}
-      className="border border-stone-300">
+      className="border border-zinc-300">
       <div className="flex h-10 w-52 items-center gap-4">
         <Image
           src={`/login/${provider}.svg`}

@@ -24,7 +24,7 @@ export default function Navbar() {
             alt="logo"
             className="h-10 w-10"
           />
-          <h1>Instant Header</h1>
+          <h1 className="font-orbitron">HexFleet</h1>
         </PageLink>
         <div className="flex-1" />
         <div className="mr-6 hidden space-x-6 sm:flex">
@@ -44,7 +44,7 @@ export default function Navbar() {
         <Menu>
           <div className="flex outline-none sm:hidden">
             <Menu.Button
-              className="ml-2 h-10 w-10 rounded-md p-1 text-stone-50 outline-none transition hover:text-violet-300 active:text-violet-500"
+              className="ml-2 h-10 w-10 rounded-md p-1 text-zinc-50 outline-none transition hover:text-violet-300 active:text-violet-500"
               aria-label="menu">
               <Bars3Icon />
             </Menu.Button>
@@ -56,7 +56,7 @@ export default function Navbar() {
               leaveFrom="transform opacity-100 translate-x-0 "
               leaveTo="transform opacity-0 translate-x-20 ">
               <Menu.Items className="absolute -right-4 top-12 w-36 rounded-bl-2xl bg-gradient-to-tr from-violet-800 to-violet-700 px-1 shadow-lg outline-none">
-                <div className="flex w-full flex-col divide-y divide-stone-50 divide-opacity-50">
+                <div className="flex w-full flex-col divide-y divide-zinc-50 divide-opacity-50">
                   {pagesList.map(({ title, path }) => {
                     return (
                       <Menu.Item key={path}>

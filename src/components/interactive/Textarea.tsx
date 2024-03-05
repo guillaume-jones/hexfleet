@@ -28,13 +28,13 @@ function Textarea({
 
   return (
     <div
-      className={`w-full bg-stone-50 p-1 pl-2 ring-violet-800 transition-all duration-200 
+      className={`w-full bg-zinc-50 p-1 pl-2 ring-violet-800 transition-all duration-200 
       ${
         thick
           ? 'rounded-xl ring-2 focus-within:ring-4 sm:hover:ring-violet-600'
           : 'rounded-md ring-1 ring-opacity-40 focus-within:ring-opacity-80 disabled:ring-opacity-40'
       }
-      ${disabled ? 'bg-stone-100 ring-stone-700 sm:hover:ring-stone-700' : ''} 
+      ${disabled ? 'bg-zinc-100 ring-zinc-700 sm:hover:ring-zinc-700' : ''} 
       ${className ?? ''} `}>
       <textarea
         value={value}
@@ -44,7 +44,7 @@ function Textarea({
         id={id}
         style={{}}
         className={
-          'h-full w-full resize-none appearance-none border-none bg-stone-50 text-black outline-none transition-all duration-200 disabled:bg-stone-100'
+          'h-full w-full resize-none appearance-none border-none bg-zinc-50 text-black outline-none transition-all duration-200 disabled:bg-zinc-100'
         }
         {...textareaProps}
       />

@@ -22,7 +22,7 @@ export default function Account() {
   return (
     <>
       <Head>
-        <title>Instant Header - Account</title>
+        <title>HexFleet - Account</title>
       </Head>
       <div className="mx-6 mt-8 flex-1 pb-10">
         <div className="fixed hidden w-0 flex-col gap-2 sm:flex md:w-48">

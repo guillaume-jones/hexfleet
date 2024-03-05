@@ -1,7 +1,7 @@
 # HexFleet
 
-Hexagon-tile game.
-Support fully online play.
+Hexagon-tile based game, with mecanics still WIP.
+Supports fully online play.
 
 ## Installation
 

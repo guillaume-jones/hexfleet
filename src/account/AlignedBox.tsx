@@ -12,8 +12,8 @@ function AlignedBox({
       className={`flex max-w-lg flex-col gap-2 rounded-xl px-4 py-3 shadow-md 
       ${
         light
-          ? 'bg-stone-50'
-          : 'bg-gradient-to-br from-violet-800 to-violet-700 text-stone-50'
+          ? 'bg-zinc-50'
+          : 'bg-gradient-to-br from-violet-800 to-violet-700 text-zinc-50'
       }
       ${className ?? ''}`}>
       {children?.map((row, index) => {

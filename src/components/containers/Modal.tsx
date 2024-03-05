@@ -36,7 +36,7 @@ export default function Modal({
         appear>
         <div className="flex h-full w-full items-center justify-center p-4">
           <Dialog.Panel
-            className={`rounded-2xl bg-stone-50 p-6 shadow-lg ${
+            className={`rounded-2xl bg-zinc-50 p-6 shadow-lg ${
               className ?? ''
             }`}>
             {children}

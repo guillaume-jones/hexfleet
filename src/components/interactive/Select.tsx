@@ -18,12 +18,12 @@ function Select<T extends string>({
     <Listbox value={value} onChange={setValue} disabled={disabled}>
       <div className={`relative z-20 ${className ?? ''}`}>
         <Listbox.Button
-          className="w-full rounded-lg bg-stone-50 text-violet-800 transition-all  duration-300 hover:bg-violet-200 disabled:bg-stone-300 disabled:text-stone-600 "
+          className="w-full rounded-lg bg-zinc-50 text-violet-800 transition-all  duration-300 hover:bg-violet-200 disabled:bg-zinc-300 disabled:text-zinc-600 "
           disabled={disabled}>
           {({ open }) => (
             <div
               className={`flex w-full flex-row items-center justify-between rounded-lg border-b py-1 pl-2 pr-1 font-semibold transition-all duration-300  ${
-                open ? 'border-stone-300 bg-violet-100' : 'border-transparent'
+                open ? 'border-zinc-300 bg-violet-100' : 'border-transparent'
               }`}>
               <p>{value}</p>
               <ChevronDownIcon
@@ -42,11 +42,11 @@ function Select<T extends string>({
           leave="transition duration-250 ease-in"
           leaveFrom="transform scale-y-100  opacity-100"
           leaveTo="transform scale-y-0  opacity-50">
-          <Listbox.Options className="absolute mt-1 w-full overflow-hidden rounded-lg bg-stone-50 shadow-md">
+          <Listbox.Options className="absolute mt-1 w-full overflow-hidden rounded-lg bg-zinc-50 shadow-md">
             {options.map((option) => (
               <Listbox.Option key={option} value={option} className="group">
                 <button
-                  className={`w-full border-b border-stone-200 px-2 py-1 text-left  text-violet-800 transition-all duration-200 hover:bg-violet-200 group-last:rounded-b-lg ${
+                  className={`w-full border-b border-zinc-200 px-2 py-1 text-left  text-violet-800 transition-all duration-200 hover:bg-violet-200 group-last:rounded-b-lg ${
                     option === value ? 'bg-violet-100 font-semibold' : ''
                   }`}>
                   {option}

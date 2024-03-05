@@ -33,8 +33,8 @@ function Button({
   const styling = `rounded-xl px-4 py-2 text-center transition-all flex items-center justify-center relative
   ${
     light
-      ? 'text-violet-800 disabled:text-stone-600'
-      : 'text-white disabled:text-stone-300'
+      ? 'text-violet-800 disabled:text-zinc-600'
+      : 'text-white disabled:text-zinc-300'
   }
   ${fontClassName ? fontClassName : light ? 'font-semibold' : 'font-medium'}
   ${
@@ -45,10 +45,10 @@ function Button({
         ? 'bg-red-500'
         : 'bg-violet-500'
       : light
-      ? 'bg-stone-50 disabled:bg-stone-300 sm:hover:bg-violet-200 sm:active:bg-violet-300 sm:disabled:bg-stone-300'
+      ? 'bg-zinc-50 disabled:bg-zinc-300 sm:hover:bg-violet-200 sm:active:bg-violet-300 sm:disabled:bg-zinc-300'
       : danger
-      ? 'bg-red-600 disabled:bg-stone-400 sm:hover:bg-red-500 sm:active:bg-red-400 sm:disabled:bg-stone-400'
-      : 'bg-violet-700 disabled:bg-stone-500 sm:hover:bg-violet-600 sm:active:bg-violet-500 sm:disabled:bg-stone-500'
+      ? 'bg-red-600 disabled:bg-zinc-400 sm:hover:bg-red-500 sm:active:bg-red-400 sm:disabled:bg-zinc-400'
+      : 'bg-violet-700 disabled:bg-zinc-500 sm:hover:bg-violet-600 sm:active:bg-violet-500 sm:disabled:bg-zinc-500'
   }
   ${fixedActive ? 'cursor-default' : ''}
   ${className ?? ''}`;

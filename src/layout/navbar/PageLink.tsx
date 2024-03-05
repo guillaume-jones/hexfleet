@@ -17,7 +17,7 @@ function PageLink({
   return (
     <Link
       className={`${
-        isCurrentPath ? 'text-violet-300' : 'text-stone-50'
+        isCurrentPath ? 'text-violet-300' : 'text-zinc-50'
       } font-semibold transition-colors duration-200 hover:text-violet-300 active:text-violet-500 ${
         className ?? ''
       }`}

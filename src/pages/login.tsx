@@ -26,7 +26,7 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>Instant Header - Sign up or log in</title>
+        <title>HexFleet - Sign up or log in</title>
       </Head>
       <div className="flex-1">
         <div className="flex flex-col items-center gap-10 px-5 pt-10 sm:flex-row sm:items-start sm:justify-center">

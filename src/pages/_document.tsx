@@ -12,7 +12,11 @@ class CustomDocument extends Document {
             crossOrigin="anonymous"
           />
           <link
-            href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;600;700&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap"
+            rel="stylesheet"
+          />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap"
             rel="stylesheet"
           />
           <meta charSet="utf-8" />
@@ -20,19 +24,16 @@ class CustomDocument extends Document {
           <link rel="apple-touch-icon" href="logo/apple-touch-icon.png" />
 
           {/* Facebook */}
-          <meta
-            name="og:title"
-            content="Instant Header - Great images for your content, in a flash"
-          />
+          <meta name="og:title" content="HexFleet - Hex-based tile conquest." />
           <meta
             name="og:description"
-            content="Instant Header is your one-stop shop for getting beautiful, attention grabbing images to go with your newsletter, blog, article or more!"
+            content="HexFleet is a simple, balanced, online game for 2 to 6 players. Send out your fleet to conquer a galaxy of hexagonal tiles."
           />
-          <meta name="og:url" content="www.instantheader.com" />
+          <meta name="og:url" content="www.hexfleet.com" />
           <meta name="og:type" content="website" />
           <meta
             name="og:image"
-            content="https://www.instantheader.com/sharing/og-image.png"
+            content="https://www.hexfleet.com/sharing/og-image.png"
           />
           <meta name="og:image:type" content="image/png" />
           <meta name="og:image:width" content="1200" />
@@ -42,20 +43,16 @@ class CustomDocument extends Document {
           <meta name="twitter:card" content="summary_large_image" />
           <meta
             name="twitter:title"
-            content="Instant Header - Great images for your content, in a flash"
+            content="HexFleet - Hex-based tile conquest."
           />
           <meta name="twitter:site" content="@instantheader" />
           <meta
             name="twitter:description"
-            content="Instant Header is your one-stop shop for beautiful images to go with your articles."
+            content="HexFleet is a simple, balanced, online game for 2 to 6 players. Send out your fleet to conquer a galaxy of hexagonal tiles."
           />
           <meta
             name="twitter:image"
-            content="https://www.instantheader.com/sharing/og-image.png"
-          />
-          <meta
-            name="twitter:image:alt"
-            content="Multitude of photos generated from a single article using Instant Header"
+            content="https://www.hexfleet.com/sharing/og-image.png"
           />
         </Head>
         <body>
