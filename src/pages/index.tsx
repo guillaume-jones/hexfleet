@@ -1,6 +1,10 @@
 import Head from 'next/head';
 
 export default function Landing() {
+  document.addEventListener('scroll', () => {
+    console.log('scroll event fired!');
+  });
+
   return (
     <>
       <Head>

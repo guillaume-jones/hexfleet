@@ -5,11 +5,7 @@ type Page = {
 
 export const pagesList: Page[] = [
   {
-    title: 'Generator',
-    path: '/generator',
-  },
-  {
-    title: 'Pricing',
-    path: '/pricing',
+    title: 'Past Games',
+    path: '/pastgames',
   },
 ];

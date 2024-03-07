@@ -17,15 +17,15 @@ function PageLink({
   return (
     <Link
       className={`${
-        isCurrentPath ? 'text-violet-300' : 'text-zinc-50'
-      } font-semibold transition-colors duration-200 hover:text-violet-300 active:text-violet-500 ${
-        className ?? ''
-      }`}
+        isCurrentPath
+          ? 'text-violet-700'
+          : 'text-zinc-50 hover:text-violet-300 active:text-violet-500'
+      } font-semibold transition-colors duration-200  ${className ?? ''}`}
       href={href}
       onClick={onClick}
       rel="canonical">
-      {typeof children === 'string' && isCurrentPath ? (
-        <h1>{children}</h1>
+      {typeof children === 'string' ? (
+        <h1 className="text-nowrap">{children}</h1>
       ) : (
         children
       )}

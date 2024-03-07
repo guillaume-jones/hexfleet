@@ -20,6 +20,10 @@ class CustomDocument extends Document {
             rel="stylesheet"
           />
           <meta charSet="utf-8" />
+          <meta
+            name="description"
+            content="HexFleet is a simple, balanced, online game for 2 to 6 players. Send out your fleet to conquer a galaxy of hexagonal tiles.."
+          />
           <link rel="icon" href="favicon.ico" />
           <link rel="apple-touch-icon" href="logo/apple-touch-icon.png" />
 

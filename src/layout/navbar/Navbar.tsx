@@ -1,6 +1,5 @@
 import { Menu, Transition } from '@headlessui/react';
 import { Bars3Icon } from '@heroicons/react/20/solid';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import AccountButton from 'src/layout/navbar/AccountButton';
@@ -9,21 +8,22 @@ import { pagesList } from 'src/layout/pagesList';
 
 export default function Navbar() {
   const { pathname } = useRouter();
-
   return (
     <div className="fixed w-full">
-      <div className="flex h-14 w-full items-center bg-gradient-to-r from-violet-900 to-violet-700 pl-2 pr-4 shadow-md">
+      <div
+        className="flex h-16 w-full items-center bg-gradient-to-b from-zinc-950 from-70% to-transparent pl-2 pr-4
+      ">
         <PageLink
           className="ml-2 flex w-20 items-center gap-2 text-xl leading-none sm:w-full sm:text-2xl"
           href={'/'}
           currentPath={pathname}>
-          <Image
+          {/* <Image
             src="/logo/android-chrome-192x192.webp"
             width={192}
             height={192}
             alt="logo"
             className="h-10 w-10"
-          />
+          /> */}
           <h1 className="font-orbitron">HexFleet</h1>
         </PageLink>
         <div className="flex-1" />
