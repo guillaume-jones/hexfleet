@@ -33,8 +33,8 @@ function Button({
   const styling = `rounded-xl px-4 py-2 text-center transition-all flex items-center justify-center relative
   ${
     light
-      ? 'text-violet-800 disabled:text-zinc-600'
-      : 'text-white disabled:text-zinc-300'
+      ? 'text-zinc-900 disabled:text-zinc-600'
+      : 'text-zinc disabled:text-zinc-300'
   }
   ${fontClassName ? fontClassName : light ? 'font-semibold' : 'font-medium'}
   ${

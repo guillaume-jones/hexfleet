@@ -46,8 +46,8 @@ function StyledLink({
                 ? 'text-red-400 hover:text-red-500 active:text-red-600'
                 : 'text-red-600 hover:text-red-500 active:text-red-700'
               : light
-              ? 'text-violet-300 hover:text-opacity-70 active:text-opacity-50'
-              : 'text-violet-600 hover:text-violet-500 active:text-violet-800'
+              ? 'text-violet-400 hover:text-opacity-70 active:text-opacity-50'
+              : 'text-violet-700 hover:text-violet-600 active:text-violet-900'
           } 
           ${className ?? ''}`}
           onClick={onClick}>
