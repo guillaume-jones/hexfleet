@@ -1,48 +1,69 @@
+import CloseButton from '../interactive/CloseButton';
 import { Dialog, Transition } from '@headlessui/react';
-import { useCallback } from 'react';
+import { Fragment, useCallback } from 'react';
 
 export default function Modal({
   open,
   setOpen,
   children,
+  title,
   className,
 }: {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   children?: React.ReactNode;
   className?: string;
+  title?: string;
 }) {
   const closeModal = useCallback(() => {
     setOpen(false);
   }, [setOpen]);
 
   return (
-    <Dialog open={open} onClose={closeModal}>
+    <>
       <Transition
-        enter="transition ease-out duration-300"
+        enter="transition ease-out duration-200"
         enterFrom="opacity-0"
-        enterTo="opacity-30"
+        enterTo="opacity-50"
+        leave="transition ease-in duration-200"
+        leaveFrom="opacity-50"
+        leaveTo="opacity-0"
         show={open}
         className="fixed inset-0"
         appear>
-        <div className="h-full w-full bg-violet-900" />
+        <div className="h-full w-full bg-black" />
       </Transition>
       <Transition
-        enter="transition ease-out duration-300"
-        enterFrom="transform opacity-0"
-        enterTo="transform opacity-100"
+        enter="transition ease-out duration-200"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-200"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
         show={open}
-        className="fixed inset-0"
+        as={Fragment}
         appear>
-        <div className="flex h-full w-full items-center justify-center p-4">
+        <Dialog
+          onClose={closeModal}
+          className="fixed inset-0 flex h-full w-full items-center justify-center">
           <Dialog.Panel
-            className={`rounded-2xl bg-zinc-50 p-6 shadow-lg ${
+            className={`relative min-w-80 rounded-2xl bg-zinc-900 p-6 shadow-lg ${
               className ?? ''
             }`}>
+            <div className="absolute right-4 top-4">
+              <CloseButton onClick={closeModal} />
+            </div>
+            {title && (
+              <Dialog.Title
+                as="h1"
+                className="pb-6 text-center text-xl font-bold">
+                {title}
+              </Dialog.Title>
+            )}
             {children}
           </Dialog.Panel>
-        </div>
+        </Dialog>
       </Transition>
-    </Dialog>
+    </>
   );
 }

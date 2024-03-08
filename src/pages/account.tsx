@@ -12,10 +12,10 @@ export default function Account() {
   const { push } = useRouter();
 
   const [user, userLoading] = useAuthState(auth);
-  // If not logged in, redirect to login
+  // If not logged in, redirect to homepage
   useEffect(() => {
     if (!user && !userLoading) {
-      push('/login').catch((e) => console.error(e));
+      push('/').catch((e) => console.error(e));
     }
   }, [push, user, userLoading]);
 

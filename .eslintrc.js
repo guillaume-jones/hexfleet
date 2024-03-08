@@ -69,6 +69,7 @@ module.exports = {
         ignoreRestSiblings: true,
       },
     ],
+    'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
   },
   settings: {
     react: {

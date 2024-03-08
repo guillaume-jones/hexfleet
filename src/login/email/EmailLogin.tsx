@@ -7,8 +7,8 @@ import { useCallback, useMemo, useState } from 'react';
 
 import Button from 'src/components/interactive/Button';
 import { auth } from 'src/firebase/firebaseApp';
-import EmailField from 'src/login/EmailField';
-import PasswordField from 'src/login/PasswordField';
+import EmailField from 'src/login/email/EmailField';
+import PasswordField from 'src/login/email/PasswordField';
 
 export default function EmailLogin() {
   const [email, setEmail] = useState('');
@@ -42,7 +42,7 @@ export default function EmailLogin() {
   );
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col items-center gap-3">
+    <form onSubmit={onSubmit} className="flex w-60 flex-col items-center gap-3">
       <EmailField email={email} setEmail={setEmail} />
       <PasswordField password={password} setPassword={setPassword} />
       <Button disabled={!areFieldsValid}>Sign in &nbsp; /&nbsp; Sign up</Button>
