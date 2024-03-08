@@ -15,7 +15,7 @@ export default function SecurityBox({
     <>
       {!user && <LargeSpinner className="my-8 border-2 border-transparent" />}
       {user && (
-        <AlignedBox light>
+        <AlignedBox>
           <>
             <p>Email: {user.email}</p>
             <DeleteAccountLink />

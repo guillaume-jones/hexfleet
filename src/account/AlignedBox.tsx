@@ -13,7 +13,7 @@ function AlignedBox({
       ${
         light
           ? 'bg-zinc-50'
-          : 'bg-gradient-to-br from-violet-800 to-violet-700 text-zinc-50'
+          : 'bg-gradient-to-br from-zinc-900 to-zinc-800 text-zinc-50'
       }
       ${className ?? ''}`}>
       {children?.map((row, index) => {

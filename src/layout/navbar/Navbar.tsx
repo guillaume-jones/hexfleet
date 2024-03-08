@@ -41,7 +41,7 @@ export default function Navbar() {
             );
           })}
         </div>
-        <AccountButton pathName={pathname} />
+        <AccountButton />
         <Menu>
           <div className="flex outline-none sm:hidden">
             <Menu.Button

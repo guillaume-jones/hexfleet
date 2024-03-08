@@ -25,42 +25,27 @@ export default function Account() {
         <title>HexFleet - Account</title>
       </Head>
       <div className="mx-6 mt-8 flex-1 pb-10">
-        <div className="fixed hidden w-0 flex-col gap-2 sm:flex md:w-48">
-          <h1 className={'mb-2 text-3xl font-semibold text-violet-900'}>
-            Account
-          </h1>
-          <StyledLink href="#purchases" className="text-lg">
-            Purchases
-          </StyledLink>
-          <StyledLink href="#security" className="text-lg">
-            Security
-          </StyledLink>
-          <StyledLink href="#other" className="text-lg">
-            Other
-          </StyledLink>
-        </div>
+        <h1 className={'mb-2 text-3xl font-semibold text-zinc-50'}>Account</h1>
 
-        <div className="sm:ml-48">
-          <h2
-            id={'security'}
-            className={'mb-2 mt-6 text-xl font-semibold text-violet-900'}>
-            Security
-          </h2>
-          <SecurityBox user={user} />
-          <h2
-            id={'other'}
-            className={'mb-2 mt-6 text-xl font-semibold text-violet-900'}>
-            Other
-          </h2>
-          <OtherBox />
-          <p className="mt-4">
-            For any account issues, please contact{' '}
-            <StyledLink href="mailto:support@instantheader.com">
-              support@instantheader.com
-            </StyledLink>
-            .
-          </p>
-        </div>
+        <h2
+          id={'security'}
+          className={'mb-4 mt-6 text-xl font-semibold text-zinc-50'}>
+          Security
+        </h2>
+        <SecurityBox user={user} />
+        <h2
+          id={'other'}
+          className={'mb-4 mt-6 text-xl font-semibold text-zinc-50'}>
+          Other
+        </h2>
+        <OtherBox />
+        <p className="mt-4">
+          For any account issues, please contact{' '}
+          <StyledLink href="mailto:support@instantheader.com">
+            support@instantheader.com
+          </StyledLink>
+          .
+        </p>
       </div>
     </>
   );

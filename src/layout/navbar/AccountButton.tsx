@@ -6,7 +6,7 @@ import Button from 'src/components/interactive/Button';
 import { auth } from 'src/firebase/firebaseApp';
 import Login from 'src/pages/login';
 
-function LoginButton({ pathName }: { pathName: string }) {
+function AccountButton() {
   const [user, userLoading] = useAuthState(auth);
   const loggedIn = !!user || userLoading;
 
@@ -18,10 +18,8 @@ function LoginButton({ pathName }: { pathName: string }) {
   return (
     <>
       <Button
-        light
         href={loggedIn ? '/account' : undefined}
         onClick={loggedIn ? undefined : openModal}
-        fixedActive={loggedIn && pathName === '/account'}
         className="ml-2 whitespace-nowrap rounded-full px-4 py-2"
         fontClassName="font-bold"
         loading={userLoading}>
@@ -37,4 +35,4 @@ function LoginButton({ pathName }: { pathName: string }) {
   );
 }
 
-export default LoginButton;
+export default AccountButton;

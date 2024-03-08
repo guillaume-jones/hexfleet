@@ -9,7 +9,7 @@ export default function OtherBox() {
   const { isOnLeaderboard, updateSettings, settingsLoading } =
     useContext(SettingsContext);
 
-  const handleProductEmailsChange = useCallback(() => {
+  const handleIsOnLeaderboardChange = useCallback(() => {
     updateSettings({ isOnLeaderboard: !isOnLeaderboard });
   }, [isOnLeaderboard, updateSettings]);
 
@@ -23,8 +23,8 @@ export default function OtherBox() {
             <Checkbox
               key={0}
               checked={!!isOnLeaderboard}
-              setChecked={handleProductEmailsChange}
-              label={'Receive emails about new features'}
+              setChecked={handleIsOnLeaderboardChange}
+              label={'Show my wins on the public leaderboard'}
             />,
           ]}
         </AlignedBox>
