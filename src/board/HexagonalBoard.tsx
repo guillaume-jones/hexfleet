@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { TileStructure } from 'functions/src/document-types/Games';
+import { getBorderColor, getColorForPlayer } from './boardUtils';
+import { TileState } from 'functions/src/document-types/Games';
 
-const HexagonalBoard = ({ board }: { board: TileStructure[] }) => {
+const HexagonalBoard = ({ board }: { board: TileState[] }) => {
   // See https://en.wikipedia.org/wiki/Hexagon#Parameters
   const d = 10;
   const r = d / 2;
@@ -15,11 +16,11 @@ const HexagonalBoard = ({ board }: { board: TileStructure[] }) => {
 
   return (
     <svg
-      className="bg-zinc-50"
       viewBox={`${-strokeWidth / 2} ${-strokeWidth / 2} ${
         viewBoxWidth + strokeWidth
       } ${viewBoxHeight + strokeWidth}`}>
-      {board.map(({ x, y, inPlay }) => {
+      {board.map(({ x, y, inPlay, playerId }) => {
+        const fill = getColorForPlayer(playerId);
         return inPlay ? (
           <g
             key={`${x},${y}`}
@@ -27,18 +28,18 @@ const HexagonalBoard = ({ board }: { board: TileStructure[] }) => {
               y * R * 1.5 + R
             })`}>
             <polygon
-              fill="#FFFFFF"
-              stroke="#09090b"
+              z={playerId ? 5 : undefined}
+              fill={fill}
+              stroke={getBorderColor(fill)}
               stroke-width={strokeWidth}
               points={`0,${-R} ${r},${-R / 2} ${r},${R / 2} 0,${R} ${-r},${
                 R / 2
               } ${-r},${-R / 2}`}
             />
-
-            {/* Uncomment if needed for debugging
-             <text textAnchor="middle" alignmentBaseline="middle" fontSize={3}>
+            {/* Uncomment if needed for debugging */}
+            <text textAnchor="middle" alignmentBaseline="middle" fontSize={3}>
               {y},{x}
-            </text> */}
+            </text>
           </g>
         ) : null;
       })}

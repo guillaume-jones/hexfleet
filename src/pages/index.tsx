@@ -4,7 +4,7 @@ import HexagonalBoard from 'src/board/HexagonalBoard';
 import { generateBoard } from 'src/board/generateBoard';
 
 export default function Landing() {
-  const board = generateBoard(13);
+  const board = generateBoard(13, { testBoard: true });
 
   return (
     <>

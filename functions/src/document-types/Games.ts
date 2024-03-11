@@ -8,14 +8,11 @@ export type Tile = {
 };
 
 export type TileState = Tile & {
-  player?: string;
+  inPlay: boolean;
+  playerId?: string;
 };
 
 export type BoardState = TileState[];
-
-export type TileStructure = Tile & {
-  inPlay: boolean;
-};
 
 export type TilePressure = Tile & {
   pressure?: number;
@@ -31,7 +28,6 @@ export type Games = {
   createdTime: Date;
   hasStarted: boolean;
   winner: string;
-  boardStructure: TileStructure[];
   pastTurns: BoardState[];
   boardState: BoardState;
   nextTurn: FirebaseFirestore.CollectionGroup<NextTurn>;
