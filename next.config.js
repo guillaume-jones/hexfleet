@@ -17,7 +17,7 @@ const nextConfig = {
       },
     ],
   },
-  transpilePackages: ['@stripe/firestore-stripe-payments'],
+  transpilePackages: [],
 };
 
 module.exports = nextConfig;

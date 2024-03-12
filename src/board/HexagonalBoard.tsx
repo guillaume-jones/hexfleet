@@ -1,14 +1,19 @@
 import React from 'react';
 
-import { getBorderColor, getColorForPlayer } from './boardUtils';
+import { getColorForPlayer } from './boardColors';
 import { TileState } from 'functions/src/document-types/Games';
 
-const HexagonalBoard = ({ board }: { board: TileState[] }) => {
+const HexagonalBoard = ({
+  board,
+  boardSize,
+}: {
+  board: TileState[];
+  boardSize: number;
+}) => {
   // See https://en.wikipedia.org/wiki/Hexagon#Parameters
   const d = 10;
   const r = d / 2;
   const R = d / Math.sqrt(3);
-  const boardSize = Math.round(Math.sqrt(board.length));
   const halfBoardSize = Math.round(boardSize / 2);
   const viewBoxWidth = d * boardSize;
   const viewBoxHeight = R * 1.5 * boardSize + R / 2;
@@ -19,9 +24,9 @@ const HexagonalBoard = ({ board }: { board: TileState[] }) => {
       viewBox={`${-strokeWidth / 2} ${-strokeWidth / 2} ${
         viewBoxWidth + strokeWidth
       } ${viewBoxHeight + strokeWidth}`}>
-      {board.map(({ x, y, inPlay, playerId }) => {
+      {board.map(({ x, y, playerId }) => {
         const fill = getColorForPlayer(playerId);
-        return inPlay ? (
+        return (
           <g
             key={`${x},${y}`}
             transform={`translate(${halfBoardSize * r + x * d - r * y},${
@@ -30,18 +35,17 @@ const HexagonalBoard = ({ board }: { board: TileState[] }) => {
             <polygon
               z={playerId ? 5 : undefined}
               fill={fill}
-              stroke={getBorderColor(fill)}
-              stroke-width={strokeWidth}
+              strokeWidth={strokeWidth}
               points={`0,${-R} ${r},${-R / 2} ${r},${R / 2} 0,${R} ${-r},${
                 R / 2
               } ${-r},${-R / 2}`}
             />
             {/* Uncomment if needed for debugging */}
             <text textAnchor="middle" alignmentBaseline="middle" fontSize={3}>
-              {y},{x}
+              {x},{y}
             </text>
           </g>
-        ) : null;
+        );
       })}
     </svg>
   );

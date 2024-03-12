@@ -8,7 +8,6 @@ export type Tile = {
 };
 
 export type TileState = Tile & {
-  inPlay: boolean;
   playerId?: string;
 };
 
@@ -30,5 +29,6 @@ export type Games = {
   winner: string;
   pastTurns: BoardState[];
   boardState: BoardState;
+  boardSize: number;
   nextTurn: FirebaseFirestore.CollectionGroup<NextTurn>;
 };
