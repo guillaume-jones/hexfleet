@@ -1,6 +1,9 @@
 import { Tile } from 'functions/src/document-types/Games';
 
-export const getTileNeighbors = ({ x, y }: Tile, boardSize: number): Tile[] => {
+export const getValidNeighbors = (
+  { x, y }: Tile,
+  boardSize: number,
+): Tile[] => {
   const neighbors = [];
 
   const inTopRight = x - (y - 1) > boardSize / 2;
@@ -21,4 +24,25 @@ export const getTileNeighbors = ({ x, y }: Tile, boardSize: number): Tile[] => {
   }
 
   return neighbors;
+};
+
+export const getAngleForNeighbor = (tile: Tile, neighbor: Tile): number => {
+  const xDiff = neighbor.x - tile.x;
+  const yDiff = neighbor.y - tile.y;
+
+  // Horizontals
+  if (yDiff === 0) {
+    return 90 * xDiff;
+  }
+  // Row above
+  if (yDiff === -1) {
+    if (xDiff === -1) return -30;
+    if (xDiff === 0) return 30;
+  }
+  // Row below
+  if (yDiff === 1) {
+    if (xDiff === 0) return -150;
+    if (xDiff === 1) return 150;
+  }
+  return 0;
 };

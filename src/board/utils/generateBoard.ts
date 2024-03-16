@@ -2,7 +2,7 @@ import { TileState } from 'functions/src/document-types/Games';
 
 export const generateBoard = (
   boardSize: number,
-  options?: { testBoard?: boolean },
+  options?: { testBoard?: true },
 ): TileState[] => {
   const tiles = [];
   const testBoard = options?.testBoard;
@@ -13,7 +13,13 @@ export const generateBoard = (
         tiles.push({
           x,
           y,
-          playerId: testBoard && Math.random() > 0.5 ? 'test' : undefined,
+          playerId:
+            testBoard &&
+            (Math.random() > 0.5
+              ? Math.random() > 0.5
+                ? 'abc'
+                : 'def'
+              : undefined),
         });
 
   return tiles;

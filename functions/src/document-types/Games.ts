@@ -10,7 +10,6 @@ export type Tile = {
 export type TileState = Tile & {
   playerId?: string;
 };
-
 export type BoardState = TileState[];
 
 export type TilePressure = Tile & {
