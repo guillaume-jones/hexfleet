@@ -1,14 +1,11 @@
 import Head from 'next/head';
 
 import HexagonalBoard from 'src/board/HexagonalBoard';
-import { generateBoard } from 'src/board/generateBoard';
-import { getContiguousZones } from 'src/board/getContiguousZones';
+import { generateBoard } from 'src/board/utils/generateBoard';
 
 const boardSize = 13;
 const board = generateBoard(boardSize, { testBoard: true });
 export default function Landing() {
-  getContiguousZones(board, boardSize);
-
   return (
     <>
       <Head>

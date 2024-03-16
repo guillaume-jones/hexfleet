@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { getColorForPlayer } from './boardColors';
+import { getColorForPlayer } from './utils/boardColors';
 import { TileState } from 'functions/src/document-types/Games';
 
 const HexagonalBoard = ({
