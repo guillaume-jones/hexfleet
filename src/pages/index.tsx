@@ -19,6 +19,7 @@ export default function Landing() {
         rawBoard={testBoard}
         boardSize={boardSize}
         players={players}
+        turn={3}
       />
     </>
   );

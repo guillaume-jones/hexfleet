@@ -10,10 +10,12 @@ const BoardWithIndicators = ({
   rawBoard,
   boardSize,
   players,
+  turn,
 }: {
   rawBoard: Tile[];
   boardSize: number;
   players: string[];
+  turn: number;
 }) => {
   const { board, ...scores } = useMemo(() => {
     const board = getSpecialBorders(rawBoard, boardSize)
@@ -33,7 +35,7 @@ const BoardWithIndicators = ({
   return (
     <div className="flex max-w-5xl flex-1 flex-col items-center gap-6 lg:items-end">
       <div className="lg:absolute lg:left-4 lg:top-4">
-        <ScoreBox players={players} {...scores} />
+        <ScoreBox players={players} turn={turn} {...scores} />
       </div>
       <HexagonalBoard board={board} boardSize={boardSize} />
     </div>
