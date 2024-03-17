@@ -1,9 +1,9 @@
-import { Tile } from 'functions/src/document-types/Games';
+import { TileCoords } from 'functions/src/document-types/Games';
 
 export const getValidNeighbors = (
-  { x, y }: Tile,
+  { x, y }: TileCoords,
   boardSize: number,
-): Tile[] => {
+): TileCoords[] => {
   const neighbors = [];
 
   const inTopRight = x - (y - 1) > boardSize / 2;
@@ -26,7 +26,10 @@ export const getValidNeighbors = (
   return neighbors;
 };
 
-export const getAngleForNeighbor = (tile: Tile, neighbor: Tile): number => {
+export const getAngleForNeighbor = (
+  tile: TileCoords,
+  neighbor: TileCoords,
+): number => {
   const xDiff = neighbor.x - tile.x;
   const yDiff = neighbor.y - tile.y;
 

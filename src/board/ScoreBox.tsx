@@ -3,11 +3,11 @@ import { Dictionary } from 'lodash';
 import { getColorForPlayer } from './utils/boardColors';
 
 const ScoreBox = ({
-  playerIds,
+  players,
   tilesByPlayer,
   influenceByPlayer,
 }: {
-  playerIds: string[];
+  players: string[];
   tilesByPlayer: Dictionary<number>;
   influenceByPlayer: Dictionary<number>;
 }) => {
@@ -29,11 +29,11 @@ const ScoreBox = ({
           </tr>
         </thead>
         <tbody>
-          {playerIds.map((playerId) => (
-            <tr key={playerId} style={{ color: getColorForPlayer(playerId) }}>
-              <th scope="row">{playerId}</th>
-              <td>{tilesByPlayer[playerId] ?? 0}</td>
-              <td>{influenceByPlayer[playerId] ?? 0}</td>
+          {players.map((id) => (
+            <tr key={id} style={{ color: getColorForPlayer(id) }}>
+              <th scope="row">{id}</th>
+              <td>{tilesByPlayer[id] ?? 0}</td>
+              <td>{influenceByPlayer[id] ?? 0}</td>
             </tr>
           ))}
         </tbody>

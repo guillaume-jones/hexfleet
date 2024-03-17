@@ -1,15 +1,15 @@
 import { getValidNeighbors } from './tileNeighbors';
-import { TileState } from 'functions/src/document-types/Games';
+import { Tile } from 'functions/src/document-types/Games';
 
-type CountedTileState = TileState & { counted?: boolean };
+type CountedTileState = Tile & { counted?: boolean };
 
 const getSameNeighbors = (
-  tiles: TileState[],
+  tiles: Tile[],
   { board, boardSize }: { board: CountedTileState[]; boardSize: number },
-): TileState[] => {
+): Tile[] => {
   if (tiles.length === 0) return [];
 
-  return tiles.flatMap((tile): TileState[] => {
+  return tiles.flatMap((tile): Tile[] => {
     const neighbors = getValidNeighbors(tile, boardSize)
       .map(({ x, y }) => board.find(({ x: x2, y: y2 }) => x === x2 && y === y2))
       .filter((neighbor): neighbor is CountedTileState => !!neighbor);
@@ -33,11 +33,11 @@ const getSameNeighbors = (
 };
 
 export const getContiguousZones = (
-  rawBoard: TileState[],
+  rawBoard: Tile[],
   boardSize: number,
-): TileState[][] => {
+): Tile[][] => {
   const board: CountedTileState[] = [...rawBoard];
-  const zones: TileState[][] = [];
+  const zones: Tile[][] = [];
 
   for (const tile of board) {
     if (tile.counted || !tile.playerId) continue;

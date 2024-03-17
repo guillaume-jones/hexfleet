@@ -1,13 +1,13 @@
 import React from 'react';
 
 import { getColorForPlayer, getFillColor } from './utils/boardColors';
-import { TileStateWithBorders } from './utils/getBorders';
+import { TileWithBorders } from './utils/getBorders';
 
 const HexagonalBoard = ({
   board,
   boardSize,
 }: {
-  board: TileStateWithBorders[];
+  board: TileWithBorders[];
   boardSize: number;
 }) => {
   // See https://en.wikipedia.org/wiki/Hexagon#Parameters
@@ -25,7 +25,7 @@ const HexagonalBoard = ({
       viewBox={`${-baseStrokeWidth / 2} ${-baseStrokeWidth / 2} ${
         viewBoxWidth + baseStrokeWidth
       } ${viewBoxHeight + baseStrokeWidth}`}>
-      {board.map(({ x, y, playerId, borders }) => {
+      {board.map(({ x, y, playerId, borders, homeworld }) => {
         const stroke = getColorForPlayer(playerId);
         const fill = getFillColor(stroke);
         return (
@@ -57,6 +57,15 @@ const HexagonalBoard = ({
                 />
               );
             })}
+            {homeworld && (
+              <polygon
+                fill={stroke}
+                points={`0,${-R} ${r},${-R / 2} ${r},${R / 2} 0,${R} ${-r},${
+                  R / 2
+                } ${-r},${-R / 2}`}
+                transform={'scale(0.4)'}
+              />
+            )}
             {/* Uncomment if needed for debugging */}
             {/* <text textAnchor="middle" alignmentBaseline="middle" fontSize={3}>
                 {x},{y}

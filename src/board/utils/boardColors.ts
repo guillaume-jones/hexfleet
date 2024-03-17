@@ -14,7 +14,7 @@ export const getColorForPlayer = (playerId?: string) => {
   const color = randomColor({ seed: playerId, luminosity: 'bright' });
   const tColor = tinycolor(color);
   tColor.saturate(100);
-  tColor.lighten(5);
+  tColor.lighten(2);
   colorCache[playerId] = tColor.toHexString();
   return colorCache[playerId];
 };

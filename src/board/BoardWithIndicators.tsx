@@ -4,14 +4,16 @@ import React, { useMemo } from 'react';
 import HexagonalBoard from './HexagonalBoard';
 import ScoreBox from './ScoreBox';
 import { getSpecialBorders } from './utils/getBorders';
-import { TileState } from 'functions/src/document-types/Games';
+import { Tile } from 'functions/src/document-types/Games';
 
 const BoardWithIndicators = ({
   rawBoard,
   boardSize,
+  players,
 }: {
-  rawBoard: TileState[];
+  rawBoard: Tile[];
   boardSize: number;
+  players: string[];
 }) => {
   const { board, ...scores } = useMemo(() => {
     const board = getSpecialBorders(rawBoard, boardSize)
@@ -31,7 +33,7 @@ const BoardWithIndicators = ({
   return (
     <div className="flex max-w-5xl flex-1 flex-col items-center gap-6 lg:items-end">
       <div className="lg:absolute lg:left-4 lg:top-4">
-        <ScoreBox playerIds={['abc', 'def']} {...scores} />
+        <ScoreBox players={players} {...scores} />
       </div>
       <HexagonalBoard board={board} boardSize={boardSize} />
     </div>

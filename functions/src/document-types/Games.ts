@@ -2,17 +2,19 @@ export type Player = {
   hasResigned?: boolean;
 };
 
-export type Tile = {
+export type TileCoords = {
   x: number;
   y: number;
 };
 
-export type TileState = Tile & {
+export type Tile = TileCoords & {
   playerId?: string;
+  homeworld?: boolean;
 };
-export type BoardState = TileState[];
 
-export type TilePressure = Tile & {
+export type BoardState = Tile[];
+
+export type TilePressure = TileCoords & {
   pressure?: number;
   clear?: boolean;
 };

@@ -1,20 +1,20 @@
 import { getAngleForNeighbor, getValidNeighbors } from './tileNeighbors';
-import { TileState } from 'functions/src/document-types/Games';
+import { Tile } from 'functions/src/document-types/Games';
 
 export type Border = {
   angle: number;
 };
 
-export type TileStateWithBorders = TileState & {
+export type TileWithBorders = Tile & {
   borders: Border[];
 };
 
 export const getSpecialBorders = (
-  rawBoard: TileState[],
+  rawBoard: Tile[],
   boardSize: number,
-): TileStateWithBorders[] => {
+): TileWithBorders[] => {
   return rawBoard.map((tile) => {
-    const baseTile: TileStateWithBorders = { ...tile, borders: [] };
+    const baseTile: TileWithBorders = { ...tile, borders: [] };
 
     if (tile.playerId === undefined) return baseTile;
 
