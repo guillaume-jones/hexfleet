@@ -3,7 +3,6 @@ import { TileState } from 'functions/src/document-types/Games';
 
 export type Border = {
   angle: number;
-  controlled: boolean;
 };
 
 export type TileStateWithBorders = TileState & {
@@ -23,13 +22,11 @@ export const getSpecialBorders = (
 
     for (const { x: nx, y: ny } of neighbors) {
       const neighbor = rawBoard.find(({ x, y }) => x === nx && y === ny);
-      // Skip contiguous tiles
-      if (!neighbor || neighbor.playerId === tile.playerId) continue;
+      // Skip tiles that are already held
+      if (!neighbor || neighbor.playerId !== undefined) continue;
 
       baseTile.borders.push({
         angle: getAngleForNeighbor(tile, neighbor),
-        // Thicker border when border is not contested
-        controlled: neighbor.playerId === undefined,
       });
     }
 

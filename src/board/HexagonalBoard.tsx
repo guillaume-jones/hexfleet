@@ -1,14 +1,13 @@
 import React from 'react';
 
-import { getBorderColor, getColorForPlayer } from './utils/boardColors';
-import { getSpecialBorders } from './utils/getBorders';
-import { TileState } from 'functions/src/document-types/Games';
+import { getColorForPlayer, getFillColor } from './utils/boardColors';
+import { TileStateWithBorders } from './utils/getBorders';
 
 const HexagonalBoard = ({
   board,
   boardSize,
 }: {
-  board: TileState[];
+  board: TileStateWithBorders[];
   boardSize: number;
 }) => {
   // See https://en.wikipedia.org/wiki/Hexagon#Parameters
@@ -22,60 +21,49 @@ const HexagonalBoard = ({
 
   return (
     <svg
+      className="max-w-3xl"
       viewBox={`${-baseStrokeWidth / 2} ${-baseStrokeWidth / 2} ${
         viewBoxWidth + baseStrokeWidth
       } ${viewBoxHeight + baseStrokeWidth}`}>
-      {getSpecialBorders(board, boardSize)
-        // Must sort or empty tiles override player tiles/borders
-        .sort((a, b) => (a.playerId ? 1 : 0) - (b.playerId ? 1 : 0))
-        .map(({ x, y, playerId, borders }) => {
-          const fill = getColorForPlayer(playerId);
-          const stroke = getBorderColor(fill);
-          return (
-            <g
-              key={`${x},${y}`}
-              transform={`translate(${halfBoardSize * r + x * d - r * y},${
-                y * R * 1.5 + R
-              }) scale(0.99)`}>
-              <polygon
-                fill={fill}
-                strokeWidth={baseStrokeWidth}
-                stroke={stroke}
-                points={`0,${-R} ${r},${-R / 2} ${r},${R / 2} 0,${R} ${-r},${
-                  R / 2
-                } ${-r},${-R / 2}`}
-              />
-              {borders.map(({ angle, controlled }) => {
-                return (
-                  <line
-                    key={angle}
-                    strokeLinecap={'round'}
-                    x1={-R / 2 + 1.1}
-                    y1={-r + 0.9}
-                    x2={R / 2 - 1.1}
-                    y2={-r + 0.9}
-                    stroke={stroke}
-                    strokeWidth={baseStrokeWidth * (controlled ? 2.5 : 1)}
-                    transform={`rotate(${angle})`}
-                  />
-                );
-              })}
-              {playerId && (
-                <text
-                  fill={stroke}
-                  textAnchor="middle"
-                  alignmentBaseline="middle"
-                  fontSize={3}>
-                  {borders.filter(({ controlled }) => controlled).length}
-                </text>
-              )}
-              {/* Uncomment if needed for debugging */}
-              {/* <text textAnchor="middle" alignmentBaseline="middle" fontSize={3}>
+      {board.map(({ x, y, playerId, borders }) => {
+        const stroke = getColorForPlayer(playerId);
+        const fill = getFillColor(stroke);
+        return (
+          <g
+            key={`${x},${y}`}
+            transform={`translate(${halfBoardSize * r + x * d - r * y},${
+              y * R * 1.5 + R
+            }) scale(0.99)`}>
+            <polygon
+              fill={fill}
+              strokeWidth={baseStrokeWidth}
+              stroke={stroke}
+              points={`0,${-R} ${r},${-R / 2} ${r},${R / 2} 0,${R} ${-r},${
+                R / 2
+              } ${-r},${-R / 2}`}
+            />
+            {borders.map(({ angle }) => {
+              return (
+                <line
+                  key={angle}
+                  strokeLinecap={'round'}
+                  x1={-R / 2 + 1.1}
+                  y1={-r + 0.9}
+                  x2={R / 2 - 1.1}
+                  y2={-r + 0.9}
+                  stroke={stroke}
+                  strokeWidth={baseStrokeWidth * 2.5}
+                  transform={`rotate(${angle})`}
+                />
+              );
+            })}
+            {/* Uncomment if needed for debugging */}
+            {/* <text textAnchor="middle" alignmentBaseline="middle" fontSize={3}>
                 {x},{y}
               </text> */}
-            </g>
-          );
-        })}
+          </g>
+        );
+      })}
     </svg>
   );
 };

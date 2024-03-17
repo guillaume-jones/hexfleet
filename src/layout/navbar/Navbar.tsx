@@ -15,7 +15,7 @@ export default function Navbar() {
         className="flex h-16 w-full items-center bg-gradient-to-b from-zinc-950 from-70% to-transparent pl-2 pr-4
       ">
         <PageLink
-          className="ml-2 flex w-20 items-center gap-2 text-xl leading-none sm:w-full sm:text-2xl"
+          className="ml-2 flex w-20 items-center gap-2 text-xl sm:text-2xl"
           href={'/'}
           currentPath={pathname}>
           <Image
