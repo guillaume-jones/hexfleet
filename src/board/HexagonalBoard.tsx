@@ -25,11 +25,12 @@ const HexagonalBoard = ({
       viewBox={`${-baseStrokeWidth / 2} ${-baseStrokeWidth / 2} ${
         viewBoxWidth + baseStrokeWidth
       } ${viewBoxHeight + baseStrokeWidth}`}>
-      {board.map(({ x, y, playerId, borders, homeworld }) => {
+      {board.map(({ x, y, playerId, borders, homeworld, disabled }) => {
         const stroke = getColorForPlayer(playerId);
         const fill = getFillColor(stroke);
         return (
           <g
+            fillOpacity={disabled ? 0.6 : 1}
             key={`${x},${y}`}
             transform={`translate(${halfBoardSize * r + x * d - r * y},${
               y * R * 1.5 + R
@@ -52,7 +53,7 @@ const HexagonalBoard = ({
                   x2={R / 2 - 1.1}
                   y2={-r + 0.9}
                   stroke={stroke}
-                  strokeWidth={baseStrokeWidth * 2.5}
+                  strokeWidth={baseStrokeWidth * (disabled ? 1.5 : 2.5)}
                   transform={`rotate(${angle})`}
                 />
               );

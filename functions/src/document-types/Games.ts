@@ -10,6 +10,7 @@ export type TileCoords = {
 export type Tile = TileCoords & {
   playerId?: string;
   homeworld?: boolean;
+  disabled?: boolean;
 };
 
 export type BoardState = Tile[];
