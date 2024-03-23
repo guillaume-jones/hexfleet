@@ -12,3 +12,7 @@ Supports fully online play.
 To start the local server: `npm run dev`
 
 Then navigate to [http://localhost:3000](http://localhost:3000) in browser to see the web app.
+
+## Deployment
+
+To deploy Firebase functions, run `npm run deploy-firebase` and login via web browser.
