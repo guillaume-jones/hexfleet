@@ -10,9 +10,11 @@ export type TileWithBorders = Tile & {
 };
 
 export const getSpecialBorders = (
-  rawBoard: Tile[],
-  boardSize: number,
+  rawBoard?: Tile[],
+  boardSize?: number,
 ): TileWithBorders[] => {
+  if (!rawBoard || !boardSize) return [];
+
   return rawBoard.map((tile) => {
     const baseTile: TileWithBorders = { ...tile, borders: [] };
 

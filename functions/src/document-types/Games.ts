@@ -1,4 +1,5 @@
 export type Player = {
+  id: string;
   hasResigned?: boolean;
 };
 
@@ -25,7 +26,7 @@ export type NextTurn = {
 };
 
 export type Game = {
-  players: FirebaseFirestore.CollectionGroup<Player>;
+  players: Player[];
   createdTime: Date;
   hasStarted?: boolean;
   winner?: string;

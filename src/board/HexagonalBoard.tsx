@@ -1,15 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
+import { GameContext } from './GameContext';
 import { getColorForPlayer, getFillColor } from './utils/boardColors';
-import { TileWithBorders } from './utils/getBorders';
 
-const HexagonalBoard = ({
-  board,
-  boardSize,
-}: {
-  board: TileWithBorders[];
-  boardSize: number;
-}) => {
+const HexagonalBoard = () => {
+  const { board, boardSize } = useContext(GameContext);
+
+  if (!board || !boardSize) return null;
+
   // See https://en.wikipedia.org/wiki/Hexagon#Parameters
   const d = 10;
   const r = d / 2;
