@@ -1,6 +1,6 @@
 import Head from 'next/head';
 
-import BoardWithIndicators from 'src/board/BoardWithIndicators';
+import GameDisplay from 'src/board/GameDisplay';
 import { generateBoard } from 'src/board/utils/generateBoard';
 
 const boardSize = 13;
@@ -15,7 +15,7 @@ export default function Landing() {
         <title>HexFleet - Hexagonal tile conquest</title>
       </Head>
 
-      <BoardWithIndicators
+      <GameDisplay
         rawBoard={testBoard}
         boardSize={boardSize}
         players={players}

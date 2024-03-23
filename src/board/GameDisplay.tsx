@@ -6,7 +6,7 @@ import ScoreBox from './ScoreBox';
 import { getSpecialBorders } from './utils/getBorders';
 import { Tile } from 'functions/src/document-types/Games';
 
-const BoardWithIndicators = ({
+const GameDisplay = ({
   rawBoard,
   boardSize,
   players,
@@ -42,4 +42,4 @@ const BoardWithIndicators = ({
   );
 };
 
-export default BoardWithIndicators;
+export default GameDisplay;
