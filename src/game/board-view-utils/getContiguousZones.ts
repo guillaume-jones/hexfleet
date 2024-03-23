@@ -1,4 +1,5 @@
-import { getValidNeighbors } from './tileNeighbors';
+import { getValidNeighbors } from '../board-utils/tileNeighbors';
+
 import { Tile } from 'functions/src/document-types/Games';
 
 type CountedTileState = Tile & { counted?: boolean };

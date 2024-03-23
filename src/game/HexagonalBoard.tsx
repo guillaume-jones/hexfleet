@@ -1,7 +1,10 @@
 import React, { useContext } from 'react';
 
 import { GameContext } from './GameContext';
-import { getColorForPlayer, getFillColor } from './utils/boardColors';
+import {
+  getColorForPlayer,
+  getFillColor,
+} from './board-view-utils/boardColors';
 
 const HexagonalBoard = () => {
   const { board, boardSize } = useContext(GameContext);

@@ -12,7 +12,10 @@ import {
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
-import { TileWithBorders, getSpecialBorders } from './utils/getBorders';
+import {
+  TileWithBorders,
+  getSpecialBorders,
+} from './board-view-utils/getBorders';
 import {
   Game,
   NextTurn,

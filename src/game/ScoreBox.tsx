@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
 import { GameContext } from './GameContext';
-import { getColorForPlayer } from './utils/boardColors';
+import { getColorForPlayer } from './board-view-utils/boardColors';
 
 const ScoreBox = () => {
   const { players, pastTurns, tilesByPlayer, influenceByPlayer } =

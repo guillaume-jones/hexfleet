@@ -1,4 +1,8 @@
-import { getAngleForNeighbor, getValidNeighbors } from './tileNeighbors';
+import {
+  getAngleForNeighbor,
+  getValidNeighbors,
+} from '../board-utils/tileNeighbors';
+
 import { Tile } from 'functions/src/document-types/Games';
 
 export type Border = {
