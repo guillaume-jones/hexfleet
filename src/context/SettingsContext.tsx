@@ -9,7 +9,7 @@ import { Settings } from 'functions/src/document-types/Settings';
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
 export type SettingsContextType = Settings & {
-  settingsLoading?: boolean;
+  loading?: boolean;
   updateSettings: (newSettings: Partial<Settings>) => void;
 };
 
@@ -19,7 +19,7 @@ export const SettingsContext = createContext<SettingsContextType>(undefined!);
 const useSettingsProvider = (): SettingsContextType => {
   const [user] = useAuthState(auth);
 
-  const [settings, settingsLoading] = useDocumentData<Partial<Settings>>(
+  const [settings, loading] = useDocumentData<Partial<Settings>>(
     user && doc(firestore, 'settings', user.uid),
   );
 
@@ -42,10 +42,10 @@ const useSettingsProvider = (): SettingsContextType => {
   return useMemo(
     () => ({
       ...settings,
-      settingsLoading,
+      loading,
       updateSettings,
     }),
-    [settings, settingsLoading, updateSettings],
+    [settings, loading, updateSettings],
   );
 };
 

@@ -6,7 +6,7 @@ import LargeSpinner from 'src/components/other/LargeSpinner';
 import { SettingsContext } from 'src/context/SettingsContext';
 
 export default function OtherBox() {
-  const { isOnLeaderboard, updateSettings, settingsLoading } =
+  const { isOnLeaderboard, updateSettings, loading } =
     useContext(SettingsContext);
 
   const handleIsOnLeaderboardChange = useCallback(() => {
@@ -15,7 +15,7 @@ export default function OtherBox() {
 
   return (
     <>
-      {settingsLoading ? (
+      {loading ? (
         <LargeSpinner className="" />
       ) : (
         <AlignedBox>

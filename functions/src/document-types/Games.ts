@@ -24,11 +24,11 @@ export type NextTurn = {
   pressures: TilePressure[];
 };
 
-export type Games = {
+export type Game = {
   players: FirebaseFirestore.CollectionGroup<Player>;
   createdTime: Date;
-  hasStarted: boolean;
-  winner: string;
+  hasStarted?: boolean;
+  winner?: string;
   pastTurns: BoardState[];
   boardState: BoardState;
   boardSize: number;
