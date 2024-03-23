@@ -36,20 +36,19 @@
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
-    "@typescript-eslint/eslint-plugin": "^5.49.0",
-    "@typescript-eslint/parser": "^5.49.0",
+    "@typescript-eslint/eslint-plugin": "^7.3.1",
+    "@typescript-eslint/parser": "^7.3.1",
     "autoprefixer": "^10.4.13",
     "eslint": "^8.33.0",
     "eslint-config-next": "^13.5",
     "eslint-config-react": "^1.1.7",
-    "eslint-plugin-jest": "^27.2.1",
     "eslint-plugin-no-relative-import-paths": "^1.5.2",
     "postcss": "^8.4.21",
     "prettier": "^2.8.3",
     "prettier-plugin-tailwindcss": "^0.2.2",
     "tailwindcss": "^3.4.1",
     "ts-prune": "^0.10.3",
-    "typescript": "4.9.4"
+    "typescript": "5.4.3"
   },
   "compilerOptions": {
     "esModuleInterop": true
