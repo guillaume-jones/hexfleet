@@ -1,5 +1,5 @@
 import { BoardOptions, generateBoard } from '../board-utils/generateBoard';
-import { addDoc, collection } from 'firebase/firestore';
+import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { customAlphabet } from 'nanoid';
 
 import { Game } from 'functions/src/document-types/Games';
@@ -25,9 +25,13 @@ export const createGame = async (boardOptions: BoardOptions) => {
     boardSize: boardOptions.boardSize,
     boardState,
     hasStarted: false,
+    createdAt: Timestamp.now(),
+    startedAt: null,
+    endedAt: null,
     pastTurns: [],
     players: [{ id, hasResigned: false }],
     shortId: nanoid(),
+    winner: null,
   };
 
   const docRef = await addDoc(collection(firestore, 'games'), newGame);

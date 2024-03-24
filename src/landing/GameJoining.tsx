@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
+import RejoinButton from './RejoinButton';
 import { JoinGameData } from 'functions/src/document-types/Games';
 import { shortIdLength } from 'functions/src/game/shortId';
 
@@ -58,6 +59,7 @@ const GameJoining = ({ className }: GameCreationProps) => {
         }`}>
         No game with this code.
       </p>
+      <RejoinButton />
     </div>
   );
 };

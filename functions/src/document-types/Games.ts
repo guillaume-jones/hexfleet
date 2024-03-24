@@ -30,13 +30,14 @@ export type NextTurn = {
 export type Game = {
   boardSize: number;
   boardState: BoardState;
-  startedAt?: Timestamp;
-  endedAt?: Timestamp;
+  createdAt: Timestamp;
+  startedAt: Timestamp | null;
+  endedAt: Timestamp | null;
   hasStarted: boolean;
   pastTurns: BoardState[];
   players: Player[];
   shortId: string;
-  winner?: string;
+  winner: string | null;
 };
 
 export type JoinGameData = {
