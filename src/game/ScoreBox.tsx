@@ -16,7 +16,7 @@ const ScoreBox = () => {
   return (
     <div className="flex w-72 flex-col rounded-xl bg-zinc-800 px-4 py-3 text-center">
       <div className="mb-2 flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Scores</h2>
+        <h2 className="text-2xl font-semibold">Scores</h2>
         <p className="text-lg font-semibold">Turn: {pastTurns.length}</p>
       </div>
       <table className="text-center">
