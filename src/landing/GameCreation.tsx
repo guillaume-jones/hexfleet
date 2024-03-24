@@ -3,10 +3,11 @@ import range from 'lodash/range';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 
+import { addPlayersToBoard } from 'functions/src/game/addPlayersToBoard';
+
 import Button from 'src/components/interactive/Button';
 import Range from 'src/components/interactive/Range';
 import HexagonalBoard from 'src/game/HexagonalBoard';
-import { addPlayersToBoard } from 'src/game/board-utils/addPlayersToBoard';
 import {
   defaultBoardOptions,
   generateBoard,
@@ -27,7 +28,7 @@ const GameCreation = ({ className }: GameCreationProps) => {
 
   const boardPreview = useMemo(() => {
     const board = addPlayersToBoard({
-      board: generateBoard({ boardSize }),
+      boardState: generateBoard({ boardSize }),
       boardSize,
       players: range(playersCount).map((i) => String(i * 8618)),
     });

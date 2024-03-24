@@ -1,11 +1,11 @@
-import { Tile, TileCoords } from 'functions/src/document-types/Games';
+import { Game, Tile, TileCoords } from '../document-types/Games';
 
 const getStartPositions = ({
   boardSize,
   players,
 }: {
   boardSize: number;
-  players: string[];
+  players: unknown[];
 }): TileCoords[] => {
   const allPositions = [
     { x: Math.round((boardSize - 1) / 4), y: 0 },
@@ -25,19 +25,15 @@ const getStartPositions = ({
 };
 
 export const addPlayersToBoard = ({
-  board,
+  boardState,
   boardSize,
   players,
-}: {
-  board: Tile[];
-  boardSize: number;
-  players: string[];
-}): Tile[] => {
-  const boardWithPlayers = [...board];
+}: Game): Tile[] => {
+  const boardWithPlayers = [...boardState];
   getStartPositions({ boardSize, players }).forEach(({ x, y }, i) => {
     const tile = boardWithPlayers.find((t) => t.x === x && t.y === y);
     if (tile) {
-      tile.playerId = players[i];
+      tile.playerId = players[i].id;
       tile.homeworld = true;
     }
   });

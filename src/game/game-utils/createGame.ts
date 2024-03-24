@@ -25,7 +25,6 @@ export const createGame = async (boardOptions: BoardOptions) => {
   const newGame: Game = {
     boardSize: boardOptions.boardSize,
     boardState,
-    createdAt: Timestamp.now(),
     hasStarted: false,
     pastTurns: [],
     players: [{ id, hasResigned: false }],

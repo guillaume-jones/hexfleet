@@ -20,53 +20,36 @@ const joinGame = functions
         'Not an authenticated user',
       );
     }
-    const { shortId, gameId } = data;
 
-    let gameRef:
-      | admin.firestore.DocumentReference<admin.firestore.DocumentData>
-      | undefined;
-    let gameDoc:
-      | admin.firestore.DocumentSnapshot<admin.firestore.DocumentData>
-      | undefined;
-
-    // If using a short id, has to first find the actual game id
-    if (shortId) {
-      if (shortId.length !== shortIdLength) {
-        throw new functions.https.HttpsError(
-          'invalid-argument',
-          'shortId must be exactly 5 characters long',
-        );
-      }
-
-      const gameSnapshot = await firestore
-        .collection('games')
-        .where('hasStarted', '==', false)
-        .where('shortId', '==', shortId)
-        .get();
-
-      if (gameSnapshot.empty) {
-        throw new functions.https.HttpsError(
-          'not-found',
-          'No game exists for this short ID',
-        );
-      }
-      gameDoc = gameSnapshot.docs[0];
-      gameRef = gameDoc.ref;
-    }
-    // If using a game id, just get the game directly
-    else if (gameId) {
-      gameRef = firestore.doc(`games/${gameId}`);
-      gameDoc = await gameRef.get();
-    }
-
-    if (!gameRef || !gameDoc || !gameDoc.exists) {
+    const { shortId } = data;
+    if (!shortId) {
       throw new functions.https.HttpsError(
-        'not-found',
-        'No game exists for this ID',
+        'invalid-argument',
+        'Missing shortId',
+      );
+    }
+    if (shortId.length !== shortIdLength) {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        `shortId must be exactly ${shortIdLength} characters`,
       );
     }
 
-    const game = gameDoc.data() as Partial<Game>;
+    const gameSnapshot = await firestore
+      .collection('games')
+      .where('hasStarted', '==', false)
+      .where('shortId', '==', shortId)
+      .get();
+
+    if (gameSnapshot.empty) {
+      throw new functions.https.HttpsError(
+        'not-found',
+        'No game exists for this short ID',
+      );
+    }
+
+    const gameRef = gameSnapshot.docs[0].ref;
+    const game = gameSnapshot.docs[0].data() as Partial<Game>;
 
     if (!game.players?.find((player) => player.id === playerId)) {
       const newPlayer: Player = {
@@ -79,7 +62,7 @@ const joinGame = functions
       });
     }
 
-    return gameId ?? gameRef.id;
+    return gameRef.id;
   });
 
 export default joinGame;

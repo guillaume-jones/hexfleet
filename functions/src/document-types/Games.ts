@@ -30,7 +30,8 @@ export type NextTurn = {
 export type Game = {
   boardSize: number;
   boardState: BoardState;
-  createdAt: Timestamp;
+  startedAt?: Timestamp;
+  endedAt?: Timestamp;
   hasStarted: boolean;
   pastTurns: BoardState[];
   players: Player[];
@@ -39,6 +40,14 @@ export type Game = {
 };
 
 export type JoinGameData = {
-  gameId?: string;
-  shortId?: string;
+  shortId: string;
+};
+
+export type StartGameData = {
+  gameId: string;
+};
+
+export type EditGamePlayerData = {
+  gameId: string;
+  action: 'leave' | 'resign';
 };

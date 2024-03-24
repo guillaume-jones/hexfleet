@@ -6,13 +6,13 @@ import HexagonalBoard from './HexagonalBoard';
 import ScoreBox from './ScoreBox';
 
 const GameDisplay = () => {
-  const { board, boardSize } = useContext(GameContext);
+  const { board, boardSize, hasStarted } = useContext(GameContext);
 
   return (
     <div className="flex max-w-5xl flex-col items-center justify-end gap-6  lg:flex-row lg:items-end">
-      <div className="flex items-center gap-6 lg:absolute lg:left-4 lg:top-4 lg:flex-col">
+      <div className="flex items-center gap-6 lg:absolute lg:left-4 lg:top-4 lg:flex-col lg:items-start">
         <ScoreBox />
-        <GameCode />
+        {!hasStarted && <GameCode />}
       </div>
       <HexagonalBoard board={board} boardSize={boardSize} />
     </div>
