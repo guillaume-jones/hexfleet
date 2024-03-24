@@ -26,6 +26,7 @@ import {
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
 export type GameContextType = Partial<Game> & {
+  gameId: string;
   board: TileWithBorders[];
   tilesByPlayer: Dictionary<number>;
   influenceByPlayer: Dictionary<number>;
@@ -42,7 +43,7 @@ export const GameContext = createContext<GameContextType>(undefined!);
 
 const emptyNextTurn: NextTurn = { pressures: [] };
 
-const useGameProvider = (gameId?: string) => {
+const useGameProvider = (gameId: string) => {
   const [user] = useAuthState(auth);
   const router = useRouter();
 
@@ -116,6 +117,7 @@ const useGameProvider = (gameId?: string) => {
 
     return {
       ...game,
+      gameId,
       board,
       tilesByPlayer,
       influenceByPlayer,
@@ -128,6 +130,7 @@ const useGameProvider = (gameId?: string) => {
     };
   }, [
     game,
+    gameId,
     loading,
     nextTurn,
     nextTurnLocked,

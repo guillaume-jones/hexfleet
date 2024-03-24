@@ -1,16 +1,34 @@
 import { useContext } from 'react';
+import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
 import { GameContext } from './GameContext';
+import { StartGameData } from 'functions/src/document-types/Games';
+
+import Button from 'src/components/interactive/Button';
+import { functions } from 'src/firebase/firebaseApp';
 
 const GameCode = () => {
-  const { shortId } = useContext(GameContext);
+  const { shortId, gameId } = useContext(GameContext);
+
+  const [startGame, loading] = useHttpsCallable<StartGameData>(
+    functions,
+    'startGame',
+  );
 
   if (!shortId) return null;
 
   return (
-    <div className="flex w-48 flex-col rounded-xl bg-violet-900 px-4 py-3 text-center">
-      <h2 className="text-2xl font-semibold">Game Code</h2>
-      <p className="text-xl font-semibold">{shortId}</p>
+    <div className="flex w-48 flex-col items-center gap-4 rounded-xl bg-violet-900 px-4 py-3 text-center">
+      <h3 className="text-2xl font-semibold">Code: {shortId}</h3>
+      <Button
+        light
+        loading={loading}
+        onClick={() => {
+          const asyncFunction = async () => startGame({ gameId });
+          void asyncFunction();
+        }}>
+        Start Game
+      </Button>
     </div>
   );
 };

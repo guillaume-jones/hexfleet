@@ -35,10 +35,16 @@ const joinGame = functions
         'Not a player in this game',
       );
     }
+    if (gameData.hasStarted) {
+      throw new functions.https.HttpsError(
+        'failed-precondition',
+        'Game has already started',
+      );
+    }
 
     const newBoardState = addPlayersToBoard(gameData);
 
-    gameRef.update({
+    await gameRef.update({
       boardState: newBoardState,
       hasStarted: true,
       startedAt: Timestamp.now(),
