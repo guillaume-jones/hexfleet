@@ -24,12 +24,12 @@ const GameJoining = ({ className }: GameCreationProps) => {
   );
 
   return (
-    <div className={`flex flex-col items-center gap-4 ${className}`}>
+    <div className={`flex w-60 flex-col items-center gap-4 ${className}`}>
       <Input
-        className="w-48"
+        className="w-40"
         value={shortId}
         setValue={(t) => setShortId(t.toUpperCase())}
-        placeholder={`Enter ${shortIdLength}-character code`}
+        placeholder={`Enter 5-letter code`}
         inputProps={{
           maxLength: shortIdLength,
           onFocus: () => setErrorShown(false),

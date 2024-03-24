@@ -42,12 +42,12 @@ const GameCreation = ({ className }: GameCreationProps) => {
         Create Game
       </Button>
       <Transition
-        className="flex w-full flex-col gap-2 overflow-hidden rounded-lg bg-zinc-800 p-3 transition-all duration-500"
+        className="flex w-full flex-col gap-3 overflow-hidden rounded-lg bg-zinc-800 p-3 transition-all duration-500"
         enter="ease-out"
         enterFrom="opacity-0 max-h-0"
-        enterTo="opacity-100 max-h-96"
+        enterTo="opacity-100 max-h-[420px]"
         leave="ease-in"
-        leaveFrom="opacity-100 max-h-96"
+        leaveFrom="opacity-100 max-h-[420px]"
         leaveTo="opacity-0 max-h-0"
         show={show}>
         <h3 className="text-center text-lg font-semibold">Game options</h3>

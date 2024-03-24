@@ -15,7 +15,7 @@ export default function Navbar() {
         className="flex h-16 w-full items-center bg-gradient-to-b from-zinc-950 from-70% to-transparent pl-2 pr-4
       ">
         <PageLink
-          className="ml-2 flex w-20 items-center gap-2 text-xl sm:text-2xl"
+          className="ml-2 flex items-center gap-2"
           href={'/'}
           currentPath={pathname}>
           <Image
@@ -23,9 +23,8 @@ export default function Navbar() {
             width={192}
             height={192}
             alt="logo"
-            className="h-8 w-8"
+            className="h-10 w-10 transition-all duration-1000 hover:rotate-180"
           />
-          <h1 className="font-orbitron">HexFleet</h1>
         </PageLink>
         <div className="flex-1" />
         <div className="mr-6 hidden space-x-6 sm:flex">
