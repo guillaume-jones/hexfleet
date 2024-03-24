@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import { GameProvider } from 'src/board/GameContext';
-import GameDisplay from 'src/board/GameDisplay';
+import { GameProvider } from 'src/game/GameContext';
+import GameDisplay from 'src/game/GameDisplay';
 
 export default function Game() {
   const router = useRouter();

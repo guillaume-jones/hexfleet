@@ -3,7 +3,6 @@ import { Timestamp } from 'firebase/firestore';
 export type Player = {
   id: string;
   hasResigned?: boolean;
-  joinedAt: Timestamp;
 };
 
 export type TileCoords = {
@@ -29,13 +28,12 @@ export type NextTurn = {
 };
 
 export type Game = {
-  shortId: string;
-  players: Player[];
-  createdAt: Timestamp;
-  hasStarted?: boolean;
-  winner?: string;
-  pastTurns: BoardState[];
-  boardState: BoardState;
   boardSize: number;
-  nextTurn: FirebaseFirestore.CollectionGroup<NextTurn>;
+  boardState: BoardState;
+  createdAt: Timestamp;
+  hasStarted: boolean;
+  pastTurns: BoardState[];
+  players: Player[];
+  shortId: string;
+  winner?: string;
 };

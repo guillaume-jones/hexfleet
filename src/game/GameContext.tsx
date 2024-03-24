@@ -82,16 +82,14 @@ const useGameProvider = (gameId?: string) => {
 
   const lockTurn = useCallback(() => {
     if (!nextTurnRef) return;
-    setDoc(nextTurnRef, nextTurn)
-      .then(() => setNextTurnLocked(true))
-      .catch((e) => console.error(e));
+    setNextTurnLocked(true);
+    setDoc(nextTurnRef, nextTurn).catch((e) => console.error(e));
   }, [nextTurnRef, nextTurn]);
 
   const unlockTurn = useCallback(() => {
     if (!nextTurnRef) return;
-    deleteDoc(nextTurnRef)
-      .then(() => setNextTurnLocked(false))
-      .catch((e) => console.error(e));
+    setNextTurnLocked(false);
+    deleteDoc(nextTurnRef).catch((e) => console.error(e));
   }, [nextTurnRef]);
 
   return useMemo(() => {

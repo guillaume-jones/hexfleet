@@ -1,12 +1,13 @@
-import { Game } from '../document-types/Games';
+import { Game, Player } from '../document-types/Games';
 import * as admin from 'firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
 import * as functions from 'firebase-functions';
 
 export type JoinGameData = {
   gameId?: string;
   shortId?: string;
 };
+
+export const shortIdLength = 5;
 
 const firestore = admin.firestore();
 
@@ -35,7 +36,7 @@ const joinGame = functions
 
     // If using a short id, has to first find the actual game id
     if (shortId) {
-      if (shortId.length !== 5) {
+      if (shortId.length !== shortIdLength) {
         throw new functions.https.HttpsError(
           'invalid-argument',
           'shortId must be exactly 5 characters long',
@@ -73,12 +74,13 @@ const joinGame = functions
     const game = gameDoc.data() as Partial<Game>;
 
     if (!game.players?.find((player) => player.id === playerId)) {
+      const newPlayer: Player = {
+        id: playerId,
+        hasResigned: false,
+      };
+
       await gameRef.update({
-        players: admin.firestore.FieldValue.arrayUnion({
-          joinedAt: Timestamp.now(),
-          hasResigned: false,
-          id: playerId,
-        }),
+        players: admin.firestore.FieldValue.arrayUnion(newPlayer),
       });
     }
 
