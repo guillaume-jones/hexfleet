@@ -1,6 +1,7 @@
 import Head from 'next/head';
 
 import GameCreation from 'src/landing/GameCreation';
+import GameJoining from 'src/landing/GameJoining';
 
 export default function Landing() {
   return (
@@ -8,10 +9,9 @@ export default function Landing() {
       <Head>
         <title>HexFleet - Hexagonal tile conquest</title>
       </Head>
-      <div className="flex-1">
-        <div className="max-w-72">
-          <GameCreation />
-        </div>
+      <div className="flex flex-1 flex-row">
+        <GameCreation />
+        <GameJoining />
       </div>
     </>
   );

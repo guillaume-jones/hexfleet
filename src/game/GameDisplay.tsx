@@ -8,7 +8,7 @@ const GameDisplay = () => {
   const { board, boardSize } = useContext(GameContext);
 
   return (
-    <div className="flex max-w-5xl items-center gap-6 lg:items-end">
+    <div className="flex max-w-5xl flex-col items-center justify-end gap-6  lg:flex-row lg:items-end">
       <div className="lg:absolute lg:left-4 lg:top-4">
         <ScoreBox />
       </div>

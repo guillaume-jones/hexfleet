@@ -37,3 +37,8 @@ export type Game = {
   shortId: string;
   winner?: string;
 };
+
+export type JoinGameData = {
+  gameId?: string;
+  shortId?: string;
+};

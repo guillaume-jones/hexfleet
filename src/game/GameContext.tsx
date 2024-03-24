@@ -54,7 +54,10 @@ const useGameProvider = (gameId?: string) => {
 
   // Redirects to landing page if game is not accessible
   useEffect(() => {
-    if (error) router.push('/');
+    if (error) {
+      console.error(error);
+      router.push('/');
+    }
   }, [error]);
 
   // Clears next turn state when game updates

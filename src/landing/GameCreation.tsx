@@ -35,10 +35,14 @@ const GameCreation = ({ className }: GameCreationProps) => {
   }, [boardSize, playersCount]);
 
   return (
-    <div className={`flex flex-col items-center gap-6 ${className}`}>
-      <Button onClick={() => setShown(true)}>Create Game</Button>
+    <div className={`flex w-64 flex-col items-center gap-4 ${className}`}>
+      <Button
+        fontClassName="text-lg font-semibold"
+        onClick={() => setShown(true)}>
+        Create Game
+      </Button>
       <Transition
-        className="flex w-64 flex-col gap-2 overflow-hidden rounded-lg bg-zinc-800 p-3 transition-all duration-500"
+        className="flex w-full flex-col gap-2 overflow-hidden rounded-lg bg-zinc-800 p-3 transition-all duration-500"
         enter="ease-out"
         enterFrom="opacity-0 max-h-0"
         enterTo="opacity-100 max-h-96"
@@ -87,6 +91,8 @@ const GameCreation = ({ className }: GameCreationProps) => {
               const id = await createGame({ boardSize });
               if (id) {
                 router.push(`/games/${id}`);
+              } else {
+                console.error('Failed to create game.');
               }
             }}>
             Confirm
