@@ -3,19 +3,24 @@ import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { customAlphabet } from 'nanoid';
 
 import { Game } from 'functions/src/document-types/Games';
-import { shortIdLength } from 'functions/src/game/joinGame';
+import { shortIdLength } from 'functions/src/game/shortId';
 
-import { firestore } from 'src/firebase/firebaseApp';
+import { auth, firestore } from 'src/firebase/firebaseApp';
 
 const nanoid = customAlphabet(
   '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ',
   shortIdLength,
 );
 
-export const createGame = async (
-  boardOptions: BoardOptions,
-  userId: string,
-) => {
+export const createGame = async (boardOptions: BoardOptions) => {
+  const id = auth.currentUser?.uid;
+
+  console.log({ id });
+  if (!id) {
+    console.error('User must be authenticated');
+    return;
+  }
+
   const boardState = generateBoard(boardOptions);
   const newGame: Game = {
     boardSize: boardOptions.boardSize,
@@ -23,7 +28,7 @@ export const createGame = async (
     createdAt: Timestamp.now(),
     hasStarted: false,
     pastTurns: [],
-    players: [{ id: userId, hasResigned: false }],
+    players: [{ id, hasResigned: false }],
     shortId: nanoid(),
   };
 

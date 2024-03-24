@@ -33,13 +33,14 @@ export const addPlayersToBoard = ({
   boardSize: number;
   players: string[];
 }): Tile[] => {
+  const boardWithPlayers = [...board];
   getStartPositions({ boardSize, players }).forEach(({ x, y }, i) => {
-    const tile = board.find((t) => t.x === x && t.y === y);
+    const tile = boardWithPlayers.find((t) => t.x === x && t.y === y);
     if (tile) {
       tile.playerId = players[i];
       tile.homeworld = true;
     }
   });
 
-  return board;
+  return boardWithPlayers;
 };

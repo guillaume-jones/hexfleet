@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import clamp from 'lodash/clamp';
+import { Dispatch, SetStateAction, useCallback } from 'react';
 
 export default function Range({
   value,
@@ -12,7 +13,7 @@ export default function Range({
   endText,
 }: {
   value: number;
-  setValue: (e: number) => void;
+  setValue: Dispatch<SetStateAction<number>>;
   min?: number;
   max?: number;
   step?: number;
@@ -21,19 +22,18 @@ export default function Range({
   className?: string;
   id?: string;
 }) {
-  const onChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) =>
-      setValue(parseInt(e.target.value)),
-    [setValue],
-  );
-
   return (
-    <div className="flex flex-row items-center">
+    <div className="flex touch-none flex-row items-center">
       {startText && <p className="mr-2">{startText}</p>}
       <input
+        onWheel={(e) => {
+          setValue((prev) =>
+            clamp(prev + step * (e.deltaY > 0 ? -1 : 1), min, max),
+          );
+        }}
         type="range"
         value={value}
-        onChange={onChange}
+        onChange={(e) => setValue(parseInt(e.target.value))}
         min={min}
         max={max}
         step={step}

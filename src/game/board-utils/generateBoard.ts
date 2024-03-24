@@ -1,3 +1,5 @@
+import { clamp } from 'lodash';
+
 import { Tile } from 'functions/src/document-types/Games';
 
 export type BoardOptions = {
@@ -9,6 +11,8 @@ export const defaultBoardOptions: BoardOptions = {
 };
 
 export const generateBoard = ({ boardSize }: BoardOptions): Tile[] => {
+  boardSize = clamp(boardSize, 5, 50);
+
   const tiles: Tile[] = [];
 
   for (let y = 0; y < boardSize; y++)

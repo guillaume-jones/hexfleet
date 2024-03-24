@@ -2,12 +2,12 @@ import { Game, Player } from '../document-types/Games';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 
+import { shortIdLength } from './shortId';
+
 export type JoinGameData = {
   gameId?: string;
   shortId?: string;
 };
-
-export const shortIdLength = 5;
 
 const firestore = admin.firestore();
 

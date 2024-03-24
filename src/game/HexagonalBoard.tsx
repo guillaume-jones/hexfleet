@@ -5,10 +5,19 @@ import {
   getColorForPlayer,
   getFillColor,
 } from './board-view-utils/boardColors';
+import { TileWithBorders } from './board-view-utils/getBorders';
 
-const HexagonalBoard = () => {
-  const { board, boardSize } = useContext(GameContext);
+type HexagonalBoardProps = {
+  className?: string;
+  board?: TileWithBorders[];
+  boardSize?: number;
+};
 
+const HexagonalBoard = ({
+  className,
+  board,
+  boardSize,
+}: HexagonalBoardProps) => {
   if (!board || !boardSize) return null;
 
   // See https://en.wikipedia.org/wiki/Hexagon#Parameters
@@ -22,7 +31,7 @@ const HexagonalBoard = () => {
 
   return (
     <svg
-      className="max-w-3xl"
+      className={`max-w-3xl ${className}`}
       viewBox={`${-baseStrokeWidth / 2} ${-baseStrokeWidth / 2} ${
         viewBoxWidth + baseStrokeWidth
       } ${viewBoxHeight + baseStrokeWidth}`}>

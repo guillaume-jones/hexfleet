@@ -1,6 +1,7 @@
 import { deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { Dictionary } from 'lodash';
 import countBy from 'lodash/countBy';
+import { useRouter } from 'next/router';
 import {
   ReactNode,
   createContext,
@@ -43,12 +44,18 @@ const emptyNextTurn: NextTurn = { pressures: [] };
 
 const useGameProvider = (gameId?: string) => {
   const [user] = useAuthState(auth);
+  const router = useRouter();
 
-  const [game, loading] = useDocumentData<Partial<Game>>(
+  const [game, loading, error] = useDocumentData<Partial<Game>>(
     gameId === undefined ? undefined : doc(firestore, 'games', gameId),
   );
   const [nextTurn, setNextTurn] = useState<NextTurn>(emptyNextTurn);
   const [nextTurnLocked, setNextTurnLocked] = useState(false);
+
+  // Redirects to landing page if game is not accessible
+  useEffect(() => {
+    if (error) router.push('/');
+  }, [error]);
 
   // Clears next turn state when game updates
   useEffect(() => {
