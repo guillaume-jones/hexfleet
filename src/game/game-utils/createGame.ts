@@ -1,5 +1,5 @@
 import { BoardOptions, generateBoard } from '../board-utils/generateBoard';
-import { Timestamp, addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection } from 'firebase/firestore';
 import { customAlphabet } from 'nanoid';
 
 import { Game } from 'functions/src/document-types/Games';
@@ -15,7 +15,6 @@ const nanoid = customAlphabet(
 export const createGame = async (boardOptions: BoardOptions) => {
   const id = auth.currentUser?.uid;
 
-  console.log({ id });
   if (!id) {
     console.error('User must be authenticated');
     return;

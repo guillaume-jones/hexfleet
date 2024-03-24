@@ -30,7 +30,7 @@ const GameCreation = ({ className }: GameCreationProps) => {
     const board = addPlayersToBoard({
       boardState: generateBoard({ boardSize }),
       boardSize,
-      players: range(playersCount).map((i) => String(i * 8618)),
+      players: range(playersCount).map((i) => ({ id: String(i * 8618) })),
     });
     return getSpecialBorders(board, boardSize);
   }, [boardSize, playersCount]);
@@ -80,21 +80,20 @@ const GameCreation = ({ className }: GameCreationProps) => {
         <h3 className="text-center text-lg font-semibold">Preview</h3>
         <HexagonalBoard board={boardPreview} boardSize={boardSize} />
         <div className="flex justify-between">
-          <Button
-            light
-            onClick={() => {
-              setShown(false);
-            }}>
+          <Button light onClick={() => setShown(false)}>
             Cancel
           </Button>
           <Button
-            onClick={async () => {
-              const id = await createGame({ boardSize });
-              if (id) {
-                router.push(`/games/${id}`);
-              } else {
-                console.error('Failed to create game.');
-              }
+            onClick={() => {
+              const asyncFunction = async () => {
+                const id = await createGame({ boardSize });
+                if (id) {
+                  await router.push(`/games/${id}`);
+                } else {
+                  console.error('Failed to create game.');
+                }
+              };
+              void asyncFunction();
             }}>
             Confirm
           </Button>

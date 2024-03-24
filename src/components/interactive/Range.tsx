@@ -1,5 +1,5 @@
 import clamp from 'lodash/clamp';
-import { Dispatch, SetStateAction, useCallback } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
 export default function Range({
   value,

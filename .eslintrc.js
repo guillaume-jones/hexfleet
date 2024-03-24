@@ -11,7 +11,6 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
-    'plugin:jest/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -26,7 +25,6 @@ module.exports = {
     'react',
     'react-hooks',
     '@typescript-eslint',
-    'jest',
     'no-relative-import-paths',
   ],
   rules: {
@@ -40,29 +38,8 @@ module.exports = {
     'react/prefer-stateless-function': 'warn',
     'react/jsx-pascal-case': 'error',
     'react/self-closing-comp': 'error',
-    'react/jsx-no-bind': 'error',
+    'react/jsx-no-bind': 'off',
     'react/react-in-jsx-scope': 'off',
-    'jest/consistent-test-it': ['error', { fn: 'test' }],
-    'jest/no-alias-methods': ['error'],
-    'jest/no-deprecated-functions': ['error'],
-    'jest/no-commented-out-tests': ['error'],
-    'jest/no-duplicate-hooks': ['error'],
-    'jest/prefer-expect-resolves': ['error'],
-    'jest/prefer-lowercase-title': ['error', { ignore: ['describe'] }],
-    'jest/prefer-spy-on': ['error'],
-    'jest/prefer-to-be': ['error'],
-    'jest/prefer-to-contain': ['error'],
-    'jest/prefer-to-have-length': ['error'],
-    'jest/prefer-todo': ['error'],
-    'jest/no-restricted-matchers': [
-      'error',
-      {
-        toThrowErrorMatchingSnapshot:
-          'Use `toThrowErrorMatchingInlineSnapshot()` instead',
-        toMatchSnapshot: 'Use `toMatchInlineSnapshot()` instead',
-      },
-    ],
-    //'no-relative-import-paths/no-relative-import-paths': ['error'],
     '@typescript-eslint/no-unused-vars': [
       'warn',
       {
@@ -73,9 +50,6 @@ module.exports = {
   },
   settings: {
     react: {
-      version: 'detect',
-    },
-    jest: {
       version: 'detect',
     },
   },

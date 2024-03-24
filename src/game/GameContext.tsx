@@ -56,9 +56,9 @@ const useGameProvider = (gameId?: string) => {
   useEffect(() => {
     if (error) {
       console.error(error);
-      router.push('/');
+      router.push('/').catch((e) => console.error(e));
     }
-  }, [error]);
+  }, [error, router]);
 
   // Clears next turn state when game updates
   useEffect(() => {

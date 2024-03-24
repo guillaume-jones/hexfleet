@@ -29,7 +29,7 @@ const GameJoining = ({ className }: GameCreationProps) => {
         className="w-40"
         value={shortId}
         setValue={(t) => setShortId(t.toUpperCase())}
-        placeholder={`Enter 5-letter code`}
+        placeholder={'Enter 5-letter code'}
         inputProps={{
           maxLength: shortIdLength,
           onFocus: () => setErrorShown(false),
@@ -39,13 +39,16 @@ const GameJoining = ({ className }: GameCreationProps) => {
       <Button
         fontClassName="text-lg font-semibold"
         loading={loading}
-        onClick={async () => {
-          const result = await joinGame({ shortId });
-          if (result && typeof result.data === 'string') {
-            router.push(`/games/${result.data}`);
-          } else {
-            setErrorShown(true);
-          }
+        onClick={() => {
+          const asyncFunction = async () => {
+            const result = await joinGame({ shortId });
+            if (result && typeof result.data === 'string') {
+              await router.push(`/games/${result.data}`);
+            } else {
+              setErrorShown(true);
+            }
+          };
+          void asyncFunction();
         }}>
         Join Game
       </Button>

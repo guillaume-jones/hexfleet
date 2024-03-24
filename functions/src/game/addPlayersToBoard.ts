@@ -28,7 +28,7 @@ export const addPlayersToBoard = ({
   boardState,
   boardSize,
   players,
-}: Game): Tile[] => {
+}: Pick<Game, 'boardState' | 'boardSize' | 'players'>): Tile[] => {
   const boardWithPlayers = [...boardState];
   getStartPositions({ boardSize, players }).forEach(({ x, y }, i) => {
     const tile = boardWithPlayers.find((t) => t.x === x && t.y === y);
