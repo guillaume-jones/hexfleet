@@ -2,13 +2,17 @@ import { Menu, Transition } from '@headlessui/react';
 import { Bars3Icon } from '@heroicons/react/20/solid';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
+import { auth } from 'src/firebase/firebaseApp';
 import AccountButton from 'src/layout/navbar/AccountButton';
 import PageLink from 'src/layout/navbar/PageLink';
-import { pagesList } from 'src/layout/pagesList';
+import { pagesList } from 'src/layout/navbar/pagesList';
 
 export default function Navbar() {
   const { pathname } = useRouter();
+  const [user] = useAuthState(auth);
+
   return (
     <div className="fixed w-full">
       <div
@@ -28,7 +32,9 @@ export default function Navbar() {
         </PageLink>
         <div className="flex-1" />
         <div className="mr-6 hidden space-x-6 sm:flex">
-          {pagesList.map(({ title, path }) => {
+          {pagesList.map(({ title, path, hideWhenLoggedOut }) => {
+            if (hideWhenLoggedOut && !user) return null;
+
             return (
               <PageLink
                 href={path}
