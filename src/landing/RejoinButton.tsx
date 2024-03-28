@@ -28,7 +28,7 @@ const RejoinButton = ({ className }: GameCreationProps) => {
       ),
   );
 
-  return (
+  return !pastGames || pastGames.empty ? null : (
     <Button
       light
       className={`transition-all ${
