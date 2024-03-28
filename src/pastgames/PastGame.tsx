@@ -15,13 +15,14 @@ type PastGameProps = {
 export default function PastGame({
   gameId,
   game: {
-    boardState,
     boardSize,
-    players,
-    winner,
+    boardState,
     createdAt,
     endedAt,
+    hasStarted,
+    players,
     startedAt,
+    winner,
   },
 }: PastGameProps) {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function PastGame({
     gameDuration && Math.floor((gameDuration % 3600) / 60);
 
   return (
-    <div className="flex min-h-40 w-full max-w-xl flex-col justify-between gap-4 rounded-xl bg-zinc-800 p-4 sm:flex-row-reverse">
+    <div className="flex min-h-40 w-full max-w-xl flex-col justify-between gap-4 rounded-2xl bg-zinc-800 p-4 sm:flex-row-reverse">
       <div className="flex flex-1 flex-row items-center justify-center gap-4 sm:flex-col">
         <div className="flex flex-col items-center">
           <p className="text-lg">
@@ -54,15 +55,17 @@ export default function PastGame({
               Game lasted {gameDurationHours ? `${gameDurationHours} h ` : ''}
               {gameDurationMinutes} min
             </p>
-          ) : (
+          ) : hasStarted ? (
             <p className="text-lg text-violet-600">Game in progress</p>
+          ) : (
+            <p className="text-lg text-violet-300">Not yet started</p>
           )}
         </div>
         <Button
           className="max-w-32 flex-1 sm:flex-none"
           light={winner != null}
           onClick={() => void router.push(`/games/${gameId}`)}>
-          {winner ? 'View game' : 'Rejoin Game'}
+          {winner ? 'View game' : hasStarted ? 'Rejoin Game' : 'Join Game'}
         </Button>
       </div>
       <div className="flex flex-col items-center justify-around gap-4 sm:flex-row">

@@ -47,7 +47,7 @@ export default function PastGames() {
       <Head>
         <title>HexFleet - Past Games</title>
       </Head>
-      <div className="flex flex-1 flex-col items-center p-8">
+      <div className="flex flex-1 flex-col items-center gap-6 p-8">
         {pastGames?.docs.map((doc) => {
           return (
             <PastGame key={doc.id} gameId={doc.id} game={doc.data() as Game} />

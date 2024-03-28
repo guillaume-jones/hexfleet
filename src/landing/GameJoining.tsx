@@ -57,7 +57,7 @@ const GameJoining = ({ className }: GameCreationProps) => {
         className={`text-red-500 transition-all ${
           errorShown ? 'opacity-100' : 'opacity-0'
         }`}>
-        No game with this code.
+        No open game with this code.
       </p>
       <RejoinButton />
     </div>
