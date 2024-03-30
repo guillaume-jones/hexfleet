@@ -34,7 +34,7 @@ function Checkbox({
           onChange={toggle}
           disabled={disabled}
           className={
-            'h-6 w-6 cursor-pointer appearance-none rounded-md border-0 bg-zinc-50 transition-all duration-150 checked:bg-violet-900  focus:border-0 focus:ring-0 focus:ring-offset-0 disabled:cursor-default disabled:bg-zinc-300 sm:hover:bg-violet-300 sm:checked:hover:bg-violet-800 sm:disabled:bg-zinc-300'
+            'h-6 w-6 cursor-pointer appearance-none rounded-md border-0 bg-zinc-50 transition-all duration-150 checked:bg-violet-900 focus:border-0 focus:ring-0 focus:ring-offset-0 disabled:cursor-default disabled:bg-zinc-300 sm:hover:bg-violet-300 sm:checked:hover:bg-violet-800 sm:disabled:bg-zinc-300'
           }
         />
         <CheckIcon

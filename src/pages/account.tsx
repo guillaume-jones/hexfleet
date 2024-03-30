@@ -3,9 +3,11 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
-import OtherBox from 'src/account/OtherBox';
+import PrivacyBox from 'src/account/PrivacyBox';
+import ProfileBox from 'src/account/ProfileBox';
 import SecurityBox from 'src/account/SecurityBox';
 import StyledLink from 'src/components/interactive/StyledLink';
+import { SettingsProvider } from 'src/context/SettingsContext';
 import { auth } from 'src/firebase/firebaseApp';
 
 export default function Account() {
@@ -24,29 +26,38 @@ export default function Account() {
       <Head>
         <title>HexFleet - Account</title>
       </Head>
-      <div className="mx-6 mt-8 flex-1 pb-10">
-        <h1 className={'mb-2 text-3xl font-semibold text-zinc-50'}>Account</h1>
-
-        <h2
-          id={'security'}
-          className={'mb-4 mt-6 text-xl font-semibold text-zinc-50'}>
-          Security
-        </h2>
-        <SecurityBox user={user} />
-        <h2
-          id={'other'}
-          className={'mb-4 mt-6 text-xl font-semibold text-zinc-50'}>
-          Other
-        </h2>
-        <OtherBox />
-        <p className="mt-4">
-          For any account issues, please contact{' '}
-          <StyledLink href="mailto:support@instantheader.com">
-            support@instantheader.com
-          </StyledLink>
-          .
-        </p>
-      </div>
+      <SettingsProvider>
+        <div className="mx-6 mt-8 flex-1 pb-10">
+          <h1 className={'mb-2 text-3xl font-semibold text-zinc-50'}>
+            Account
+          </h1>
+          <h2
+            id={'other'}
+            className={'mb-4 mt-6 text-xl font-semibold text-zinc-50'}>
+            Profile
+          </h2>
+          <ProfileBox />
+          <h2
+            id={'security'}
+            className={'mb-4 mt-6 text-xl font-semibold text-zinc-50'}>
+            Security
+          </h2>
+          <SecurityBox user={user} />
+          <h2
+            id={'other'}
+            className={'mb-4 mt-6 text-xl font-semibold text-zinc-50'}>
+            Privacy
+          </h2>
+          <PrivacyBox />
+          <p className="mt-6">
+            For any account issues, please contact{' '}
+            <StyledLink href="mailto:support@instantheader.com">
+              support@instantheader.com
+            </StyledLink>
+            .
+          </p>
+        </div>
+      </SettingsProvider>
     </>
   );
 }

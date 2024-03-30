@@ -1,7 +1,8 @@
 export type Settings = {
-  isOnLeaderboard?: boolean;
+  language: 'en';
+  isScorePublic?: boolean;
 };
-
 export const initialSettings: Settings = {
-  isOnLeaderboard: true,
+  language: 'en',
+  isScorePublic: true,
 };
