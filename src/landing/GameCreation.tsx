@@ -12,7 +12,7 @@ import {
   defaultBoardOptions,
   generateBoard,
 } from 'src/game/board-utils/generateBoard';
-import { getSpecialBorders } from 'src/game/board-view-utils/getBorders';
+import { getSpecialBorders } from 'src/game/board-view-utils/getSpecialBorders';
 import { createGame } from 'src/game/game-utils/createGame';
 
 type GameCreationProps = {

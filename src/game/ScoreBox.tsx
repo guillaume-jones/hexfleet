@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
-import { GameContext } from './GameContext';
 import { getColorForPlayer } from './board-view-utils/boardColors';
+import { GameContext } from './game-context/GameContext';
 
 import { auth } from 'src/firebase/firebaseApp';
 
@@ -28,12 +28,12 @@ const ScoreBox = () => {
           </tr>
         </thead>
         <tbody>
-          {players.map(({ id }) => (
+          {players.map(({ id, name }) => (
             <tr
               className={`${id === user?.uid ? 'font-semibold' : ''}`}
               key={id}
               style={{ color: getColorForPlayer(id) }}>
-              <th className={'text-left'}>{id.slice(0, 6)}</th>
+              <th className={'text-left'}>{name}</th>
               <td>{tilesByPlayer[id] ?? 0}</td>
               <td>{influenceByPlayer[id] ?? 0}</td>
             </tr>

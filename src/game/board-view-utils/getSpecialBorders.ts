@@ -2,16 +2,9 @@ import {
   getAngleForNeighbor,
   getValidNeighbors,
 } from '../board-utils/tileNeighbors';
+import { TileWithBorders } from '../game-context/GameContextTypes';
 
 import { Tile } from 'functions/src/document-types/Games';
-
-export type Border = {
-  angle: number;
-};
-
-export type TileWithBorders = Tile & {
-  borders: Border[];
-};
 
 export const getSpecialBorders = (
   rawBoard?: Tile[],

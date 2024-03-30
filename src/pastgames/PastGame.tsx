@@ -1,20 +1,17 @@
 import { useRouter } from 'next/router';
-
-import { Game } from 'functions/src/document-types/Games';
+import { useContext } from 'react';
 
 import Button from 'src/components/interactive/Button';
 import HexagonalBoard from 'src/game/HexagonalBoard';
 import { getColorForPlayer } from 'src/game/board-view-utils/boardColors';
-import { getSpecialBorders } from 'src/game/board-view-utils/getBorders';
+import { getSpecialBorders } from 'src/game/board-view-utils/getSpecialBorders';
+import { GameContext } from 'src/game/game-context/GameContext';
 
-type PastGameProps = {
-  game: Game;
-  gameId: string;
-};
+export default function PastGame() {
+  const router = useRouter();
 
-export default function PastGame({
-  gameId,
-  game: {
+  const {
+    gameId,
     boardSize,
     boardState,
     createdAt,
@@ -23,9 +20,7 @@ export default function PastGame({
     players,
     startedAt,
     winner,
-  },
-}: PastGameProps) {
-  const router = useRouter();
+  } = useContext(GameContext);
 
   const gameDuration =
     endedAt && startedAt && endedAt.seconds - startedAt.seconds;
@@ -34,17 +29,17 @@ export default function PastGame({
     gameDuration && Math.floor((gameDuration % 3600) / 60);
 
   return (
-    <div className="flex min-h-40 w-full max-w-xl flex-col justify-between gap-4 rounded-2xl bg-zinc-800 p-4 sm:flex-row-reverse">
+    <div className="flex min-h-40 w-full max-w-2xl flex-col justify-between gap-4 rounded-2xl bg-zinc-800 p-4 sm:flex-row-reverse">
       <div className="flex flex-1 flex-row items-center justify-center gap-4 sm:flex-col">
         <div className="flex flex-col items-center">
           <p className="text-lg">
-            {createdAt.toDate().toLocaleDateString(undefined, {
+            {createdAt?.toDate().toLocaleDateString(undefined, {
               day: 'numeric',
               month: 'short',
               year: 'numeric',
             })}
             {', '}
-            {createdAt.toDate().toLocaleTimeString(undefined, {
+            {createdAt?.toDate().toLocaleTimeString(undefined, {
               hour: '2-digit',
               minute: '2-digit',
               hour12: false,
@@ -74,16 +69,16 @@ export default function PastGame({
           board={getSpecialBorders(boardState, boardSize)}
           boardSize={boardSize}
         />
-        <div>
-          <h3 className="pb-2 text-xl font-medium">Players</h3>
-          {players.map(({ id, hasResigned }) => (
+        <div className="flex w-32 flex-col items-center">
+          <h3 className="self-center pb-2 text-xl font-medium">Players</h3>
+          {players.map(({ id, name, hasResigned }) => (
             <p
               key={id}
               style={{ color: getColorForPlayer(id) }}
               className={`${id === winner ? 'font-bold' : ''} ${
                 hasResigned ? 'italic' : ''
               }`}>
-              {id.slice(0, 6)}
+              {name}
               {id === winner ? ' (Won)' : ''}
             </p>
           ))}

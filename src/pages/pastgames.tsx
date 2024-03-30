@@ -18,6 +18,7 @@ import Button from 'src/components/interactive/Button';
 import StyledLink from 'src/components/interactive/StyledLink';
 import LargeSpinner from 'src/components/other/LargeSpinner';
 import { auth, firestore } from 'src/firebase/firebaseApp';
+import { GameProvider } from 'src/game/game-context/GameContext';
 import PastGame from 'src/pastgames/PastGame';
 
 const pageSize = 10;
@@ -64,7 +65,9 @@ export default function PastGames() {
         )}
         {pastGames?.docs.map((doc) => {
           return (
-            <PastGame key={doc.id} gameId={doc.id} game={doc.data() as Game} />
+            <GameProvider gameId={doc.id} key={doc.id}>
+              <PastGame />
+            </GameProvider>
           );
         })}
         {pastGames?.size === pageSize * pagesToLoad && (

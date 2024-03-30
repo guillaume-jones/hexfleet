@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
-import { GameContext } from './GameContext';
+import { GameContext } from './game-context/GameContext';
 import { StartGameData } from 'functions/src/document-types/Games';
 
 import Button from 'src/components/interactive/Button';

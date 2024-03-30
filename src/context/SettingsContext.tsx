@@ -1,6 +1,6 @@
 import { FirestoreError, doc, setDoc } from 'firebase/firestore';
 import isMatch from 'lodash/isMatch';
-import { ReactNode, createContext, useCallback, useMemo } from 'react';
+import { ReactNode, createContext, useCallback } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
@@ -20,7 +20,7 @@ export type SettingsContextType = Partial<Settings> &
 export const SettingsContext = createContext<SettingsContextType>(undefined!);
 
 const useSettingsProvider = (): SettingsContextType => {
-  const [user] = useAuthState(auth);
+  const [user, userLoading] = useAuthState(auth);
 
   const settingsRef = user && doc(firestore, 'settings', user.uid);
   const profileRef = user && doc(firestore, 'profiles', user.uid);
@@ -60,23 +60,13 @@ const useSettingsProvider = (): SettingsContextType => {
     [profile, profileRef],
   );
 
-  return useMemo(
-    () => ({
-      ...settings,
-      ...profile,
-      loading: settingsLoading || profileLoading,
-      updateSettings,
-      updateProfile,
-    }),
-    [
-      settings,
-      profile,
-      settingsLoading,
-      profileLoading,
-      updateSettings,
-      updateProfile,
-    ],
-  );
+  return {
+    ...settings,
+    ...profile,
+    loading: settingsLoading || profileLoading || userLoading,
+    updateSettings,
+    updateProfile,
+  };
 };
 
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {
