@@ -41,26 +41,28 @@ const joinGame = functions
 
     switch (action) {
       case 'leave':
-        gameRef.update({
+        await gameRef.update({
           players: gameData.players.filter((p) => p.id !== playerId),
         });
         break;
       case 'resign':
-        const newPlayers = gameData.players.map((p) =>
-          p.id === playerId ? { ...p, hasResigned: true } : p,
-        );
-        const notResigned = newPlayers.filter((p) => !p.hasResigned);
+        {
+          const newPlayers = gameData.players.map((p) =>
+            p.id === playerId ? { ...p, hasResigned: true } : p,
+          );
+          const notResigned = newPlayers.filter((p) => !p.hasResigned);
 
-        if (notResigned.length === 1) {
-          gameRef.update({
-            players: newPlayers,
-            winner: notResigned[0].id,
-            endedAt: Timestamp.now(),
-          });
-        } else {
-          gameRef.update({
-            players: newPlayers,
-          });
+          if (notResigned.length === 1) {
+            await gameRef.update({
+              players: newPlayers,
+              winner: notResigned[0].id,
+              endedAt: Timestamp.now(),
+            });
+          } else {
+            await gameRef.update({
+              players: newPlayers,
+            });
+          }
         }
         break;
     }

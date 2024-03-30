@@ -7,7 +7,7 @@ import { StartGameData } from 'functions/src/document-types/Games';
 import Button from 'src/components/interactive/Button';
 import { functions } from 'src/firebase/firebaseApp';
 
-const GameCode = () => {
+const GameCodeBox = () => {
   const { shortId, gameId } = useContext(GameContext);
 
   const [startGame, loading] = useHttpsCallable<StartGameData>(
@@ -19,7 +19,7 @@ const GameCode = () => {
 
   return (
     <div className="flex w-48 flex-col items-center gap-4 rounded-xl bg-violet-900 px-4 py-3 text-center">
-      <h3 className="text-2xl font-semibold">Code: {shortId}</h3>
+      <h2 className="text-2xl font-semibold">Code: {shortId}</h2>
       <Button
         light
         loading={loading}
@@ -33,4 +33,4 @@ const GameCode = () => {
   );
 };
 
-export default GameCode;
+export default GameCodeBox;

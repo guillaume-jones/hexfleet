@@ -34,8 +34,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   nextTurn: NextTurn;
   nextTurnLocked: boolean;
   updateNextTurn: (tile: TilePressure) => void;
-  lockTurn: () => void;
-  unlockTurn: () => void;
+  toggleNextTurnLock: () => void;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -98,21 +97,19 @@ const useGameProvider = (gameId: string) => {
 
   const nextTurnRef = useMemo(
     () =>
-      user && gameId && doc(firestore, 'games', gameId, 'nextTurn', user.uid),
+      user && gameId && doc(firestore, 'games', gameId, 'nextTurns', user.uid),
     [user, gameId],
   );
 
-  const lockTurn = useCallback(() => {
+  const toggleNextTurnLock = useCallback(() => {
     if (!nextTurnRef) return;
-    setNextTurnLocked(true);
-    setDoc(nextTurnRef, nextTurn).catch((e) => console.error(e));
-  }, [nextTurnRef, nextTurn]);
-
-  const unlockTurn = useCallback(() => {
-    if (!nextTurnRef) return;
-    setNextTurnLocked(false);
-    deleteDoc(nextTurnRef).catch((e) => console.error(e));
-  }, [nextTurnRef]);
+    setNextTurnLocked((prev) => !prev);
+    if (nextTurnLocked) {
+      deleteDoc(nextTurnRef).catch((e) => console.error(e));
+    } else {
+      setDoc(nextTurnRef, nextTurn).catch((e) => console.error(e));
+    }
+  }, [nextTurnRef, nextTurn, nextTurnLocked]);
 
   return useMemo(() => {
     const boardState = getSpecialBorders(game?.boardState, game?.boardSize)
@@ -139,8 +136,7 @@ const useGameProvider = (gameId: string) => {
       nextTurn,
       nextTurnLocked,
       updateNextTurn,
-      lockTurn,
-      unlockTurn,
+      toggleNextTurnLock,
     };
   }, [
     game,
@@ -150,8 +146,7 @@ const useGameProvider = (gameId: string) => {
     nextTurn,
     nextTurnLocked,
     updateNextTurn,
-    lockTurn,
-    unlockTurn,
+    toggleNextTurnLock,
   ]);
 };
 

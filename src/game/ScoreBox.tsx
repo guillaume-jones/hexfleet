@@ -28,12 +28,15 @@ const ScoreBox = () => {
           </tr>
         </thead>
         <tbody>
-          {players.map(({ id, name }) => (
+          {players.map(({ id, name, hasResigned }) => (
             <tr
-              className={`${id === user?.uid ? 'font-semibold' : ''}`}
+              className={`${id === user?.uid ? 'font-semibold' : ''}
+              ${hasResigned ? 'font-light opacity-50' : ''}`}
               key={id}
               style={{ color: getColorForPlayer(id) }}>
-              <th className={'text-left'}>{name}</th>
+              <th className={`text-left ${hasResigned ? 'font-light' : ''}`}>
+                {name}
+              </th>
               <td>{tilesByPlayer[id] ?? 0}</td>
               <td>{influenceByPlayer[id] ?? 0}</td>
             </tr>
