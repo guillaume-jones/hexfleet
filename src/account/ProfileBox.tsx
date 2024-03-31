@@ -1,5 +1,6 @@
 import { Transition } from '@headlessui/react';
 import { useContext, useEffect, useState } from 'react';
+import { CheckCircle } from 'react-feather';
 
 import AlignedBox from 'src/account/AlignedBox';
 import Button from 'src/components/interactive/Button';
@@ -14,7 +15,9 @@ export default function ProfileBox() {
   } = useContext(SettingsContext);
 
   const [name, setName] = useState('');
+  const [showCheck, setShowCheck] = useState(false);
 
+  // Needed to keep in sync
   useEffect(() => {
     if (profileName) setName(profileName);
   }, [profileName]);
@@ -41,7 +44,26 @@ export default function ProfileBox() {
               value={name}
               setValue={setName}
             />
-            <Button onClick={() => updateProfile({ name })}>Update</Button>
+            <Button
+              loading={loading}
+              onClick={() => {
+                updateProfile({ name });
+                setShowCheck(true);
+                setTimeout(() => setShowCheck(false), 1000);
+              }}>
+              <Transition
+                show={showCheck}
+                className="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center rounded-xl bg-violet-700"
+                enter="transition-opacity duration-200"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="transition-opacity duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0">
+                <CheckCircle size={24} />
+              </Transition>
+              Update
+            </Button>
           </div>,
         ]}
       </AlignedBox>
