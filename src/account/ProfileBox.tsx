@@ -1,9 +1,9 @@
+import { Transition } from '@headlessui/react';
 import { useContext, useState } from 'react';
 
 import AlignedBox from 'src/account/AlignedBox';
 import Button from 'src/components/interactive/Button';
 import Input from 'src/components/interactive/Input';
-import LargeSpinner from 'src/components/other/LargeSpinner';
 import { SettingsContext } from 'src/context/SettingsContext';
 
 export default function ProfileBox() {
@@ -16,22 +16,27 @@ export default function ProfileBox() {
   const [name, setName] = useState(profileName ?? '');
 
   return (
-    <>
-      {loading ? (
-        <LargeSpinner />
-      ) : (
-        <AlignedBox>
-          {[
-            <div
-              key="name"
-              className="flex w-full flex-row items-center justify-between gap-4">
-              <h3>Display name</h3>
-              <Input className="flex-1" value={name} setValue={setName} />
-              <Button onClick={() => updateProfile({ name })}>Update</Button>
-            </div>,
-          ]}
-        </AlignedBox>
-      )}
-    </>
+    <Transition
+      enter="transition ease-out duration-500"
+      enterFrom="opacity-0 scale-0"
+      enterTo="opacity-100 scale-100"
+      leave="transition ease-in duration-500"
+      leaveFrom="opacity-100 scale-100"
+      leaveTo="opacity-0 scale-0"
+      show={!loading}
+      appear>
+      <h2 className={'mb-2 text-xl font-semibold text-zinc-50'}>Profile</h2>
+      <AlignedBox>
+        {[
+          <div
+            key="name"
+            className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row">
+            <h3>Display name</h3>
+            <Input className="flex-1" value={name} setValue={setName} />
+            <Button onClick={() => updateProfile({ name })}>Update</Button>
+          </div>,
+        ]}
+      </AlignedBox>
+    </Transition>
   );
 }

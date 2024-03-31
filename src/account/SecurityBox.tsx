@@ -1,31 +1,44 @@
-import { User } from 'firebase/auth';
+import { Transition } from '@headlessui/react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 import AlignedBox from 'src/account/AlignedBox';
 import DeleteAccountLink from 'src/account/DeleteAccountLink';
 import LogoutButton from 'src/account/LogoutButton';
 import ResetPasswordButton from 'src/account/ResetPasswordButton';
-import LargeSpinner from 'src/components/other/LargeSpinner';
+import StyledLink from 'src/components/interactive/StyledLink';
+import { auth } from 'src/firebase/firebaseApp';
 
-export default function SecurityBox({
-  user,
-}: {
-  user: User | null | undefined;
-}) {
+export default function SecurityBox() {
+  const [user, userLoading] = useAuthState(auth);
+
   return (
-    <>
-      {!user && <LargeSpinner className="my-8 border-2 border-transparent" />}
-      {user && (
-        <AlignedBox>
-          <>
-            <p>Email: {user.email}</p>
-            <DeleteAccountLink />
-          </>
-          <>
-            <ResetPasswordButton email={user.email} />
-            <LogoutButton />
-          </>
-        </AlignedBox>
-      )}
-    </>
+    <Transition
+      enter="transition ease-out duration-500"
+      enterFrom="opacity-0 scale-0"
+      enterTo="opacity-100 scale-100"
+      leave="transition ease-in duration-500"
+      leaveFrom="opacity-100 scale-100"
+      leaveTo="opacity-0 scale-0"
+      show={!userLoading}
+      appear>
+      <h2 className={'mb-2 text-xl font-semibold text-zinc-50'}>Security</h2>
+      <AlignedBox>
+        <div className="flex flex-1 flex-col justify-between sm:flex-row">
+          <p>Email: {user?.email}</p>
+          <DeleteAccountLink />
+        </div>
+        <>
+          <ResetPasswordButton email={user?.email} />
+          <LogoutButton />
+        </>
+      </AlignedBox>
+      <p className="mt-2">
+        For any issues, please contact{' '}
+        <StyledLink href="mailto:support@instantheader.com">
+          support@instantheader.com
+        </StyledLink>
+        .
+      </p>
+    </Transition>
   );
 }

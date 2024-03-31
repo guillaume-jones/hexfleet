@@ -15,7 +15,7 @@ function AlignedBox({
           ? 'bg-zinc-50'
           : 'bg-gradient-to-br from-zinc-900 to-zinc-800 text-zinc-50'
       }
-      ${className ?? ''}`}>
+      ${className}`}>
       {children?.map((row, index) => {
         return (
           <div

@@ -6,7 +6,6 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import PrivacyBox from 'src/account/PrivacyBox';
 import ProfileBox from 'src/account/ProfileBox';
 import SecurityBox from 'src/account/SecurityBox';
-import StyledLink from 'src/components/interactive/StyledLink';
 import { SettingsProvider } from 'src/context/SettingsContext';
 import { auth } from 'src/firebase/firebaseApp';
 
@@ -27,35 +26,11 @@ export default function Account() {
         <title>HexFleet - Account</title>
       </Head>
       <SettingsProvider>
-        <div className="mx-6 mt-8 flex-1 pb-10">
-          <h1 className={'mb-2 text-3xl font-semibold text-zinc-50'}>
-            Account
-          </h1>
-          <h2
-            id={'other'}
-            className={'mb-4 mt-6 text-xl font-semibold text-zinc-50'}>
-            Profile
-          </h2>
+        <div className="mx-6 mt-8 flex flex-1 flex-col gap-4 pb-10">
+          <h1 className={'text-3xl font-semibold text-zinc-50'}>Account</h1>
+          <SecurityBox />
           <ProfileBox />
-          <h2
-            id={'security'}
-            className={'mb-4 mt-6 text-xl font-semibold text-zinc-50'}>
-            Security
-          </h2>
-          <SecurityBox user={user} />
-          <h2
-            id={'other'}
-            className={'mb-4 mt-6 text-xl font-semibold text-zinc-50'}>
-            Privacy
-          </h2>
           <PrivacyBox />
-          <p className="mt-6">
-            For any account issues, please contact{' '}
-            <StyledLink href="mailto:support@instantheader.com">
-              support@instantheader.com
-            </StyledLink>
-            .
-          </p>
         </div>
       </SettingsProvider>
     </>
