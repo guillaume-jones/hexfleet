@@ -11,7 +11,7 @@ export default function Landing() {
         <title>HexFleet - Hexagonal tile conquest</title>
       </Head>
       <div className="flex flex-1 flex-col items-center">
-        <div className="relative my-10 transition-all hover:translate-y-1 hover:scale-110">
+        <div className="relative my-10 transition-all duration-500 hover:scale-110">
           <Image
             src="/logo/android-chrome-192x192.webp"
             width={192}
