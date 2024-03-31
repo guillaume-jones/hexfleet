@@ -42,7 +42,7 @@ export default function PastGames() {
           }),
         ),
         orderBy('createdAt', 'desc'),
-        limit(pageSize * pagesToLoad),
+        limit(pageSize * pagesToLoad + 1),
       ),
   );
 
@@ -54,14 +54,14 @@ export default function PastGames() {
         <title>HexFleet - Past Games</title>
       </Head>
       <div className="flex flex-1 flex-col items-center gap-6 p-8">
-        {pastGames?.docs.map((doc) => {
+        {pastGames?.docs.slice(0, pageSize * pagesToLoad).map((doc) => {
           return (
             <GameProvider gameId={doc.id} key={doc.id}>
               <PastGame />
             </GameProvider>
           );
         })}
-        {pastGames?.size === pageSize * pagesToLoad && (
+        {pastGames && pastGames.size > pageSize * pagesToLoad && (
           <Button
             className="mt-8"
             loading={loading}

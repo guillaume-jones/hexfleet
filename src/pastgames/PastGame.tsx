@@ -79,7 +79,7 @@ export default function PastGame() {
           board={getSpecialBorders(boardState, boardSize)}
           boardSize={boardSize}
         />
-        <div className="flex w-32 flex-col items-center">
+        <div className="flex w-40 flex-col items-center">
           <h3 className="self-center pb-2 text-xl font-medium">Players</h3>
           {players.map(({ id, name, hasResigned }) => (
             <p
@@ -87,7 +87,7 @@ export default function PastGame() {
               style={{ color: getColorForPlayer(id) }}
               className={`${id === winner ? 'font-bold' : ''} ${
                 hasResigned ? 'italic' : ''
-              }`}>
+              } max-w-40 overflow-hidden overflow-ellipsis text-nowrap`}>
               {name}
               {id === winner ? ' (Won)' : ''}
             </p>

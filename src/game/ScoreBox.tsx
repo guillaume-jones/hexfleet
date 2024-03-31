@@ -14,8 +14,8 @@ const ScoreBox = () => {
   if (!players || !pastTurns) return null;
 
   return (
-    <div className="flex w-72 flex-col rounded-xl bg-zinc-800 px-4 py-3 text-center">
-      <div className="mb-2 flex items-center justify-between">
+    <div className="flex w-80 flex-col rounded-xl bg-zinc-800 px-4 py-3 text-center">
+      <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Scores</h2>
         <p className="text-lg font-semibold">Turn: {pastTurns.length}</p>
       </div>
@@ -34,7 +34,10 @@ const ScoreBox = () => {
               ${hasResigned ? 'font-light opacity-50' : ''}`}
               key={id}
               style={{ color: getColorForPlayer(id) }}>
-              <th className={`text-left ${hasResigned ? 'font-light' : ''}`}>
+              <th
+                className={`max-w-40 overflow-hidden overflow-ellipsis text-nowrap text-left ${
+                  hasResigned ? 'font-light' : ''
+                }`}>
                 {name}
               </th>
               <td>{tilesByPlayer[id] ?? 0}</td>

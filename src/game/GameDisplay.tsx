@@ -17,7 +17,7 @@ const GameDisplay = () => {
       </div>
       <MinorGameActions className="lg:absolute lg:bottom-48 lg:left-4" />
       <HexagonalBoard
-        className="lg:ml-64"
+        className="lg:ml-72"
         board={board}
         boardSize={boardSize}
       />
