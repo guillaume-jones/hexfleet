@@ -2,11 +2,13 @@ import { Transition } from '@headlessui/react';
 import range from 'lodash/range';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { addPlayersToBoard } from 'functions/src/game/addPlayersToBoard';
 
 import Button from 'src/components/interactive/Button';
 import Range from 'src/components/interactive/Range';
+import { auth } from 'src/firebase/firebaseApp';
 import HexagonalBoard from 'src/game/HexagonalBoard';
 import {
   defaultBoardOptions,
@@ -14,15 +16,17 @@ import {
 } from 'src/game/board-utils/generateBoard';
 import { getSpecialBorders } from 'src/game/board-view-utils/getSpecialBorders';
 import { createGame } from 'src/game/game-utils/createGame';
+import { loginUrlQuery } from 'src/layout/navbar/AccountButton';
 
 type GameCreationProps = {
   className?: string;
 };
 
 const GameCreation = ({ className }: GameCreationProps) => {
+  const [user] = useAuthState(auth);
   const router = useRouter();
-  const [show, setShown] = useState(false);
 
+  const [show, setShown] = useState(false);
   const [boardSize, setBoardSize] = useState(defaultBoardOptions.boardSize);
   const [playersCount, setPlayersCount] = useState(2);
 
@@ -86,6 +90,10 @@ const GameCreation = ({ className }: GameCreationProps) => {
           <Button
             onClick={() => {
               const asyncFunction = async () => {
+                if (!user) {
+                  await router.push(`/${loginUrlQuery}`);
+                  return;
+                }
                 const id = await createGame({ boardSize });
                 if (id) {
                   await router.push(`/games/${id}`);

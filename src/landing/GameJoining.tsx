@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
 import RejoinButton from './RejoinButton';
@@ -8,13 +9,15 @@ import { shortIdLength } from 'functions/src/game/shortId';
 
 import Button from 'src/components/interactive/Button';
 import Input from 'src/components/interactive/Input';
-import { functions } from 'src/firebase/firebaseApp';
+import { auth, functions } from 'src/firebase/firebaseApp';
+import { loginUrlQuery } from 'src/layout/navbar/AccountButton';
 
 type GameCreationProps = {
   className?: string;
 };
 
 const GameJoining = ({ className }: GameCreationProps) => {
+  const [user] = useAuthState(auth);
   const router = useRouter();
 
   const [shortId, setShortId] = useState('');
@@ -42,6 +45,10 @@ const GameJoining = ({ className }: GameCreationProps) => {
         loading={loading}
         onClick={() => {
           const asyncFunction = async () => {
+            if (!user) {
+              await router.push(`/${loginUrlQuery}`);
+              return;
+            }
             const result = await joinGame({ shortId });
             if (result && typeof result.data === 'string') {
               await router.push(`/games/${result.data}`);

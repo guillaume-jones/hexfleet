@@ -10,14 +10,12 @@ export default function Modal({
   className,
 }: {
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: (arg0: boolean) => void;
   children?: React.ReactNode;
   className?: string;
   title?: string;
 }) {
-  const closeModal = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
+  const closeModal = useCallback(() => setOpen(false), [setOpen]);
 
   return (
     <>
