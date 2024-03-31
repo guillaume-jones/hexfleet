@@ -1,5 +1,5 @@
 import { Transition } from '@headlessui/react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import AlignedBox from 'src/account/AlignedBox';
 import Button from 'src/components/interactive/Button';
@@ -13,7 +13,11 @@ export default function ProfileBox() {
     loading,
   } = useContext(SettingsContext);
 
-  const [name, setName] = useState(profileName ?? '');
+  const [name, setName] = useState('');
+
+  useEffect(() => {
+    if (profileName) setName(profileName);
+  }, [profileName]);
 
   return (
     <Transition
@@ -31,7 +35,12 @@ export default function ProfileBox() {
             key="name"
             className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row">
             <h3>Display name</h3>
-            <Input className="flex-1" value={name} setValue={setName} />
+            <Input
+              inputProps={{ maxLength: 20 }}
+              className="flex-1"
+              value={name}
+              setValue={setName}
+            />
             <Button onClick={() => updateProfile({ name })}>Update</Button>
           </div>,
         ]}
