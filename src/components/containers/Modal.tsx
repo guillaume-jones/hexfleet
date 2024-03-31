@@ -45,7 +45,7 @@ export default function Modal({
           onClose={closeModal}
           className="fixed inset-0 flex h-full w-full items-center justify-center">
           <Dialog.Panel
-            className={`relative min-w-80 rounded-2xl bg-zinc-900 p-6 shadow-lg ${
+            className={`relative rounded-2xl bg-zinc-900 p-6 shadow-lg ${
               className ?? ''
             }`}>
             <div className="absolute right-4 top-4">

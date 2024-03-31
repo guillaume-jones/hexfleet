@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Lock, Unlock } from 'react-feather';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
@@ -6,6 +6,7 @@ import { useHttpsCallable } from 'react-firebase-hooks/functions';
 import { GameContext } from './game-context/GameContext';
 import { EditGamePlayerData } from 'functions/src/document-types/Games';
 
+import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
 import { auth, functions } from 'src/firebase/firebaseApp';
 
@@ -15,6 +16,10 @@ type MinorGameActionsProps = {
 
 const MinorGameActions = ({ className }: MinorGameActionsProps) => {
   const [user] = useAuthState(auth);
+  const [editGamePlayer, loading] = useHttpsCallable<EditGamePlayerData>(
+    functions,
+    'editGamePlayer',
+  );
 
   const {
     shortId,
@@ -25,13 +30,10 @@ const MinorGameActions = ({ className }: MinorGameActionsProps) => {
     toggleNextTurnLock,
   } = useContext(GameContext);
 
-  const [editGamePlayer, loading] = useHttpsCallable<EditGamePlayerData>(
-    functions,
-    'editGamePlayer',
-  );
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   if (!shortId) return null;
-  if (players.some((p) => p.id === user?.uid)) return null;
+  if (players.find((p) => p.id === user?.uid)?.hasResigned) return null;
 
   return (
     <div
@@ -43,24 +45,38 @@ const MinorGameActions = ({ className }: MinorGameActionsProps) => {
           <Button onClick={() => toggleNextTurnLock()}>
             <div className="flex flex-row items-center gap-2">
               {nextTurnLocked ? 'Unlock next turn' : 'Lock next turn'}
-              {nextTurnLocked ? <Unlock size={20} /> : <Lock size={20} />}
+              {nextTurnLocked ? <Lock size={20} /> : <Unlock size={20} />}
             </div>
           </Button>
         )}
         <Button
           light
           loading={loading}
-          onClick={() => {
-            const asyncFunction = async () =>
-              editGamePlayer({
-                gameId,
-                action: hasStarted ? 'resign' : 'leave',
-              });
-            asyncFunction().catch(console.error);
-          }}>
+          onClick={() => setConfirmModalOpen(true)}>
           {hasStarted ? 'Resign' : 'Leave Game'}
         </Button>
       </div>
+      <Modal open={confirmModalOpen} setOpen={setConfirmModalOpen}>
+        <p className="mr-8">
+          Are you sure you want to {hasStarted ? 'resign' : 'leave'}?
+        </p>
+        <div className="mt-4 flex justify-around self-center">
+          <Button light onClick={() => setConfirmModalOpen(false)}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              const asyncFunction = async () =>
+                editGamePlayer({
+                  gameId,
+                  action: hasStarted ? 'resign' : 'leave',
+                });
+              asyncFunction().catch(console.error);
+            }}>
+            {hasStarted ? 'Resign' : 'Leave Game'}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };
