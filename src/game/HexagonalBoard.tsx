@@ -5,10 +5,11 @@ import {
   getFillColor,
 } from './board-view-utils/boardColors';
 import { TileWithBorders } from './game-context/GameContextTypes';
+import { Tile, TileWithPressure } from 'functions/src/document-types/Games';
 
 type HexagonalBoardProps = {
   className?: string;
-  board?: TileWithBorders[];
+  board?: TileWithPressure<TileWithBorders<Tile>>[];
   boardSize?: number;
 };
 

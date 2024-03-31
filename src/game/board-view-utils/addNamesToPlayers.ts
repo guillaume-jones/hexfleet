@@ -8,7 +8,7 @@ import { firestore } from 'src/firebase/firebaseApp';
 
 const playerNameCache: Record<string, string> = {};
 
-const getPlayerWithName = async (player: Player) => {
+const addNameToPlayer = async (player: Player) => {
   let name: string | undefined = playerNameCache[player.id];
 
   if (!name) {
@@ -25,8 +25,8 @@ const getPlayerWithName = async (player: Player) => {
   };
 };
 
-export const getPlayersWithNames = async (
+export const addNamesToPlayers = async (
   players: Player[],
 ): Promise<PlayerWithName[]> => {
-  return await Promise.all(players.map((player) => getPlayerWithName(player)));
+  return await Promise.all(players.map((player) => addNameToPlayer(player)));
 };

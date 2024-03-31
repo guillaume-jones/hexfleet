@@ -5,7 +5,6 @@ import { useContext } from 'react';
 import Button from 'src/components/interactive/Button';
 import HexagonalBoard from 'src/game/HexagonalBoard';
 import { getColorForPlayer } from 'src/game/board-view-utils/boardColors';
-import { getSpecialBorders } from 'src/game/board-view-utils/getSpecialBorders';
 import { GameContext } from 'src/game/game-context/GameContext';
 
 export default function PastGame() {
@@ -76,7 +75,7 @@ export default function PastGame() {
       <div className="flex flex-col items-center justify-around gap-4 sm:flex-row">
         <HexagonalBoard
           className="h-full max-w-72 sm:h-40"
-          board={getSpecialBorders(boardState, boardSize)}
+          board={boardState}
           boardSize={boardSize}
         />
         <div className="flex w-40 flex-col items-center">

@@ -18,13 +18,13 @@ export type Tile = TileCoords & {
 
 export type BoardState = Tile[];
 
-export type TilePressure = TileCoords & {
-  pressure?: number;
+export type TileWithPressure<T extends TileCoords> = T & {
+  pressure: number;
   clear?: boolean;
 };
 
 export type NextTurn = {
-  pressures: TilePressure[];
+  pressures: TileWithPressure<TileCoords>[];
 };
 
 export type Game = {

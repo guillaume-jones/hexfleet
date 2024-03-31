@@ -5,7 +5,7 @@ export type Border = {
   angle: number;
 };
 
-export type TileWithBorders = Tile & {
+export type TileWithBorders<T extends Tile> = T & {
   borders: Border[];
 };
 

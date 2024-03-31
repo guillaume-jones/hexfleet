@@ -1,5 +1,6 @@
-import { getPlayersWithNames } from '../board-view-utils/getPlayersWithNames';
-import { getSpecialBorders } from '../board-view-utils/getSpecialBorders';
+import { addBordersToBoard } from '../board-view-utils/addBordersToBoard';
+import { addNamesToPlayers } from '../board-view-utils/addNamesToPlayers';
+import { addPressuresToBoard } from '../board-view-utils/addPressuresToBoard';
 import { deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { Dictionary } from 'lodash';
 import countBy from 'lodash/countBy';
@@ -19,7 +20,9 @@ import { PlayerWithName, TileWithBorders } from './GameContextTypes';
 import {
   Game,
   NextTurn,
-  TilePressure,
+  Tile,
+  TileCoords,
+  TileWithPressure,
 } from 'functions/src/document-types/Games';
 
 import { auth, firestore } from 'src/firebase/firebaseApp';
@@ -27,22 +30,19 @@ import { auth, firestore } from 'src/firebase/firebaseApp';
 export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   gameId: string;
   players: PlayerWithName[];
-  boardState: TileWithBorders[];
+  boardState: TileWithBorders<TileWithPressure<Tile>>[];
   tilesByPlayer: Dictionary<number>;
   influenceByPlayer: Dictionary<number>;
   loading: boolean;
-  nextTurn: NextTurn;
   nextTurnLocked: boolean;
-  updateNextTurn: (tile: TilePressure) => void;
+  updateNextTurn: (tile: TileWithPressure<TileCoords>) => void;
   toggleNextTurnLock: () => void;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 export const GameContext = createContext<GameContextType>(undefined!);
 
-const emptyNextTurn: NextTurn = { pressures: [] };
-
-const useGameProvider = (gameId: string) => {
+const useGameProvider = (gameId: string): GameContextType => {
   const [user] = useAuthState(auth);
   const router = useRouter();
 
@@ -50,7 +50,9 @@ const useGameProvider = (gameId: string) => {
     gameId === undefined ? undefined : doc(firestore, 'games', gameId),
   );
   const [players, setPlayers] = useState<PlayerWithName[]>([]);
-  const [nextTurn, setNextTurn] = useState<NextTurn>(emptyNextTurn);
+  const [tilePressures, setTilePressures] = useState<
+    TileWithPressure<TileCoords>[]
+  >([]);
   const [nextTurnLocked, setNextTurnLocked] = useState(false);
 
   // Redirects to landing page if game is not accessible
@@ -63,7 +65,7 @@ const useGameProvider = (gameId: string) => {
 
   // Clears next turn state when game updates
   useEffect(() => {
-    setNextTurn(emptyNextTurn);
+    setTilePressures([]);
     setNextTurnLocked(false);
   }, [game?.boardState]);
 
@@ -71,83 +73,64 @@ const useGameProvider = (gameId: string) => {
   useEffect(() => {
     const asyncFunction = async () => {
       if (game?.players) {
-        setPlayers(await getPlayersWithNames(game.players));
+        setPlayers(await addNamesToPlayers(game.players));
       }
     };
     void asyncFunction();
   }, [game?.players]);
 
-  const updateNextTurn = useCallback((tile: TilePressure) => {
-    setNextTurn((prev) => {
-      if (!prev) return { pressures: [tile] };
-
-      const tileIndex = prev.pressures.findIndex(
-        ({ x, y }) => x === tile.x && y === tile.y,
+  const updateNextTurn = useCallback((tile: TileWithPressure<TileCoords>) => {
+    setTilePressures((prev) => {
+      const newPressures = prev.filter(
+        ({ x, y }) => !(x === tile.x && y === tile.y),
       );
 
-      if (tileIndex !== undefined) {
-        return {
-          pressures: prev.pressures.map((p, i) => (i === tileIndex ? tile : p)),
-        };
-      }
-
-      return { pressures: [...prev.pressures, tile] };
+      return [...newPressures, tile];
     });
   }, []);
 
-  const nextTurnRef = useMemo(
-    () =>
-      user && gameId && doc(firestore, 'games', gameId, 'nextTurns', user.uid),
-    [user, gameId],
-  );
-
   const toggleNextTurnLock = useCallback(() => {
+    const nextTurnRef =
+      user && gameId && doc(firestore, 'games', gameId, 'nextTurns', user.uid);
     if (!nextTurnRef) return;
+
     setNextTurnLocked((prev) => !prev);
     if (nextTurnLocked) {
       deleteDoc(nextTurnRef).catch((e) => console.error(e));
     } else {
+      const nextTurn: NextTurn = { pressures: tilePressures };
       setDoc(nextTurnRef, nextTurn).catch((e) => console.error(e));
     }
-  }, [nextTurnRef, nextTurn, nextTurnLocked]);
+  }, [user, gameId, tilePressures, nextTurnLocked]);
 
-  return useMemo(() => {
-    const boardState = getSpecialBorders(game?.boardState, game?.boardSize)
-      // Must sort or empty tiles override player tiles/borders
-      .sort((a, b) => (a.playerId ? 1 : 0) - (b.playerId ? 1 : 0));
-
-    const tilesByPlayer = countBy(boardState, 'playerId');
-    delete tilesByPlayer.undefined;
-
-    const influenceByPlayer = countBy(
-      boardState.flatMap(({ borders, playerId }) =>
-        borders.map(() => playerId),
-      ),
-    );
+  const calculatedBoardParams = useMemo(() => {
+    const boardState = addBordersToBoard(
+      addPressuresToBoard(game?.boardState, tilePressures),
+      game?.boardSize,
+    ).sort((a, b) => (a.playerId ? 1 : 0) - (b.playerId ? 1 : 0));
+    // Must sort or empty tiles override player tiles/borders
 
     return {
-      ...game,
-      players,
-      gameId,
       boardState,
-      tilesByPlayer,
-      influenceByPlayer,
-      loading,
-      nextTurn,
-      nextTurnLocked,
-      updateNextTurn,
-      toggleNextTurnLock,
+      tilesByPlayer: countBy(boardState, 'playerId'),
+      influenceByPlayer: countBy(
+        boardState.flatMap(({ borders, playerId }) =>
+          borders.map(() => playerId),
+        ),
+      ),
     };
-  }, [
-    game,
+  }, [game?.boardState, game?.boardSize, tilePressures]);
+
+  return {
+    ...game,
+    ...calculatedBoardParams,
     players,
     gameId,
     loading,
-    nextTurn,
     nextTurnLocked,
     updateNextTurn,
     toggleNextTurnLock,
-  ]);
+  };
 };
 
 export const GameProvider = ({

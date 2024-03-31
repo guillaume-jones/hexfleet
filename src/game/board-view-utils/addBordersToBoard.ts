@@ -6,21 +6,21 @@ import { TileWithBorders } from '../game-context/GameContextTypes';
 
 import { Tile } from 'functions/src/document-types/Games';
 
-export const getSpecialBorders = (
-  rawBoard?: Tile[],
+export const addBordersToBoard = <T extends Tile>(
+  board?: T[],
   boardSize?: number,
-): TileWithBorders[] => {
-  if (!rawBoard || !boardSize) return [];
+): TileWithBorders<T>[] => {
+  if (!board || !boardSize) return [];
 
-  return rawBoard.map((tile) => {
-    const baseTile: TileWithBorders = { ...tile, borders: [] };
+  return board.map((tile) => {
+    const baseTile: TileWithBorders<T> = { ...tile, borders: [] };
 
     if (tile.playerId === undefined) return baseTile;
 
     const neighbors = getValidNeighbors(tile, boardSize);
 
     for (const { x: nx, y: ny } of neighbors) {
-      const neighbor = rawBoard.find(({ x, y }) => x === nx && y === ny);
+      const neighbor = board.find(({ x, y }) => x === nx && y === ny);
       // Skip tiles that are already held
       if (!neighbor || neighbor.playerId !== undefined) continue;
 
