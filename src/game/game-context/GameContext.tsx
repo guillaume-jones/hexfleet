@@ -20,7 +20,6 @@ import { PlayerWithName, TileWithBorders } from './GameContextTypes';
 import {
   Game,
   NextTurn,
-  Tile,
   TileCoords,
   TileWithPressure,
 } from 'functions/src/document-types/Games';
@@ -29,8 +28,9 @@ import { auth, firestore } from 'src/firebase/firebaseApp';
 
 export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   gameId: string;
+  userId: string;
   players: PlayerWithName[];
-  boardState: TileWithBorders<TileWithPressure<Tile>>[];
+  boardState: TileWithBorders[];
   tilesByPlayer: Dictionary<number>;
   influenceByPlayer: Dictionary<number>;
   loading: boolean;
@@ -62,12 +62,6 @@ const useGameProvider = (gameId: string): GameContextType => {
       router.push('/').catch((e) => console.error(e));
     }
   }, [error, router]);
-
-  // Clears next turn state when game updates
-  useEffect(() => {
-    setTilePressures([]);
-    setNextTurnLocked(false);
-  }, [game?.boardState]);
 
   // Loads in player names
   useEffect(() => {
@@ -107,8 +101,13 @@ const useGameProvider = (gameId: string): GameContextType => {
     const boardState = addBordersToBoard(
       addPressuresToBoard(game?.boardState, tilePressures),
       game?.boardSize,
-    ).sort((a, b) => (a.playerId ? 1 : 0) - (b.playerId ? 1 : 0));
-    // Must sort or empty tiles override player tiles/borders
+      user?.uid,
+    ).sort(
+      // Must sort or empty tiles override player tiles/borders
+      (a, b) =>
+        (a.futurePlayerId || a.playerId ? 1 : 0) -
+        (b.futurePlayerId || b.playerId ? 1 : 0),
+    );
 
     return {
       boardState,
@@ -119,11 +118,12 @@ const useGameProvider = (gameId: string): GameContextType => {
         ),
       ),
     };
-  }, [game?.boardState, game?.boardSize, tilePressures]);
+  }, [game?.boardState, game?.boardSize, tilePressures, user?.uid]);
 
   return {
     ...game,
     ...calculatedBoardParams,
+    userId: user?.uid ?? '',
     players,
     gameId,
     loading,

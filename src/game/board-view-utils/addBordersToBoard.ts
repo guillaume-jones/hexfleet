@@ -4,20 +4,34 @@ import {
 } from '../board-utils/tileNeighbors';
 import { TileWithBorders } from '../game-context/GameContextTypes';
 
-import { Tile } from 'functions/src/document-types/Games';
+import { Tile, TileWithPressure } from 'functions/src/document-types/Games';
+import {
+  pressureToConquer,
+  pressureToDisable,
+} from 'functions/src/game-logic/GameConstants';
 
-export const addBordersToBoard = <T extends Tile>(
+export const addBordersToBoard = <T extends TileWithPressure<Tile>>(
   board?: T[],
   boardSize?: number,
-): TileWithBorders<T>[] => {
+  userId?: string,
+): TileWithBorders[] => {
   if (!board || !boardSize) return [];
 
   return board.map((tile) => {
-    const baseTile: TileWithBorders<T> = { ...tile, borders: [] };
+    const baseTile: TileWithBorders = {
+      ...tile,
+      borders: [],
+      futurePlayerId: tile.pressure >= pressureToConquer ? userId : undefined,
+      disabled:
+        tile.playerId &&
+        tile.playerId !== userId &&
+        tile.pressure >= pressureToDisable &&
+        tile.pressure < pressureToConquer,
+    };
 
-    if (tile.playerId === undefined) return baseTile;
+    if (!baseTile.playerId && !baseTile.futurePlayerId) return baseTile;
 
-    const neighbors = getValidNeighbors(tile, boardSize);
+    const neighbors = getValidNeighbors(baseTile, boardSize);
 
     for (const { x: nx, y: ny } of neighbors) {
       const neighbor = board.find(({ x, y }) => x === nx && y === ny);
@@ -25,7 +39,7 @@ export const addBordersToBoard = <T extends Tile>(
       if (!neighbor || neighbor.playerId !== undefined) continue;
 
       baseTile.borders.push({
-        angle: getAngleForNeighbor(tile, neighbor),
+        angle: getAngleForNeighbor(baseTile, neighbor),
       });
     }
 

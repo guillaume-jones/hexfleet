@@ -1,6 +1,6 @@
 import { Transition } from '@headlessui/react';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 import Button from 'src/components/interactive/Button';
 import HexagonalBoard from 'src/game/HexagonalBoard';
@@ -12,6 +12,7 @@ export default function PastGame() {
 
   const {
     gameId,
+    userId,
     boardSize,
     boardState,
     createdAt,
@@ -21,6 +22,8 @@ export default function PastGame() {
     startedAt,
     winner,
   } = useContext(GameContext);
+
+  const [loading, setLoading] = useState(false);
 
   const gameDuration =
     endedAt && startedAt && endedAt.seconds - startedAt.seconds;
@@ -66,9 +69,13 @@ export default function PastGame() {
           )}
         </div>
         <Button
+          loading={loading}
           className="max-w-32 flex-1 sm:flex-none"
           light={winner != null}
-          onClick={() => void router.push(`/games/${gameId}`)}>
+          onClick={() => {
+            setLoading(true);
+            void router.push(`/games/${gameId}`);
+          }}>
           {winner ? 'View game' : hasStarted ? 'Rejoin Game' : 'Join Game'}
         </Button>
       </div>
@@ -77,6 +84,7 @@ export default function PastGame() {
           className="h-full max-w-72 sm:h-40"
           board={boardState}
           boardSize={boardSize}
+          userId={userId}
         />
         <div className="flex w-40 flex-col items-center">
           <h3 className="self-center pb-2 text-xl font-medium">Players</h3>

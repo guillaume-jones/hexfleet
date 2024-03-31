@@ -7,7 +7,8 @@ import ScoreBox from './ScoreBox';
 import { GameContext } from './game-context/GameContext';
 
 const GameDisplay = () => {
-  const { boardState: board, boardSize, hasStarted } = useContext(GameContext);
+  const { boardState, boardSize, hasStarted, userId, updateNextTurn } =
+    useContext(GameContext);
 
   return (
     <div className="flex flex-col items-center justify-start gap-6 py-4 lg:flex-row lg:items-end">
@@ -18,8 +19,10 @@ const GameDisplay = () => {
       <MinorGameActions className="lg:absolute lg:bottom-48 lg:left-4" />
       <HexagonalBoard
         className="lg:ml-72"
-        board={board}
+        board={boardState}
         boardSize={boardSize}
+        userId={userId}
+        onTileScroll={updateNextTurn}
       />
     </div>
   );
