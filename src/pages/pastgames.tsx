@@ -16,7 +16,6 @@ import { Game } from 'functions/src/document-types/Games';
 
 import Button from 'src/components/interactive/Button';
 import StyledLink from 'src/components/interactive/StyledLink';
-import LargeSpinner from 'src/components/other/LargeSpinner';
 import { auth, firestore } from 'src/firebase/firebaseApp';
 import { GameProvider } from 'src/game/game-context/GameContext';
 import PastGame from 'src/pastgames/PastGame';
@@ -25,7 +24,6 @@ const pageSize = 10;
 
 export default function PastGames() {
   const [user, userLoading] = useAuthState(auth);
-
   const router = useRouter();
 
   const [pagesToLoad, setPagesToLoad] = useState(1);
@@ -48,21 +46,14 @@ export default function PastGames() {
       ),
   );
 
+  const showNoGamesText = !userLoading && !loading && pastGames?.size === 0;
+
   return (
     <>
       <Head>
         <title>HexFleet - Past Games</title>
       </Head>
-      <div className="flex flex-1 flex-col items-center gap-4 p-8">
-        {userLoading && <LargeSpinner />}
-        {pastGames?.size === 0 && (
-          <>
-            <p>No past games.</p>
-            <StyledLink onClick={() => void router.push('/')}>
-              Want to create a new game?
-            </StyledLink>
-          </>
-        )}
+      <div className="flex flex-1 flex-col items-center gap-6 p-8">
         {pastGames?.docs.map((doc) => {
           return (
             <GameProvider gameId={doc.id} key={doc.id}>
@@ -78,6 +69,15 @@ export default function PastGames() {
             Load more
           </Button>
         )}
+        <div
+          className={`text-center transition-opacity ${
+            showNoGamesText ? 'opacity-100' : 'opacity-0'
+          }`}>
+          <p>No past games.</p>
+          <StyledLink onClick={() => void router.push('/')}>
+            Want to create a new game?
+          </StyledLink>
+        </div>
       </div>
     </>
   );

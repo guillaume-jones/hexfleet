@@ -1,3 +1,4 @@
+import { Transition } from '@headlessui/react';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 
@@ -29,8 +30,17 @@ export default function PastGame() {
     gameDuration && Math.floor((gameDuration % 3600) / 60);
 
   return (
-    <div className="flex min-h-40 w-full max-w-2xl flex-col justify-between gap-4 rounded-2xl bg-zinc-800 p-4 sm:flex-row-reverse">
-      <div className="flex flex-1 flex-row items-center justify-center gap-4 sm:flex-col">
+    <Transition
+      enter="transition ease-out duration-500"
+      enterFrom="opacity-0 scale-0"
+      enterTo="opacity-100 scale-100"
+      leave="transition ease-in duration-500"
+      leaveFrom="opacity-100 scale-100"
+      leaveTo="opacity-0 scale-0"
+      show={true}
+      appear
+      className="flex min-h-40 w-full max-w-xl flex-col justify-between gap-4 rounded-2xl bg-zinc-800 p-4 sm:flex-row-reverse">
+      <div className="flex flex-1 flex-row items-center justify-around gap-4 sm:flex-col">
         <div className="flex flex-col items-center">
           <p className="text-lg">
             {createdAt?.toDate().toLocaleDateString(undefined, {
@@ -65,7 +75,7 @@ export default function PastGame() {
       </div>
       <div className="flex flex-col items-center justify-around gap-4 sm:flex-row">
         <HexagonalBoard
-          className="h-full max-w-72 sm:h-48"
+          className="h-full max-w-72 sm:h-40"
           board={getSpecialBorders(boardState, boardSize)}
           boardSize={boardSize}
         />
@@ -84,6 +94,6 @@ export default function PastGame() {
           ))}
         </div>
       </div>
-    </div>
+    </Transition>
   );
 }

@@ -19,8 +19,7 @@ export default function SecurityBox() {
       leave="transition ease-in duration-500"
       leaveFrom="opacity-100 scale-100"
       leaveTo="opacity-0 scale-0"
-      show={!userLoading}
-      appear>
+      show={!userLoading}>
       <h2 className={'mb-2 text-xl font-semibold text-zinc-50'}>Security</h2>
       <AlignedBox>
         <div className="flex flex-1 flex-col justify-between sm:flex-row">

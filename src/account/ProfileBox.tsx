@@ -23,8 +23,7 @@ export default function ProfileBox() {
       leave="transition ease-in duration-500"
       leaveFrom="opacity-100 scale-100"
       leaveTo="opacity-0 scale-0"
-      show={!loading}
-      appear>
+      show={!loading}>
       <h2 className={'mb-2 text-xl font-semibold text-zinc-50'}>Profile</h2>
       <AlignedBox>
         {[
