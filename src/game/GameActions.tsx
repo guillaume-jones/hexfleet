@@ -29,6 +29,7 @@ const GameActions = ({ className }: GameActionsProps) => {
     players,
     pressureByPlayer,
     pressureRemaining,
+    futurePressure,
     toggleNextTurnLock,
     userId,
   } = useContext(GameContext);
@@ -44,15 +45,21 @@ const GameActions = ({ className }: GameActionsProps) => {
       `}>
       <h2 className="text-2xl font-semibold">Your Actions</h2>
       {hasStarted && (
-        <div className="flex">
-          <p>Influence left to spend:</p>
-          <p
-            className={`ml-2 font-bold ${
-              pressureRemaining === 0 ? 'text-red-500' : ''
-            }`}>
-            {pressureRemaining}
-          </p>
-          <p className="font-bold">/{pressureByPlayer[userId]}</p>
+        <div>
+          <div className="flex">
+            <p>Influence left to spend:</p>
+            <p
+              className={`ml-2 font-bold ${
+                pressureRemaining === 0 ? 'text-red-500' : ''
+              }`}>
+              {pressureRemaining}
+            </p>
+            <p className="font-bold">/{pressureByPlayer[userId]}</p>
+          </div>
+          <div className="flex italic">
+            <p>Projected future influence:</p>
+            <p className={'ml-2'}>{futurePressure}</p>
+          </div>
         </div>
       )}
       <div className="flex flex-row justify-between gap-2">

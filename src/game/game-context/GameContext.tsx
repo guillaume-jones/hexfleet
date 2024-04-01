@@ -38,6 +38,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   boardState: TileWithBorders<ProjectedTile<Tile>>[];
   tilesByPlayer: Dictionary<number>;
   pressureByPlayer: Dictionary<number>;
+  futurePressure: number;
   pressureRemaining: number;
   loading: boolean;
   nextTurnLocked: boolean;
@@ -104,8 +105,17 @@ const useGameProvider = (gameId: string): GameContextType => {
   }, [user, gameId, tilePressures, nextTurnLocked]);
 
   const calculatedBoardParams = useMemo(() => {
-    const boardState = addBordersToBoard(
-      getProjectedBoard(game?.boardState, tilePressures, user?.uid),
+    const oldBoardWithBorders = addBordersToBoard(
+      game?.boardState,
+      game?.boardSize,
+    );
+    const newBoardState = getProjectedBoard(
+      game?.boardState,
+      tilePressures,
+      user?.uid,
+    );
+    const newBoardWithBorders = addBordersToBoard(
+      newBoardState,
       game?.boardSize,
     ).sort(
       // Must sort or empty tiles override player tiles/borders
@@ -113,13 +123,16 @@ const useGameProvider = (gameId: string): GameContextType => {
     );
 
     return {
-      boardState,
-      tilesByPlayer: countBy(boardState, 'playerId'),
+      boardState: newBoardWithBorders,
+      tilesByPlayer: countBy(oldBoardWithBorders, 'playerId'),
       pressureByPlayer: countBy(
-        boardState.flatMap(({ borders, playerId }) =>
+        oldBoardWithBorders.flatMap(({ borders, playerId }) =>
           borders.map(() => playerId),
         ),
       ),
+      futurePressure: newBoardWithBorders.flatMap(({ borders, playerId }) =>
+        playerId === user?.uid ? borders.map(() => playerId) : [],
+      ).length,
       pressureRemaining: 2,
     };
   }, [game?.boardState, game?.boardSize, tilePressures, user?.uid]);
