@@ -38,16 +38,14 @@ export function calculateNewBoardState(
 
     // Early return: only 1 player applied pressure
     if (appliedPressures.length === 1) {
+      // Only owner is applying pressure
+      if (ownerPressure) return { ...tile, playerId };
+
       const onlyPressure = appliedPressures[0];
       if (onlyPressure.pressure >= pressureToConquer) {
         return { ...tile, playerId: onlyPressure.pressureId };
       }
-      if (
-        onlyPressure.pressure >= pressureToDisable &&
-        // Do not disable if owner is applying pressure or no owner at all
-        !ownerPressure &&
-        playerId
-      ) {
+      if (playerId && onlyPressure.pressure >= pressureToDisable) {
         return { ...tile, playerId, disabled: true };
       }
       return { ...tile, playerId };

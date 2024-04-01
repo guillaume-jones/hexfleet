@@ -70,6 +70,7 @@ const HexagonalBoard = ({
                 onTileAction?.({
                   x,
                   y,
+                  clear,
                   pressure: Math.max(pressure + (e.deltaY > 0 ? -1 : 1), 0),
                 });
               }}
@@ -118,7 +119,10 @@ const HexagonalBoard = ({
                 />
               )}
               {clear && (
-                <>
+                <g
+                  transform={
+                    pressure === 0 ? '' : `translate(${-R / 4},${R / 4})`
+                  }>
                   <circle
                     r={R / 4}
                     fill={transparency}
@@ -136,12 +140,12 @@ const HexagonalBoard = ({
                     strokeWidth={baseStrokeWidth * 2}
                     strokeOpacity={1}
                   />
-                </>
+                </g>
               )}
-              {!clear && pressure > 0 && (
+              {pressure > 0 && (
                 <text
-                  textAnchor="middle"
-                  alignmentBaseline="middle"
+                  textAnchor={clear ? 'start' : 'middle'}
+                  alignmentBaseline={clear ? 'baseline' : 'middle'}
                   fontSize={4}
                   fillOpacity={1}
                   fill={userColor}>
