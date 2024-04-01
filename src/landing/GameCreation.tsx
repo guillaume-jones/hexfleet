@@ -15,7 +15,7 @@ import {
   generateBoard,
 } from 'src/game/board-utils/generateBoard';
 import { addBordersToBoard } from 'src/game/board-view-utils/addBordersToBoard';
-import { addPressuresToBoard } from 'src/game/board-view-utils/addPressuresToBoard';
+import { addPressuresToBoard } from 'src/game/board-view-utils/addPressureToBoard';
 import { createGame } from 'src/game/game-utils/createGame';
 import { loginUrlQuery } from 'src/layout/navbar/AccountButton';
 

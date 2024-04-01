@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 
+import GameActions from './GameActions';
 import GameCodeBox from './GameCodeBox';
 import HexagonalBoard from './HexagonalBoard';
-import MinorGameActions from './MinorGameActions';
 import ScoreBox from './ScoreBox';
 import { GameContext } from './game-context/GameContext';
 
@@ -16,7 +16,7 @@ const GameDisplay = () => {
         <ScoreBox />
         {!hasStarted && <GameCodeBox />}
       </div>
-      <MinorGameActions className="lg:absolute lg:bottom-48 lg:left-4" />
+      <GameActions className="lg:absolute lg:bottom-40 lg:left-4" />
       <HexagonalBoard
         className="lg:ml-72"
         board={boardState}

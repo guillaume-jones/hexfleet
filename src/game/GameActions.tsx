@@ -10,11 +10,11 @@ import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
 import { auth, functions } from 'src/firebase/firebaseApp';
 
-type MinorGameActionsProps = {
+type GameActionsProps = {
   className?: string;
 };
 
-const MinorGameActions = ({ className }: MinorGameActionsProps) => {
+const GameActions = ({ className }: GameActionsProps) => {
   const [user] = useAuthState(auth);
   const [editGamePlayer, loading] = useHttpsCallable<EditGamePlayerData>(
     functions,
@@ -27,7 +27,10 @@ const MinorGameActions = ({ className }: MinorGameActionsProps) => {
     gameId,
     nextTurnLocked,
     players,
+    pressureByPlayer,
+    pressureRemaining,
     toggleNextTurnLock,
+    userId,
   } = useContext(GameContext);
 
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -37,9 +40,21 @@ const MinorGameActions = ({ className }: MinorGameActionsProps) => {
 
   return (
     <div
-      className={`flex w-80 flex-col gap-2 rounded-xl bg-zinc-800 px-4 py-3 ${className}
+      className={`flex w-80 flex-col gap-4 rounded-xl bg-zinc-800 px-4 py-3 ${className}
       `}>
       <h2 className="text-2xl font-semibold">Your Actions</h2>
+      {hasStarted && (
+        <div className="flex">
+          <p>Influence left to spend:</p>
+          <p
+            className={`ml-2 font-bold ${
+              pressureRemaining === 0 ? 'text-red-500' : ''
+            }`}>
+            {pressureRemaining}
+          </p>
+          <p className="font-bold">/{pressureByPlayer[userId]}</p>
+        </div>
+      )}
       <div className="flex flex-row justify-between gap-2">
         {hasStarted && (
           <Button onClick={() => toggleNextTurnLock()}>
@@ -81,4 +96,4 @@ const MinorGameActions = ({ className }: MinorGameActionsProps) => {
   );
 };
 
-export default MinorGameActions;
+export default GameActions;

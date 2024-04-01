@@ -68,6 +68,7 @@ const HexagonalBoard = ({
                   pressure: Math.max(pressure + (e.deltaY > 0 ? -1 : 1), 0),
                 });
               }}
+              className="transition-opacity duration-100 sm:hover:opacity-85"
               fillOpacity={disabled || clear ? 0.5 : 1}
               strokeOpacity={futurePlayerId ? 0.4 : 1}
               key={`${x},${y}`}

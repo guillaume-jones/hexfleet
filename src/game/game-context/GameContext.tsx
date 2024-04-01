@@ -1,6 +1,6 @@
 import { addBordersToBoard } from '../board-view-utils/addBordersToBoard';
 import { addNamesToPlayers } from '../board-view-utils/addNamesToPlayers';
-import { addPressuresToBoard } from '../board-view-utils/addPressuresToBoard';
+import { addPressuresToBoard } from '../board-view-utils/addPressureToBoard';
 import { deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { Dictionary } from 'lodash';
 import countBy from 'lodash/countBy';
@@ -32,7 +32,8 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   players: PlayerWithName[];
   boardState: TileWithBorders[];
   tilesByPlayer: Dictionary<number>;
-  influenceByPlayer: Dictionary<number>;
+  pressureByPlayer: Dictionary<number>;
+  pressureRemaining: number;
   loading: boolean;
   nextTurnLocked: boolean;
   updateNextTurn: (tile: TileWithPressure<TileCoords>) => void;
@@ -112,11 +113,12 @@ const useGameProvider = (gameId: string): GameContextType => {
     return {
       boardState,
       tilesByPlayer: countBy(boardState, 'playerId'),
-      influenceByPlayer: countBy(
+      pressureByPlayer: countBy(
         boardState.flatMap(({ borders, playerId }) =>
           borders.map(() => playerId),
         ),
       ),
+      pressureRemaining: 2,
     };
   }, [game?.boardState, game?.boardSize, tilePressures, user?.uid]);
 
