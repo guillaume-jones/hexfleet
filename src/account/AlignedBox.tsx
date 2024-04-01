@@ -9,7 +9,7 @@ function AlignedBox({
 }) {
   return (
     <div
-      className={`flex max-w-lg flex-col gap-2 rounded-xl px-4 py-3 shadow-md 
+      className={`flex flex-col gap-2 rounded-xl px-4 py-3 shadow-md 
       ${
         light
           ? 'bg-zinc-50'

@@ -54,10 +54,10 @@ export default function PastGames() {
         <title>HexFleet - Past Games</title>
       </Head>
       <div className="flex flex-1 flex-col items-center gap-6 p-8">
-        {pastGames?.docs.slice(0, pageSize * pagesToLoad).map((doc) => {
+        {pastGames?.docs.slice(0, pageSize * pagesToLoad).map((doc, i) => {
           return (
             <GameProvider gameId={doc.id} key={doc.id}>
-              <PastGame />
+              <PastGame index={i} />
             </GameProvider>
           );
         })}

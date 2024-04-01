@@ -7,7 +7,26 @@ import HexagonalBoard from 'src/game/HexagonalBoard';
 import { getColorForPlayer } from 'src/game/board-view-utils/boardColors';
 import { GameContext } from 'src/game/game-context/GameContext';
 
-export default function PastGame() {
+export type PastGameProps = {
+  index: number;
+};
+
+// For Tailwind compilation
+const delays = [
+  'delay-[0ms]',
+  'delay-[50ms]',
+  'delay-[100ms]',
+  'delay-[150ms]',
+  'delay-[200ms]',
+  'delay-[250ms]',
+  'delay-[300ms]',
+  'delay-[350ms]',
+  'delay-[400ms]',
+  'delay-[450ms]',
+  'delay-[500ms]',
+];
+
+export default function PastGame({ index }: PastGameProps) {
   const router = useRouter();
 
   const {
@@ -33,15 +52,12 @@ export default function PastGame() {
 
   return (
     <Transition
-      enter="transition ease-out duration-500"
-      enterFrom="opacity-0 scale-0"
-      enterTo="opacity-100 scale-100"
-      leave="transition ease-in duration-500"
-      leaveFrom="opacity-100 scale-100"
-      leaveTo="opacity-0 scale-0"
+      enter=" ease-out "
+      enterFrom="opacity-0"
+      enterTo="opacity-100"
       show={true}
       appear
-      className="flex min-h-40 w-full max-w-xl flex-col justify-between gap-4 rounded-2xl bg-zinc-800 p-4 sm:flex-row-reverse">
+      className={`delay ${delays[index]} flex min-h-40 w-full max-w-xl flex-col justify-between gap-4 rounded-2xl bg-zinc-800 p-4 transition duration-300 sm:flex-row-reverse`}>
       <div className="flex flex-1 flex-row items-center justify-around gap-4 sm:flex-col">
         <div className="flex flex-col items-center">
           <p className="text-lg">

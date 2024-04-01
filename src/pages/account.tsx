@@ -26,7 +26,7 @@ export default function Account() {
         <title>HexFleet - Account</title>
       </Head>
       <SettingsProvider>
-        <div className="mx-6 mt-8 flex flex-1 flex-col gap-4 pb-10">
+        <div className="mx-6 mt-8 flex max-w-lg flex-1 flex-col gap-4 pb-10">
           <h1 className={'text-3xl font-semibold text-zinc-50'}>Account</h1>
           <SecurityBox />
           <ProfileBox />

@@ -7,6 +7,8 @@ import Button from 'src/components/interactive/Button';
 import Input from 'src/components/interactive/Input';
 import { SettingsContext } from 'src/context/SettingsContext';
 
+const maxNameLength = 20;
+
 export default function ProfileBox() {
   const {
     name: profileName,
@@ -27,9 +29,6 @@ export default function ProfileBox() {
       enter="transition ease-out duration-500"
       enterFrom="opacity-0 scale-0"
       enterTo="opacity-100 scale-100"
-      leave="transition ease-in duration-500"
-      leaveFrom="opacity-100 scale-100"
-      leaveTo="opacity-0 scale-0"
       show={!loading}>
       <h2 className={'mb-2 text-xl font-semibold text-zinc-50'}>Profile</h2>
       <AlignedBox>
@@ -39,8 +38,10 @@ export default function ProfileBox() {
             className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row">
             <h3>Display name</h3>
             <Input
-              inputProps={{ maxLength: 20 }}
-              className="flex-1"
+              inputProps={{ maxLength: maxNameLength }}
+              className={`flex-1 ${
+                name.length === maxNameLength ? ' outline-red-500' : ''
+              }`}
               value={name}
               setValue={setName}
             />
