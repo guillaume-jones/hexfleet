@@ -4,32 +4,18 @@ import {
 } from '../board-utils/tileNeighbors';
 import { TileWithBorders } from '../game-context/GameContextTypes';
 
-import { Tile, TileWithPressure } from 'functions/src/document-types/Games';
-import {
-  pressureToConquer,
-  pressureToDisable,
-} from 'functions/src/game-logic/GameConstants';
+import { Tile } from 'functions/src/document-types/Games';
 
-export const addBordersToBoard = <T extends TileWithPressure<Tile>>(
+export const addBordersToBoard = <T extends Tile>(
   board?: T[],
   boardSize?: number,
-  userId?: string,
-): TileWithBorders[] => {
+): TileWithBorders<T>[] => {
   if (!board || !boardSize) return [];
 
   return board.map((tile) => {
-    const baseTile: TileWithBorders = {
-      ...tile,
-      borders: [],
-      futurePlayerId: tile.pressure >= pressureToConquer ? userId : undefined,
-      disabled:
-        tile.playerId &&
-        tile.playerId !== userId &&
-        tile.pressure >= pressureToDisable &&
-        tile.pressure < pressureToConquer,
-    };
+    const baseTile: TileWithBorders<T> = { ...tile, borders: [] };
 
-    if (!baseTile.playerId && !baseTile.futurePlayerId) return baseTile;
+    if (!baseTile.playerId) return baseTile;
 
     const neighbors = getValidNeighbors(baseTile, boardSize);
 

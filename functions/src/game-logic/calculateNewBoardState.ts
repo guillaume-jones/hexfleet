@@ -39,11 +39,15 @@ export function calculateNewBoardState(
     // Early return: only 1 player applied pressure
     if (appliedPressures.length === 1) {
       const onlyPressure = appliedPressures[0];
-      if (onlyPressure.pressure > pressureToConquer) {
+      if (onlyPressure.pressure >= pressureToConquer) {
         return { ...tile, playerId: onlyPressure.pressureId };
       }
-      // Do not disable if owner is applying pressure
-      if (onlyPressure.pressure > pressureToDisable && !ownerPressure) {
+      if (
+        onlyPressure.pressure >= pressureToDisable &&
+        // Do not disable if owner is applying pressure or no owner at all
+        !ownerPressure &&
+        playerId
+      ) {
         return { ...tile, playerId, disabled: true };
       }
       return { ...tile, playerId };
@@ -56,14 +60,14 @@ export function calculateNewBoardState(
     const secondPressure = appliedPressures[1];
 
     // Early return: top pressure has enough power to conquer tile
-    if (topPressure.pressure - secondPressure.pressure > pressureToConquer) {
+    if (topPressure.pressure - secondPressure.pressure >= pressureToConquer) {
       return { ...tile, playerId: topPressure.pressureId };
     }
 
-    // Early return: top pressure only has enough power to disable tile
+    // Early return: top pressure can overpower owner to disable tile
     if (
-      topPressure.pressure - (ownerPressure?.pressure ?? 0) >
-      pressureToDisable
+      playerId &&
+      topPressure.pressure - (ownerPressure?.pressure ?? 0) >= pressureToDisable
     ) {
       return { ...tile, playerId, disabled: true };
     }

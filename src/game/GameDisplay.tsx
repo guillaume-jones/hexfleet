@@ -22,7 +22,7 @@ const GameDisplay = () => {
         board={boardState}
         boardSize={boardSize}
         userId={userId}
-        onTileScroll={updateNextTurn}
+        onTileAction={updateNextTurn}
       />
     </div>
   );

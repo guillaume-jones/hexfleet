@@ -4,18 +4,22 @@ import {
   getColorForPlayer,
   getFillColor,
 } from './board-view-utils/boardColors';
-import { TileWithBorders } from './game-context/GameContextTypes';
 import {
+  ProjectedTile,
+  TileWithBorders,
+} from './game-context/GameContextTypes';
+import {
+  Tile,
   TileCoords,
   TileWithPressure,
 } from 'functions/src/document-types/Games';
 
 type HexagonalBoardProps = {
   className?: string;
-  board?: TileWithBorders[];
+  board?: TileWithBorders<ProjectedTile<Tile>>[];
   boardSize?: number;
   userId?: string;
-  onTileScroll?: (tile: TileWithPressure<TileCoords>) => void;
+  onTileAction?: (tile: TileWithPressure<TileCoords>) => void;
 };
 
 const transparency = '#00000000';
@@ -25,7 +29,7 @@ const HexagonalBoard = ({
   board,
   boardSize,
   userId,
-  onTileScroll,
+  onTileAction,
 }: HexagonalBoardProps) => {
   if (!board || !boardSize) return null;
 
@@ -55,22 +59,27 @@ const HexagonalBoard = ({
           disabled,
           pressure,
           clear,
-          futurePlayerId,
+          previousPlayerId,
         }) => {
-          const stroke = getColorForPlayer(futurePlayerId ?? playerId);
+          const stroke = getColorForPlayer(clear ? previousPlayerId : playerId);
           const fill = getFillColor(stroke);
+          const playerChanged = playerId !== previousPlayerId;
           return (
             <g
               onWheel={(e) => {
-                onTileScroll?.({
+                onTileAction?.({
                   x,
                   y,
                   pressure: Math.max(pressure + (e.deltaY > 0 ? -1 : 1), 0),
                 });
               }}
+              onAuxClick={() => {
+                if (previousPlayerId !== userId || homeworld) return;
+                onTileAction?.({ x, y, pressure, clear: !clear });
+              }}
               className="transition-opacity duration-100 sm:hover:opacity-85"
-              fillOpacity={disabled || clear ? 0.5 : 1}
-              strokeOpacity={futurePlayerId ? 0.4 : 1}
+              fillOpacity={disabled || clear ? 0.5 : playerChanged ? 0.9 : 1}
+              strokeOpacity={playerChanged ? 0.4 : 1}
               key={`${x},${y}`}
               transform={`translate(${halfBoardSize * r + x * d - r * y},${
                 y * R * 1.5 + R
@@ -100,6 +109,7 @@ const HexagonalBoard = ({
               })}
               {homeworld && (
                 <polygon
+                  fillOpacity={pressure > 0 ? 0.3 : 1}
                   fill={stroke}
                   points={`0,${-R} ${r},${-R / 2} ${r},${R / 2} 0,${R} ${-r},${
                     R / 2
@@ -114,6 +124,7 @@ const HexagonalBoard = ({
                     fill={transparency}
                     stroke={stroke}
                     strokeWidth={baseStrokeWidth * 2}
+                    strokeOpacity={1}
                   />
                   <line
                     x1={-R / 4}
@@ -123,6 +134,7 @@ const HexagonalBoard = ({
                     strokeLinecap={'round'}
                     stroke={stroke}
                     strokeWidth={baseStrokeWidth * 2}
+                    strokeOpacity={1}
                   />
                 </>
               )}

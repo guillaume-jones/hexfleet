@@ -15,7 +15,7 @@ import {
   generateBoard,
 } from 'src/game/board-utils/generateBoard';
 import { addBordersToBoard } from 'src/game/board-view-utils/addBordersToBoard';
-import { addPressuresToBoard } from 'src/game/board-view-utils/addPressureToBoard';
+import { getProjectedBoard } from 'src/game/board-view-utils/getProjectedBoard';
 import { createGame } from 'src/game/game-utils/createGame';
 import { loginUrlQuery } from 'src/layout/navbar/AccountButton';
 
@@ -37,7 +37,7 @@ const GameCreation = ({ className }: GameCreationProps) => {
       boardSize,
       players: range(playersCount).map((i) => ({ id: String(i * 8618) })),
     });
-    return addBordersToBoard(addPressuresToBoard(board, []), boardSize);
+    return addBordersToBoard(getProjectedBoard(board), boardSize);
   }, [boardSize, playersCount]);
 
   return (

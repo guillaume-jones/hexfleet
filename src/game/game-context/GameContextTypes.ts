@@ -5,9 +5,12 @@ export type Border = {
   angle: number;
 };
 
-export type TileWithBorders = TileWithPressure<Tile> & {
+export type TileWithBorders<T extends Tile> = T & {
   borders: Border[];
-  futurePlayerId?: string;
+};
+
+export type ProjectedTile<T extends Tile> = TileWithPressure<T> & {
+  previousPlayerId?: string;
 };
 
 export type PlayerWithName = Player & {

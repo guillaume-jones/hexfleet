@@ -1,6 +1,6 @@
 import { addBordersToBoard } from '../board-view-utils/addBordersToBoard';
 import { addNamesToPlayers } from '../board-view-utils/addNamesToPlayers';
-import { addPressuresToBoard } from '../board-view-utils/addPressureToBoard';
+import { getProjectedBoard } from '../board-view-utils/getProjectedBoard';
 import { deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { Dictionary } from 'lodash';
 import countBy from 'lodash/countBy';
@@ -16,10 +16,15 @@ import {
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
-import { PlayerWithName, TileWithBorders } from './GameContextTypes';
+import {
+  PlayerWithName,
+  ProjectedTile,
+  TileWithBorders,
+} from './GameContextTypes';
 import {
   Game,
   NextTurn,
+  Tile,
   TileCoords,
   TileWithPressure,
 } from 'functions/src/document-types/Games';
@@ -30,7 +35,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   gameId: string;
   userId: string;
   players: PlayerWithName[];
-  boardState: TileWithBorders[];
+  boardState: TileWithBorders<ProjectedTile<Tile>>[];
   tilesByPlayer: Dictionary<number>;
   pressureByPlayer: Dictionary<number>;
   pressureRemaining: number;
@@ -100,14 +105,11 @@ const useGameProvider = (gameId: string): GameContextType => {
 
   const calculatedBoardParams = useMemo(() => {
     const boardState = addBordersToBoard(
-      addPressuresToBoard(game?.boardState, tilePressures),
+      getProjectedBoard(game?.boardState, tilePressures, user?.uid),
       game?.boardSize,
-      user?.uid,
     ).sort(
       // Must sort or empty tiles override player tiles/borders
-      (a, b) =>
-        (a.futurePlayerId || a.playerId ? 1 : 0) -
-        (b.futurePlayerId || b.playerId ? 1 : 0),
+      (a, b) => +!!a.playerId - +!!b.playerId,
     );
 
     return {
