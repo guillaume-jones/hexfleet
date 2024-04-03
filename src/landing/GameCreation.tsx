@@ -9,13 +9,12 @@ import { addPlayersToBoard } from 'functions/src/game/addPlayersToBoard';
 import Button from 'src/components/interactive/Button';
 import Range from 'src/components/interactive/Range';
 import { auth } from 'src/firebase/firebaseApp';
-import HexagonalBoard from 'src/game/HexagonalBoard';
 import {
   defaultBoardOptions,
   generateBoard,
 } from 'src/game/board-utils/generateBoard';
 import { addBordersToBoard } from 'src/game/board-view-utils/addBordersToBoard';
-import { getProjectedBoard } from 'src/game/board-view-utils/getProjectedBoard';
+import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
 import { createGame } from 'src/game/game-utils/createGame';
 import { loginUrlQuery } from 'src/layout/navbar/AccountButton';
 
@@ -35,9 +34,11 @@ const GameCreation = ({ className }: GameCreationProps) => {
     const board = addPlayersToBoard({
       boardState: generateBoard({ boardSize }),
       boardSize,
-      players: range(playersCount).map((i) => ({ id: String(i * 8618) })),
+      players: range(playersCount).map((i) => ({
+        id: String(i * 8618), // Value chosen because colors look good
+      })),
     });
-    return addBordersToBoard(getProjectedBoard(board), boardSize);
+    return addBordersToBoard(board, boardSize);
   }, [boardSize, playersCount]);
 
   return (
@@ -83,7 +84,7 @@ const GameCreation = ({ className }: GameCreationProps) => {
           </div>
         </div>
         <h3 className="text-center text-lg font-semibold">Preview</h3>
-        <HexagonalBoard board={boardPreview} boardSize={boardSize} />
+        <SimpleHexBoard board={boardPreview} boardSize={boardSize} />
         <div className="flex justify-between">
           <Button light onClick={() => setShown(false)}>
             Cancel

@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 
 import Button from 'src/components/interactive/Button';
-import HexagonalBoard from 'src/game/HexagonalBoard';
 import { getColorForPlayer } from 'src/game/board-view-utils/boardColors';
+import HexagonalBoard from 'src/game/board/HexagonalBoard';
 import { GameContext } from 'src/game/game-context/GameContext';
 
 export type PastGameProps = {

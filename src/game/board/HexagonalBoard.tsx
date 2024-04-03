@@ -1,55 +1,33 @@
-import React from 'react';
-
 import {
   getColorForPlayer,
   getFillColor,
-} from './board-view-utils/boardColors';
-import {
-  ProjectedTile,
-  TileWithBorders,
-} from './game-context/GameContextTypes';
-import {
-  Tile,
-  TileCoords,
-  TileWithPressure,
-} from 'functions/src/document-types/Games';
+} from '../board-view-utils/boardColors';
+import { GameContext } from '../game-context/GameContext';
+import React, { useContext } from 'react';
+
+import { getBoardParameters } from './getBoardParameters';
 
 type HexagonalBoardProps = {
   className?: string;
-  board?: TileWithBorders<ProjectedTile<Tile>>[];
-  boardSize?: number;
-  userId?: string;
-  onTileAction?: (tile: TileWithPressure<TileCoords>) => void;
 };
 
-const transparency = '#00000000';
+const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
+  const { boardState, boardSize, userId, updateNextTurn } =
+    useContext(GameContext);
 
-const HexagonalBoard = ({
-  className,
-  board,
-  boardSize,
-  userId,
-  onTileAction,
-}: HexagonalBoardProps) => {
-  if (!board || !boardSize) return null;
+  if (!boardState || !boardSize) return null;
 
-  // See https://en.wikipedia.org/wiki/Hexagon#Parameters
-  const d = 10;
-  const r = d / 2;
-  const R = d / Math.sqrt(3);
-  const halfBoardSize = Math.round(boardSize / 2);
-  const viewBoxWidth = d * boardSize;
-  const viewBoxHeight = R * 1.5 * boardSize + R / 2;
-  const baseStrokeWidth = 0.2;
+  const { d, r, R, halfBoardSize, viewBoxW, viewBoxH, baseStrokeWidth } =
+    getBoardParameters(boardSize);
   const userColor = getColorForPlayer(userId);
 
   return (
     <svg
       className={`max-w-4xl ${className}`}
       viewBox={`${-baseStrokeWidth / 2} ${-baseStrokeWidth / 2} ${
-        viewBoxWidth + baseStrokeWidth
-      } ${viewBoxHeight + baseStrokeWidth}`}>
-      {board.map(
+        viewBoxW + baseStrokeWidth
+      } ${viewBoxH + baseStrokeWidth}`}>
+      {boardState.map(
         ({
           x,
           y,
@@ -67,7 +45,7 @@ const HexagonalBoard = ({
           return (
             <g
               onWheel={(e) => {
-                onTileAction?.({
+                updateNextTurn?.({
                   x,
                   y,
                   clear,
@@ -76,7 +54,7 @@ const HexagonalBoard = ({
               }}
               onAuxClick={() => {
                 if (previousPlayerId !== userId || homeworld) return;
-                onTileAction?.({ x, y, pressure, clear: !clear });
+                updateNextTurn?.({ x, y, pressure, clear: !clear });
               }}
               className="transition-opacity duration-100 sm:hover:opacity-85"
               fillOpacity={disabled || clear ? 0.5 : playerChanged ? 0.9 : 1}
@@ -125,7 +103,7 @@ const HexagonalBoard = ({
                   }>
                   <circle
                     r={R / 4}
-                    fill={transparency}
+                    fill={'#00000000'}
                     stroke={stroke}
                     strokeWidth={baseStrokeWidth * 2}
                     strokeOpacity={1}
