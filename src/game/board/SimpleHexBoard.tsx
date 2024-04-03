@@ -35,7 +35,7 @@ const SimpleHexBoard = ({
         const fill = getFillColor(stroke);
         return (
           <g
-            className="transition-opacity duration-100 sm:hover:opacity-85"
+            className="transition-opacity duration-100"
             fillOpacity={disabled ? 0.5 : 1}
             key={`${x},${y}`}
             transform={`translate(${halfBoardSize * r + x * d - r * y},${

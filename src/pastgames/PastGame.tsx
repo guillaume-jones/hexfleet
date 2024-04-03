@@ -4,7 +4,7 @@ import { useContext, useState } from 'react';
 
 import Button from 'src/components/interactive/Button';
 import { getColorForPlayer } from 'src/game/board-view-utils/boardColors';
-import HexagonalBoard from 'src/game/board/HexagonalBoard';
+import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
 import { GameContext } from 'src/game/game-context/GameContext';
 
 export type PastGameProps = {
@@ -31,7 +31,6 @@ export default function PastGame({ index }: PastGameProps) {
 
   const {
     gameId,
-    userId,
     boardSize,
     boardState,
     createdAt,
@@ -96,11 +95,10 @@ export default function PastGame({ index }: PastGameProps) {
         </Button>
       </div>
       <div className="flex flex-col items-center justify-around gap-4 sm:flex-row">
-        <HexagonalBoard
+        <SimpleHexBoard
           className="h-full max-w-72 sm:h-40"
           board={boardState}
           boardSize={boardSize}
-          userId={userId}
         />
         <div className="flex w-40 flex-col items-center">
           <h3 className="self-center pb-2 text-xl font-medium">Players</h3>
