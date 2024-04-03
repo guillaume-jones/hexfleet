@@ -13,6 +13,7 @@ export default function Landing() {
       <div className="flex flex-1 flex-col items-center">
         <div className="relative my-10 transition-all duration-500 hover:scale-110">
           <Image
+            priority={true}
             src="/logo/android-chrome-192x192.webp"
             width={192}
             height={192}
