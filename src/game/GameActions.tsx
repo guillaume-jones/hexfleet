@@ -27,8 +27,8 @@ const GameActions = ({ className }: GameActionsProps) => {
     gameId,
     nextTurnLocked,
     players,
-    pressureByPlayer,
-    pressureRemaining,
+    influenceByPlayer,
+    influenceRemaining,
     futurePressure,
     toggleNextTurnLock,
     userId,
@@ -50,11 +50,11 @@ const GameActions = ({ className }: GameActionsProps) => {
             <p>Influence left to spend:</p>
             <p
               className={`ml-2 font-bold ${
-                pressureRemaining === 0 ? 'text-red-500' : ''
+                influenceRemaining < 0 ? 'text-red-500' : ''
               }`}>
-              {pressureRemaining}
+              {influenceRemaining}
             </p>
-            <p className="font-bold">/{pressureByPlayer[userId]}</p>
+            <p className="font-bold">/{influenceByPlayer[userId]}</p>
           </div>
           <div className="flex italic">
             <p>Projected future influence:</p>
@@ -64,7 +64,9 @@ const GameActions = ({ className }: GameActionsProps) => {
       )}
       <div className="flex flex-row justify-between gap-2">
         {hasStarted && (
-          <Button onClick={() => toggleNextTurnLock()}>
+          <Button
+            disabled={influenceRemaining < 0}
+            onClick={() => toggleNextTurnLock()}>
             <div className="flex flex-row items-center gap-2">
               {nextTurnLocked ? 'Unlock next turn' : 'Lock next turn'}
               {nextTurnLocked ? <Lock size={20} /> : <Unlock size={20} />}

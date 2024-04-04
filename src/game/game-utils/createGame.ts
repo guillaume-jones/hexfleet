@@ -1,4 +1,4 @@
-import { BoardOptions, generateBoard } from '../board-utils/generateBoard';
+import { BoardOptions, generateBoard } from '../board/generateBoard';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { customAlphabet } from 'nanoid';
 

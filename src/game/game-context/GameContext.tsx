@@ -28,6 +28,7 @@ import {
   TileCoords,
   TileWithPressure,
 } from 'functions/src/document-types/Games';
+import { getInfluenceSpent } from 'functions/src/game-logic/getInfluenceSpent';
 
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
@@ -37,9 +38,9 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   players: PlayerWithName[];
   boardState: TileWithBorders<ProjectedTile<Tile>>[];
   tilesByPlayer: Dictionary<number>;
-  pressureByPlayer: Dictionary<number>;
+  influenceByPlayer: Dictionary<number>;
   futurePressure: number;
-  pressureRemaining: number;
+  influenceRemaining: number;
   loading: boolean;
   nextTurnLocked: boolean;
   updateNextTurn: (tile: TileWithPressure<TileCoords>) => void;
@@ -121,19 +122,23 @@ const useGameProvider = (gameId: string): GameContextType => {
       // Must sort or empty tiles override player tiles/borders
       (a, b) => +!!a.playerId - +!!b.playerId,
     );
+    const influenceByPlayer = countBy(
+      oldBoardWithBorders.flatMap(({ borders, playerId }) =>
+        borders.map(() => playerId),
+      ),
+    );
 
     return {
       boardState: newBoardWithBorders,
       tilesByPlayer: countBy(oldBoardWithBorders, 'playerId'),
-      pressureByPlayer: countBy(
-        oldBoardWithBorders.flatMap(({ borders, playerId }) =>
-          borders.map(() => playerId),
-        ),
-      ),
+      influenceByPlayer,
       futurePressure: newBoardWithBorders.flatMap(({ borders, playerId }) =>
         playerId === user?.uid ? borders.map(() => playerId) : [],
       ).length,
-      pressureRemaining: 2,
+      influenceRemaining: user?.uid
+        ? influenceByPlayer[user.uid] -
+          getInfluenceSpent({ pressures: tilePressures })
+        : 0,
     };
   }, [game?.boardState, game?.boardSize, tilePressures, user?.uid]);
 

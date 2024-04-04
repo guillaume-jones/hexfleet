@@ -28,10 +28,10 @@ const TileActions = ({ clientX, clientY, x, y }: TileActionsProps) => {
       className="absolute -top-6 left-0 z-10 flex items-center gap-3 rounded-xl bg-zinc-900 p-4 transition-all duration-200">
       <p>Influence</p>
       <Input
-        value={String(tile?.pressure)}
+        value={String(tile?.pressure ?? 0)}
         setValue={(value) => {
           const pressure = Number(value);
-          if (!tile || pressure < 0) return;
+          if (!tile || isNaN(pressure) || pressure < 0) return;
           updateNextTurn?.({ ...tile, pressure });
         }}
         className="w-16"

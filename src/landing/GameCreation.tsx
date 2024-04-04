@@ -9,12 +9,12 @@ import { addPlayersToBoard } from 'functions/src/game/addPlayersToBoard';
 import Button from 'src/components/interactive/Button';
 import Range from 'src/components/interactive/Range';
 import { auth } from 'src/firebase/firebaseApp';
+import { addBordersToBoard } from 'src/game/board-view-utils/addBordersToBoard';
+import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
 import {
   defaultBoardOptions,
   generateBoard,
-} from 'src/game/board-utils/generateBoard';
-import { addBordersToBoard } from 'src/game/board-view-utils/addBordersToBoard';
-import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
+} from 'src/game/board/generateBoard';
 import { createGame } from 'src/game/game-utils/createGame';
 import { loginUrlQuery } from 'src/layout/navbar/AccountButton';
 

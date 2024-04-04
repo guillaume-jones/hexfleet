@@ -20,6 +20,7 @@ export type BoardState = Tile[];
 
 export type TileWithPressure<T extends TileCoords> = T & {
   pressure: number;
+  distance: number;
   clear?: boolean;
 };
 

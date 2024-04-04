@@ -1,6 +1,6 @@
-import { getValidNeighbors } from '../board-utils/tileNeighbors';
+import { Tile } from '../document-types/Games';
 
-import { Tile } from 'functions/src/document-types/Games';
+import { getValidNeighbors } from './getValidNeighbors';
 
 type CountedTileState = Tile & { counted?: boolean };
 
@@ -11,7 +11,7 @@ const getSameNeighbors = (
   if (tiles.length === 0) return [];
 
   return tiles.flatMap((tile): Tile[] => {
-    const neighbors = getValidNeighbors(tile, boardSize)
+    const neighbors = getValidNeighbors({ tile, boardSize, distance: 1 })
       .map(({ x, y }) => board.find(({ x: x2, y: y2 }) => x === x2 && y === y2))
       .filter((neighbor): neighbor is CountedTileState => !!neighbor);
 
@@ -24,6 +24,7 @@ const getSameNeighbors = (
         neighbor.counted = true;
         return true;
       }
+      return false;
     });
 
     return [

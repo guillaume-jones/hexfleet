@@ -27,13 +27,13 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
 
   return (
     <div
-      className="flex h-full w-full"
+      className={`flex h-full w-full ${className}`}
       onPointerLeave={() =>
         setTileActionsState((prev) => ({ ...prev, x: undefined }))
       }>
       <TileActions {...tileActionsState} />
       <svg
-        className={`max-w-4xl ${className}`}
+        className="max-w-4xl"
         viewBox={`${-baseStrokeWidth / 2} ${-baseStrokeWidth / 2} ${
           viewBoxW + baseStrokeWidth
         } ${viewBoxH + baseStrokeWidth}`}>
@@ -46,6 +46,7 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
             homeworld,
             disabled,
             pressure,
+            distance,
             clear,
             previousPlayerId,
           }) => {
@@ -78,12 +79,13 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
                     x,
                     y,
                     clear,
+                    distance,
                     pressure: Math.max(pressure + (e.deltaY > 0 ? -1 : 1), 0),
                   });
                 }}
                 onAuxClick={() => {
                   if (previousPlayerId !== userId || homeworld) return;
-                  updateNextTurn?.({ x, y, pressure, clear: !clear });
+                  updateNextTurn?.({ x, y, pressure, distance, clear: !clear });
                 }}
                 className="cursor-pointer transition-opacity duration-100 sm:hover:opacity-85"
                 fillOpacity={disabled || clear ? 0.5 : playerChanged ? 0.9 : 1}
@@ -152,17 +154,32 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
                 {pressure > 0 && (
                   <text
                     textAnchor={clear ? 'start' : 'middle'}
-                    alignmentBaseline={clear ? 'baseline' : 'middle'}
+                    alignmentBaseline={
+                      clear || distance > 1 ? 'baseline' : 'middle'
+                    }
                     fontSize={4}
                     fillOpacity={1}
                     fill={userColor}>
                     {pressure}
                   </text>
                 )}
+                {distance > 1 && pressure > 0 && (
+                  <text
+                    textAnchor={'middle'}
+                    alignmentBaseline={'text-before-edge'}
+                    fontSize={2.5}
+                    fillOpacity={1}
+                    fill={userColor}>
+                    {distance}x
+                  </text>
+                )}
                 {/* Uncomment if needed for debugging */}
-                {/* <text textAnchor="middle" alignmentBaseline="middle" fontSize={3}>
-              {x},{y}
-            </text> */}
+                {/* <text
+                  textAnchor="middle"
+                  alignmentBaseline="middle"
+                  fontSize={3}>
+                  {x},{y}
+                </text> */}
               </g>
             );
           },

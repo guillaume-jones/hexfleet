@@ -8,7 +8,7 @@ import { auth } from 'src/firebase/firebaseApp';
 
 const ScoreBox = () => {
   const [user] = useAuthState(auth);
-  const { players, pastTurns, tilesByPlayer, pressureByPlayer } =
+  const { players, pastTurns, tilesByPlayer, influenceByPlayer } =
     useContext(GameContext);
 
   if (!players || !pastTurns) return null;
@@ -41,7 +41,7 @@ const ScoreBox = () => {
                 {name}
               </th>
               <td>{tilesByPlayer[id] ?? 0}</td>
-              <td>{pressureByPlayer[id] ?? 0}</td>
+              <td>{influenceByPlayer[id] ?? 0}</td>
             </tr>
           ))}
         </tbody>
