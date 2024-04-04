@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
@@ -27,6 +27,29 @@ const GameJoining = ({ className }: GameCreationProps) => {
     'joinGame',
   );
 
+  const joinGameAndRedirect = useCallback(
+    async (id: string) => {
+      if (!user) {
+        await router.push(`/${loginUrlQuery}`);
+        return;
+      }
+      const result = await joinGame({ shortId: id });
+      if (result && typeof result.data === 'string') {
+        await router.push(`/games/${result.data}`);
+      } else {
+        setErrorShown(true);
+      }
+    },
+    [joinGame, router, user],
+  );
+
+  useEffect(() => {
+    const shortId = router.query.shortId;
+    if (user && shortId && typeof shortId === 'string') {
+      void joinGameAndRedirect(shortId);
+    }
+  }, [joinGameAndRedirect, router.query, user]);
+
   return (
     <div className={`flex w-60 flex-col items-center gap-4 ${className}`}>
       <Input
@@ -43,21 +66,7 @@ const GameJoining = ({ className }: GameCreationProps) => {
       <Button
         fontClassName="text-lg font-semibold"
         loading={loading}
-        onClick={() => {
-          const asyncFunction = async () => {
-            if (!user) {
-              await router.push(`/${loginUrlQuery}`);
-              return;
-            }
-            const result = await joinGame({ shortId });
-            if (result && typeof result.data === 'string') {
-              await router.push(`/games/${result.data}`);
-            } else {
-              setErrorShown(true);
-            }
-          };
-          void asyncFunction();
-        }}>
+        onClick={() => void joinGameAndRedirect(shortId)}>
         Join Game
       </Button>
       <p

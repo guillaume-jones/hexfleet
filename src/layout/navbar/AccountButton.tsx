@@ -4,7 +4,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
 import { auth } from 'src/firebase/firebaseApp';
-import Login from 'src/pages/login';
+import Login from 'src/login/login';
 
 export const loginUrlQuery = '?login=true';
 
