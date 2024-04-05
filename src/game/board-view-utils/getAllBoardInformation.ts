@@ -2,8 +2,10 @@ import countBy from 'lodash/countBy';
 
 import { BoardState, NextTurn } from 'functions/src/document-types/Games';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
-import { getInfluenceSpent } from 'functions/src/game-logic/getInfluenceSpent';
-import { getPlayersInfluence } from 'functions/src/game-logic/getPlayersInfluence';
+import {
+  getInfluenceSpent,
+  getPlayersInfluence,
+} from 'functions/src/game-logic/influenceUtils';
 
 import { getProjectedBoard } from 'src/game/board-view-utils/getProjectedBoard';
 

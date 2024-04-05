@@ -6,7 +6,7 @@ import { getBoardParameters } from './getBoardParameters';
 import {
   canApplyPressure,
   canClear,
-} from 'functions/src/game-logic/actionsTests';
+} from 'functions/src/game-logic/tileActionTests';
 
 import {
   getColorForPlayer,

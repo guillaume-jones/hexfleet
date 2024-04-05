@@ -1,8 +1,8 @@
 import { BoardState, Tile, TileWithPressure } from '../document-types/Games';
 
 import { maxInfluenceReach } from './GameConstants';
-import { canApplyPressure, canClear } from './actionsTests';
 import { findClosestTileWithId } from './findClosestTileWithId';
+import { canApplyPressure, canClear } from './tileActionTests';
 
 export const validateTileDistance = ({
   tile,

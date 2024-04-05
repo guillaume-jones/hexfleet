@@ -4,7 +4,7 @@ import { useContext, useMemo } from 'react';
 import {
   canApplyPressure,
   canClear,
-} from 'functions/src/game-logic/actionsTests';
+} from 'functions/src/game-logic/tileActionTests';
 
 import Button from 'src/components/interactive/Button';
 import Input from 'src/components/interactive/Input';
