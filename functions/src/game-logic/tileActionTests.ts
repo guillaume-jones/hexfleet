@@ -5,8 +5,11 @@ import { maxInfluenceReach } from './GameConstants';
 export const canClear = (
   tile?: Pick<Tile, 'homeworld' | 'playerId'>,
   id?: string,
-) => tile && !tile.homeworld && tile.playerId === id;
+) => tile !== undefined && !tile.homeworld && tile.playerId === id;
 
 export const canApplyPressure = (
   tile?: Pick<TileWithPressure<TileCoords>, 'distance' | 'pressure'>,
-) => tile && tile.distance <= maxInfluenceReach && tile.pressure >= 0;
+) =>
+  tile !== undefined &&
+  tile.distance <= maxInfluenceReach &&
+  tile.pressure >= 0;

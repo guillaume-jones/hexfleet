@@ -1,20 +1,27 @@
-import { BoardState, Tile, TileWithPressure } from '../document-types/Games';
+import {
+  BoardState,
+  Tile,
+  TileCoords,
+  TileWithPressure,
+} from '../document-types/Games';
 
 import { maxInfluenceReach } from './GameConstants';
 import { findClosestTileWithId } from './findClosestTileWithId';
 import { canApplyPressure, canClear } from './tileActionTests';
 
-export const validateTileDistance = ({
+export const validateTilePressure = ({
   tile,
   boardState,
   boardSize,
   id,
 }: {
-  tile: TileWithPressure<Tile>;
+  tile: TileWithPressure<TileCoords>;
   boardState: BoardState;
   boardSize: number;
   id: string;
 }): boolean => {
+  if (!tile.pressure) return true;
+
   const { distance } = findClosestTileWithId({
     coords: tile,
     boardState,
@@ -23,20 +30,16 @@ export const validateTileDistance = ({
     maxDistance: maxInfluenceReach,
   });
 
-  return tile.distance === distance;
+  return tile.distance === distance && canApplyPressure(tile);
 };
 
-export const validateTileAction = ({
+export const validateTileClear = ({
   tile,
   id,
 }: {
   tile: TileWithPressure<Tile>;
-  boardState: BoardState;
-  boardSize: number;
   id: string;
 }): boolean => {
-  if (tile.clear && !canClear(tile, id)) return false;
-  if (tile.pressure && !canApplyPressure(tile)) return false;
-
-  return true;
+  if (!tile.clear) return true;
+  return canClear(tile, id);
 };
