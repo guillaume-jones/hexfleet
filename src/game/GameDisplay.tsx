@@ -4,10 +4,12 @@ import GameActions from './GameActions';
 import GameCodeBox from './GameCodeBox';
 import ScoreBox from './ScoreBox';
 import HexagonalBoard from './board/HexagonalBoard';
+import SimpleHexBoard from './board/SimpleHexBoard';
 import { GameContext } from './game-context/GameContext';
 
 const GameDisplay = () => {
-  const { hasStarted } = useContext(GameContext);
+  const { hasStarted, userResigned, boardState, boardSize } =
+    useContext(GameContext);
 
   return (
     <div className="flex flex-col items-center justify-start gap-6 py-2 lg:flex-row lg:items-end">
@@ -15,8 +17,18 @@ const GameDisplay = () => {
         <ScoreBox />
         {!hasStarted && <GameCodeBox />}
       </div>
-      <GameActions className="lg:absolute lg:bottom-40 lg:left-4" />
-      <HexagonalBoard className="lg:ml-72" />
+      {!userResigned && (
+        <GameActions className="lg:absolute lg:bottom-40 lg:left-4" />
+      )}
+      {userResigned ? (
+        <SimpleHexBoard
+          className="lg:ml-72"
+          board={boardState}
+          boardSize={boardSize}
+        />
+      ) : (
+        <HexagonalBoard className="lg:ml-72" />
+      )}
     </div>
   );
 };

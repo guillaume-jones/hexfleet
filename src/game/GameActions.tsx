@@ -24,7 +24,6 @@ const GameActions = ({ className }: GameActionsProps) => {
     hasStarted,
     gameId,
     nextTurnLocked,
-    players,
     influenceByPlayer,
     influenceRemaining,
     projectedInfluenceByPlayer,
@@ -35,7 +34,6 @@ const GameActions = ({ className }: GameActionsProps) => {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   if (!shortId) return null;
-  if (players.find((p) => p.id === userId)?.hasResigned) return null;
 
   return (
     <div

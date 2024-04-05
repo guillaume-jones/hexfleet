@@ -40,6 +40,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   influenceRemaining: number;
   loading: boolean;
   nextTurnLocked: boolean;
+  userResigned: boolean | undefined;
   updateNextTurn: (tile: TileWithPressure<TileCoords>) => void;
   toggleNextTurnLock: () => void;
 };
@@ -113,6 +114,7 @@ const useGameProvider = (gameId: string): GameContextType => {
     ...game,
     ...information,
     userId: user?.uid ?? '',
+    userResigned: game?.players?.find((p) => p.id === user?.uid)?.hasResigned,
     players,
     gameId,
     loading,
