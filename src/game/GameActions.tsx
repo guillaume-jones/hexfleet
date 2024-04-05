@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import { Lock, Unlock } from 'react-feather';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
 import { GameContext } from './game-context/GameContext';
@@ -8,14 +7,13 @@ import { EditGamePlayerData } from 'functions/src/document-types/Games';
 
 import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
-import { auth, functions } from 'src/firebase/firebaseApp';
+import { functions } from 'src/firebase/firebaseApp';
 
 type GameActionsProps = {
   className?: string;
 };
 
 const GameActions = ({ className }: GameActionsProps) => {
-  const [user] = useAuthState(auth);
   const [editGamePlayer, loading] = useHttpsCallable<EditGamePlayerData>(
     functions,
     'editGamePlayer',
@@ -29,7 +27,7 @@ const GameActions = ({ className }: GameActionsProps) => {
     players,
     influenceByPlayer,
     influenceRemaining,
-    futurePressure,
+    projectedInfluenceByPlayer,
     toggleNextTurnLock,
     userId,
   } = useContext(GameContext);
@@ -37,7 +35,7 @@ const GameActions = ({ className }: GameActionsProps) => {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   if (!shortId) return null;
-  if (players.find((p) => p.id === user?.uid)?.hasResigned) return null;
+  if (players.find((p) => p.id === userId)?.hasResigned) return null;
 
   return (
     <div
@@ -58,7 +56,7 @@ const GameActions = ({ className }: GameActionsProps) => {
           </div>
           <div className="flex italic">
             <p>Projected future influence:</p>
-            <p className={'ml-2'}>{futurePressure}</p>
+            <p className={'ml-2'}>{projectedInfluenceByPlayer[userId]}</p>
           </div>
         </div>
       )}

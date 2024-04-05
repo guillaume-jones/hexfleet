@@ -1,8 +1,4 @@
-import {
-  Tile,
-  TileCoords,
-  TileWithPressure,
-} from 'functions/src/document-types/Games';
+import { NextTurn, Tile } from 'functions/src/document-types/Games';
 import { calculateNewBoardState } from 'functions/src/game-logic/calculateNewBoardState';
 import { findClosestTileWithId } from 'functions/src/game-logic/findClosestTileWithId';
 
@@ -10,22 +6,22 @@ import { ProjectedTile } from 'src/game/game-context/GameContextTypes';
 
 export const getProjectedBoard = (
   boardState: Tile[] | undefined,
-  tilePressures?: TileWithPressure<TileCoords>[],
+  nextTurn?: NextTurn,
   userId?: string,
 ): ProjectedTile<Tile>[] => {
   if (!boardState) return [];
 
-  if (!tilePressures || !userId)
+  if (!nextTurn || !userId)
     return boardState.map((tile) => ({ ...tile, pressure: 0, distance: 0 }));
 
   const newBoardState = calculateNewBoardState(
     boardState,
-    [{ pressures: tilePressures }],
+    [nextTurn],
     [userId],
   );
 
   return newBoardState?.map((tile, i) => {
-    const tilePressure = tilePressures.find(
+    const tilePressure = nextTurn.pressures.find(
       (pressure) => pressure.x === tile.x && pressure.y === tile.y,
     );
     const closestOwnTile = findClosestTileWithId({

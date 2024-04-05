@@ -2,11 +2,10 @@ import {
   getColorForPlayer,
   getFillColor,
 } from '../board-view-utils/boardColors';
-import { TileWithBorders } from '../game-context/GameContextTypes';
 import React from 'react';
 
 import { getBoardParameters } from './getBoardParameters';
-import { Tile } from 'functions/src/document-types/Games';
+import { Tile, TileWithBorders } from 'functions/src/document-types/Games';
 
 type HexagonalBoardProps = {
   className?: string;

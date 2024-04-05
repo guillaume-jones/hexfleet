@@ -25,5 +25,5 @@ export const findClosestTileWithId = ({
     }
   }
 
-  return undefined;
+  return { tile: undefined, distance: Infinity };
 };

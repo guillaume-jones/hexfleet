@@ -1,7 +1,6 @@
-import { Tile, TileCoords } from 'functions/src/document-types/Games';
-import { getValidNeighbors } from 'functions/src/game-logic/getValidNeighbors';
+import { Tile, TileCoords, TileWithBorders } from '../document-types/Games';
 
-import { TileWithBorders } from 'src/game/game-context/GameContextTypes';
+import { getValidNeighbors } from './getValidNeighbors';
 
 export const getAngleForNeighbor = (
   tile: TileCoords,

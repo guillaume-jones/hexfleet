@@ -4,12 +4,12 @@ import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
+import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
 import { addPlayersToBoard } from 'functions/src/game/addPlayersToBoard';
 
 import Button from 'src/components/interactive/Button';
 import Range from 'src/components/interactive/Range';
 import { auth } from 'src/firebase/firebaseApp';
-import { addBordersToBoard } from 'src/game/board-view-utils/addBordersToBoard';
 import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
 import {
   defaultBoardOptions,

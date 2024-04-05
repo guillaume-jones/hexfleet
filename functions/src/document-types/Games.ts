@@ -18,6 +18,14 @@ export type Tile = TileCoords & {
 
 export type BoardState = Tile[];
 
+export type Border = {
+  angle: number;
+};
+
+export type TileWithBorders<T extends Tile> = T & {
+  borders: Border[];
+};
+
 export type TileWithPressure<T extends TileCoords> = T & {
   pressure: number;
   distance: number;

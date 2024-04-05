@@ -1,9 +1,6 @@
-import { addBordersToBoard } from '../board-view-utils/addBordersToBoard';
-import { addNamesToPlayers } from '../board-view-utils/addNamesToPlayers';
-import { getProjectedBoard } from '../board-view-utils/getProjectedBoard';
+import { getAllBoardInformation } from '../board-view-utils/getAllBoardInformation';
 import { deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { Dictionary } from 'lodash';
-import countBy from 'lodash/countBy';
 import { useRouter } from 'next/router';
 import {
   ReactNode,
@@ -16,21 +13,18 @@ import {
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
-import {
-  PlayerWithName,
-  ProjectedTile,
-  TileWithBorders,
-} from './GameContextTypes';
+import { PlayerWithName, ProjectedTile } from './GameContextTypes';
 import {
   Game,
   NextTurn,
   Tile,
   TileCoords,
+  TileWithBorders,
   TileWithPressure,
 } from 'functions/src/document-types/Games';
-import { getInfluenceSpent } from 'functions/src/game-logic/getInfluenceSpent';
 
 import { auth, firestore } from 'src/firebase/firebaseApp';
+import { addNamesToPlayers } from 'src/game/board-view-utils/addNamesToPlayers';
 
 export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   gameId: string;
@@ -39,7 +33,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   boardState: TileWithBorders<ProjectedTile<Tile>>[];
   tilesByPlayer: Dictionary<number>;
   influenceByPlayer: Dictionary<number>;
-  futurePressure: number;
+  projectedInfluenceByPlayer: Dictionary<number>;
   influenceRemaining: number;
   loading: boolean;
   nextTurnLocked: boolean;
@@ -58,9 +52,7 @@ const useGameProvider = (gameId: string): GameContextType => {
     gameId === undefined ? undefined : doc(firestore, 'games', gameId),
   );
   const [players, setPlayers] = useState<PlayerWithName[]>([]);
-  const [tilePressures, setTilePressures] = useState<
-    TileWithPressure<TileCoords>[]
-  >([]);
+  const [nextTurn, setNextTurn] = useState<NextTurn>({ pressures: [] });
   const [nextTurnLocked, setNextTurnLocked] = useState(false);
 
   // Redirects to landing page if game is not accessible
@@ -81,16 +73,16 @@ const useGameProvider = (gameId: string): GameContextType => {
     void asyncFunction();
   }, [game?.players]);
 
+  // Next turn handling
   const updateNextTurn = useCallback((tile: TileWithPressure<TileCoords>) => {
-    setTilePressures((prev) => {
-      const newPressures = prev.filter(
+    setNextTurn((prev) => {
+      const newPressures = prev.pressures.filter(
         ({ x, y }) => !(x === tile.x && y === tile.y),
       );
 
-      return [...newPressures, tile];
+      return { pressures: [...newPressures, tile] };
     });
   }, []);
-
   const toggleNextTurnLock = useCallback(() => {
     const nextTurnRef =
       user && gameId && doc(firestore, 'games', gameId, 'nextTurns', user.uid);
@@ -100,51 +92,23 @@ const useGameProvider = (gameId: string): GameContextType => {
     if (nextTurnLocked) {
       deleteDoc(nextTurnRef).catch((e) => console.error(e));
     } else {
-      const nextTurn: NextTurn = { pressures: tilePressures };
       setDoc(nextTurnRef, nextTurn).catch((e) => console.error(e));
     }
-  }, [user, gameId, tilePressures, nextTurnLocked]);
+  }, [user, gameId, nextTurn, nextTurnLocked]);
 
-  const calculatedBoardParams = useMemo(() => {
-    const oldBoardWithBorders = addBordersToBoard(
-      game?.boardState,
-      game?.boardSize,
-    );
-    const newBoardState = getProjectedBoard(
-      game?.boardState,
-      tilePressures,
-      user?.uid,
-    );
-    const newBoardWithBorders = addBordersToBoard(
-      newBoardState,
-      game?.boardSize,
-    ).sort(
-      // Must sort or empty tiles override player tiles/borders
-      (a, b) => +!!a.playerId - +!!b.playerId,
-    );
-    const influenceByPlayer = countBy(
-      oldBoardWithBorders.flatMap(({ borders, playerId }) =>
-        borders.map(() => playerId),
-      ),
-    );
-
-    return {
-      boardState: newBoardWithBorders,
-      tilesByPlayer: countBy(oldBoardWithBorders, 'playerId'),
-      influenceByPlayer,
-      futurePressure: newBoardWithBorders.flatMap(({ borders, playerId }) =>
-        playerId === user?.uid ? borders.map(() => playerId) : [],
-      ).length,
-      influenceRemaining: user?.uid
-        ? influenceByPlayer[user.uid] -
-          getInfluenceSpent({ pressures: tilePressures })
-        : 0,
-    };
-  }, [game?.boardState, game?.boardSize, tilePressures, user?.uid]);
+  // Board processing for display
+  const information = useMemo(() => {
+    return getAllBoardInformation({
+      boardState: game?.boardState,
+      boardSize: game?.boardSize,
+      nextTurn,
+      userId: user?.uid,
+    });
+  }, [game?.boardState, game?.boardSize, nextTurn, user?.uid]);
 
   return {
     ...game,
-    ...calculatedBoardParams,
+    ...information,
     userId: user?.uid ?? '',
     players,
     gameId,

@@ -1,12 +1,17 @@
-import {
-  getColorForPlayer,
-  getFillColor,
-} from '../board-view-utils/boardColors';
 import { GameContext } from '../game-context/GameContext';
 import React, { useContext, useState } from 'react';
 
 import TileActions, { TileActionsProps } from './TileActions';
 import { getBoardParameters } from './getBoardParameters';
+import {
+  canApplyPressure,
+  canClear,
+} from 'functions/src/game-logic/actionsTests';
+
+import {
+  getColorForPlayer,
+  getFillColor,
+} from 'src/game/board-view-utils/boardColors';
 
 type HexagonalBoardProps = {
   className?: string;
@@ -29,7 +34,7 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
     <div
       className={`flex h-full w-full ${className}`}
       onPointerLeave={() =>
-        setTileActionsState((prev) => ({ ...prev, x: undefined }))
+        setTileActionsState((prev) => ({ ...prev, show: false }))
       }>
       <TileActions {...tileActionsState} />
       <svg
@@ -59,7 +64,7 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
               <g
                 onMouseEnter={(e) =>
                   setTileActionsState((prev) => {
-                    if (prev.x !== undefined) return prev;
+                    if (prev.show) return prev;
                     // Reduces animation by moving actions closer before click
                     return { ...prev, clientX: e.clientX, clientY: e.clientY };
                   })
@@ -68,24 +73,37 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
                   setTileActionsState((prev) => {
                     // Hides actions if clicking on same cell
                     if (prev.x === x && prev.y === y)
-                      return { ...prev, x: undefined };
+                      return { ...prev, show: false };
 
                     // Changes cells if clicking on new cell
-                    return { x, y, clientX: e.clientX, clientY: e.clientY };
+                    return { x, y, ...e, show: true };
                   })
                 }
                 onWheel={(e) => {
-                  updateNextTurn?.({
+                  const newTilePressure = {
                     x,
                     y,
                     clear,
                     distance,
-                    pressure: Math.max(pressure + (e.deltaY > 0 ? -1 : 1), 0),
-                  });
+                    pressure: pressure + (e.deltaY > 0 ? -1 : 1),
+                  };
+
+                  if (canApplyPressure(newTilePressure)) {
+                    updateNextTurn?.(newTilePressure);
+                  }
                 }}
                 onAuxClick={() => {
-                  if (previousPlayerId !== userId || homeworld) return;
-                  updateNextTurn?.({ x, y, pressure, distance, clear: !clear });
+                  if (
+                    canClear({ homeworld, playerId: previousPlayerId }, userId)
+                  ) {
+                    updateNextTurn?.({
+                      x,
+                      y,
+                      pressure,
+                      distance,
+                      clear: !clear,
+                    });
+                  }
                 }}
                 className="cursor-pointer transition-opacity duration-100 sm:hover:opacity-85"
                 fillOpacity={disabled || clear ? 0.5 : playerChanged ? 0.9 : 1}
