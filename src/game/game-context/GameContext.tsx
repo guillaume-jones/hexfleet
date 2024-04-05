@@ -1,4 +1,5 @@
 import { getAllBoardInformation } from '../board-view-utils/getAllBoardInformation';
+import { ProjectedTile } from '../board-view-utils/getProjectedBoard';
 import { deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { Dictionary } from 'lodash';
 import { useRouter } from 'next/router';
@@ -13,7 +14,6 @@ import {
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
-import { PlayerWithName, ProjectedTile } from './GameContextTypes';
 import {
   Game,
   NextTurn,
@@ -24,7 +24,10 @@ import {
 } from 'functions/src/document-types/Games';
 
 import { auth, firestore } from 'src/firebase/firebaseApp';
-import { addNamesToPlayers } from 'src/game/board-view-utils/addNamesToPlayers';
+import {
+  PlayerWithName,
+  addNamesToPlayers,
+} from 'src/game/board-view-utils/addNamesToPlayers';
 
 export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   gameId: string;

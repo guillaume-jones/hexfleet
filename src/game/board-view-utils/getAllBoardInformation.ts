@@ -29,7 +29,12 @@ export const getAllBoardInformation = ({
     : 0;
 
   // Project new board for display
-  const newBoardState = getProjectedBoard(boardState, nextTurn, userId);
+  const newBoardState = getProjectedBoard({
+    boardState,
+    boardSize,
+    nextTurn,
+    userId,
+  });
   const newBoardWithBorders = addBordersToBoard(newBoardState, boardSize).sort(
     // Must sort or empty tiles override player tiles/borders
     (a, b) => +!!a.playerId - +!!b.playerId,

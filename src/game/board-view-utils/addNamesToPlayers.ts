@@ -1,4 +1,3 @@
-import { PlayerWithName } from '../game-context/GameContextTypes';
 import { doc, getDoc } from 'firebase/firestore';
 
 import { Player } from 'functions/src/document-types/Games';
@@ -23,6 +22,10 @@ const addNameToPlayer = async (player: Player) => {
     ...player,
     name: name || 'Anonymous',
   };
+};
+
+export type PlayerWithName = Player & {
+  name: string;
 };
 
 export const addNamesToPlayers = async (

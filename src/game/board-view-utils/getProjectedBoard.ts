@@ -1,15 +1,27 @@
-import { NextTurn, Tile } from 'functions/src/document-types/Games';
+import {
+  NextTurn,
+  Tile,
+  TileWithPressure,
+} from 'functions/src/document-types/Games';
 import { calculateNewBoardState } from 'functions/src/game-logic/calculateNewBoardState';
 import { findClosestTileWithId } from 'functions/src/game-logic/findClosestTileWithId';
 
-import { ProjectedTile } from 'src/game/game-context/GameContextTypes';
+export type ProjectedTile<T extends Tile> = TileWithPressure<T> & {
+  previousPlayerId?: string;
+};
 
-export const getProjectedBoard = (
-  boardState: Tile[] | undefined,
-  nextTurn?: NextTurn,
-  userId?: string,
-): ProjectedTile<Tile>[] => {
-  if (!boardState) return [];
+export const getProjectedBoard = ({
+  boardState,
+  boardSize,
+  nextTurn,
+  userId,
+}: {
+  boardState?: Tile[];
+  boardSize?: number;
+  nextTurn?: NextTurn;
+  userId?: string;
+}): ProjectedTile<Tile>[] => {
+  if (!boardState || !boardSize) return [];
 
   if (!nextTurn || !userId)
     return boardState.map((tile) => ({ ...tile, pressure: 0, distance: 0 }));
@@ -27,7 +39,7 @@ export const getProjectedBoard = (
     const closestOwnTile = findClosestTileWithId({
       coords: { x: tile.x, y: tile.y },
       boardState,
-      boardSize: 7,
+      boardSize,
       id: userId,
       maxDistance: 3,
     });

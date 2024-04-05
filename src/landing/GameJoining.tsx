@@ -46,7 +46,8 @@ const GameJoining = ({ className }: GameCreationProps) => {
   useEffect(() => {
     const shortId = router.query.shortId;
     if (user && shortId && typeof shortId === 'string') {
-      void joinGameAndRedirect(shortId);
+      setShortId(shortId.toUpperCase());
+      void joinGameAndRedirect(shortId.toUpperCase());
     }
   }, [joinGameAndRedirect, router.query, user]);
 
