@@ -50,19 +50,13 @@ const joinGame = functions
           const newPlayers = gameData.players.map((p) =>
             p.id === playerId ? { ...p, hasResigned: true } : p,
           );
-          const notResigned = newPlayers.filter((p) => !p.hasResigned);
+          const alivePlayers = newPlayers.filter((p) => !p.hasResigned);
 
-          if (notResigned.length === 1) {
-            await gameRef.update({
-              players: newPlayers,
-              winner: notResigned[0].id,
-              endedAt: Timestamp.now(),
-            });
-          } else {
-            await gameRef.update({
-              players: newPlayers,
-            });
-          }
+          await gameRef.update({
+            players: newPlayers,
+            winner: alivePlayers.length === 1 ? alivePlayers[0].id : null,
+            endedAt: alivePlayers.length === 1 ? Timestamp.now() : null,
+          });
         }
         break;
     }
