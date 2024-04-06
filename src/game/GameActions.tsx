@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Lock, Unlock } from 'react-feather';
+import { ArrowRightCircle, RefreshCw } from 'react-feather';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
 import { GameContext } from './game-context/GameContext';
@@ -23,26 +23,28 @@ const GameActions = ({ className }: GameActionsProps) => {
     shortId,
     hasStarted,
     gameId,
-    nextTurnLocked,
+    nextTurnSent,
+    nextTurnMatchesSent,
     influenceByPlayer,
     influenceRemaining,
     projectedInfluenceByPlayer,
-    toggleNextTurnLock,
+    sendNextTurn,
     userId,
   } = useContext(GameContext);
 
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [sendLoading, setSendLoading] = useState(false);
 
   useEffect(() => {
     if (!hasStarted) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === ' ') toggleNextTurnLock();
+      if (e.key === ' ') sendNextTurn().catch(console.error);
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [hasStarted, toggleNextTurnLock]);
+  }, [hasStarted, sendNextTurn]);
 
   if (!shortId) return null;
 
@@ -73,12 +75,24 @@ const GameActions = ({ className }: GameActionsProps) => {
       <div className="flex flex-row justify-between gap-3">
         {hasStarted && (
           <Button
-            light={nextTurnLocked}
+            light={nextTurnMatchesSent}
+            loading={sendLoading}
             disabled={influenceRemaining < 0}
-            onClick={() => toggleNextTurnLock()}>
-            <div className="flex w-40 flex-row items-center justify-between gap-2">
-              {nextTurnLocked ? 'Unlock next turn' : 'Lock next turn'}
-              {nextTurnLocked ? <Lock size={20} /> : <Unlock size={20} />}
+            onClick={() => {
+              setSendLoading(true);
+              sendNextTurn()
+                .then(() => {
+                  setSendLoading(false);
+                })
+                .catch(console.error);
+            }}>
+            <div className="flex w-40 flex-row items-center justify-around gap-2 font-medium">
+              {nextTurnSent ? 'Re-send next turn' : 'Send next turn'}
+              {nextTurnSent ? (
+                <RefreshCw size={20} />
+              ) : (
+                <ArrowRightCircle size={20} />
+              )}
             </div>
           </Button>
         )}

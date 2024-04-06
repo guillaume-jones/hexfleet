@@ -5,7 +5,7 @@ import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
 import RejoinButton from './RejoinButton';
 import { JoinGameData } from 'functions/src/document-types/Games';
-import { shortIdLength } from 'functions/src/game/shortId';
+import { shortIdLength } from 'functions/src/game-functions/shortId';
 
 import Button from 'src/components/interactive/Button';
 import Input from 'src/components/interactive/Input';

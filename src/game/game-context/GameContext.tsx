@@ -1,6 +1,6 @@
 import { getAllBoardInformation } from '../board-view-utils/getAllBoardInformation';
 import { ProjectedTile } from '../board-view-utils/getProjectedBoard';
-import { deleteDoc, doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { Dictionary } from 'lodash';
 import { useRouter } from 'next/router';
 import {
@@ -39,10 +39,11 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   projectedInfluenceByPlayer: Dictionary<number>;
   influenceRemaining: number;
   loading: boolean;
-  nextTurnLocked: boolean;
+  nextTurnSent: boolean;
+  nextTurnMatchesSent: boolean;
   userResigned: boolean | undefined;
   updateNextTurn: (tile: TileWithPressure<TileCoords>) => void;
-  toggleNextTurnLock: () => void;
+  sendNextTurn: () => Promise<void>;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -57,7 +58,8 @@ const useGameProvider = (gameId: string): GameContextType => {
   );
   const [players, setPlayers] = useState<PlayerWithName[]>([]);
   const [nextTurn, setNextTurn] = useState<NextTurn>({ pressures: [] });
-  const [nextTurnLocked, setNextTurnLocked] = useState(false);
+  const [nextTurnSent, setNextTurnSent] = useState(false);
+  const [nextTurnMatchesSent, setNextTurnMatchesSent] = useState(true);
 
   // Redirects to landing page if game is not accessible
   useEffect(() => {
@@ -88,19 +90,22 @@ const useGameProvider = (gameId: string): GameContextType => {
 
       return { pressures: [...newPressures, tile] };
     });
+    setNextTurnMatchesSent(false);
   }, []);
-  const toggleNextTurnLock = useCallback(() => {
+  const sendNextTurn = useCallback(async () => {
     const nextTurnRef =
       user && gameId && doc(firestore, 'games', gameId, 'nextTurns', user.uid);
     if (!nextTurnRef) return;
 
-    setNextTurnLocked((prev) => !prev);
-    if (nextTurnLocked) {
-      deleteDoc(nextTurnRef).catch((e) => console.error(e));
-    } else {
-      setDoc(nextTurnRef, nextTurn).catch((e) => console.error(e));
+    setNextTurnSent(true);
+    try {
+      await setDoc(nextTurnRef, nextTurn);
+      setNextTurnMatchesSent(true);
+    } catch (e) {
+      console.error(e);
+      setNextTurnSent(false);
     }
-  }, [user, gameId, nextTurn, nextTurnLocked]);
+  }, [user, gameId, nextTurn]);
 
   // Board processing for display
   const information = useMemo(() => {
@@ -120,9 +125,10 @@ const useGameProvider = (gameId: string): GameContextType => {
     players,
     gameId,
     loading,
-    nextTurnLocked,
+    nextTurnSent,
+    nextTurnMatchesSent,
     updateNextTurn,
-    toggleNextTurnLock,
+    sendNextTurn,
   };
 };
 
