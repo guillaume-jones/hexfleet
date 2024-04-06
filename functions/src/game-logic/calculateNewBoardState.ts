@@ -28,7 +28,10 @@ export function calculateNewBoardState(
     });
 
     // Early return: nothing to calculate
-    if (appliedPressures.length === 0) return { ...tile, playerId };
+    if (appliedPressures.length === 0) {
+      if (playerId) return { ...tile, playerId };
+      return { ...tile };
+    }
 
     // Attempt to clear tile if owner requested clear
     const ownerPressure = appliedPressures.find(
@@ -39,7 +42,10 @@ export function calculateNewBoardState(
     // Early return: only 1 player applied pressure
     if (appliedPressures.length === 1) {
       // Only owner is applying pressure
-      if (ownerPressure) return { ...tile, playerId };
+      if (ownerPressure) {
+        if (playerId) return { ...tile, playerId };
+        return { ...tile };
+      }
 
       const onlyPressure = appliedPressures[0];
       if (onlyPressure.pressure >= pressureToConquer) {
@@ -48,7 +54,8 @@ export function calculateNewBoardState(
       if (playerId && onlyPressure.pressure >= pressureToDisable) {
         return { ...tile, playerId, disabled: true };
       }
-      return { ...tile, playerId };
+      if (playerId) return { ...tile, playerId };
+      return { ...tile };
     }
 
     // Sorts pressures and resolves conflicts
@@ -71,6 +78,7 @@ export function calculateNewBoardState(
     }
 
     // Final return: no change, tile remains the same
-    return { ...tile, playerId };
+    if (playerId) return { ...tile, playerId };
+    return { ...tile };
   });
 }

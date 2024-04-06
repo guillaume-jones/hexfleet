@@ -20,6 +20,7 @@ const GameActions = ({ className }: GameActionsProps) => {
   );
 
   const {
+    winner,
     shortId,
     hasStarted,
     gameId,
@@ -46,7 +47,7 @@ const GameActions = ({ className }: GameActionsProps) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [hasStarted, sendNextTurn]);
 
-  if (!shortId) return null;
+  if (!shortId || winner) return null;
 
   return (
     <div
@@ -96,10 +97,7 @@ const GameActions = ({ className }: GameActionsProps) => {
             </div>
           </Button>
         )}
-        <Button
-          light
-          loading={loading}
-          onClick={() => setConfirmModalOpen(true)}>
+        <Button light onClick={() => setConfirmModalOpen(true)}>
           {hasStarted ? 'Resign' : 'Leave Game'}
         </Button>
       </div>
@@ -112,6 +110,7 @@ const GameActions = ({ className }: GameActionsProps) => {
             Cancel
           </Button>
           <Button
+            loading={loading}
             onClick={() => {
               const asyncFunction = async () =>
                 editGamePlayer({
