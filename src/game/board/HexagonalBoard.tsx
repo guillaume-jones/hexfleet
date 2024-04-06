@@ -3,6 +3,7 @@ import React, { useContext, useState } from 'react';
 
 import TileActions, { TileActionsProps } from './TileActions';
 import { getBoardParameters } from './getBoardParameters';
+import { maxInfluenceReach } from 'functions/src/game-logic/GameConstants';
 import {
   canApplyPressure,
   canClear,
@@ -60,24 +61,42 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
             );
             const fill = getFillColor(stroke);
             const playerChanged = playerId !== previousPlayerId;
+            const isClickable = distance <= maxInfluenceReach;
+
             return (
               <g
-                onMouseEnter={(e) =>
-                  setTileActionsState((prev) => {
-                    if (prev.show) return prev;
-                    // Reduces animation by moving actions closer before click
-                    return { ...prev, clientX: e.clientX, clientY: e.clientY };
-                  })
+                onMouseEnter={
+                  isClickable
+                    ? (e) =>
+                        setTileActionsState((prev) => {
+                          if (prev.show) return prev;
+                          // Reduces animation by moving actions closer before click
+                          return {
+                            ...prev,
+                            clientX: e.clientX,
+                            clientY: e.clientY,
+                          };
+                        })
+                    : undefined
                 }
-                onClick={(e) =>
-                  setTileActionsState((prev) => {
-                    // Hides actions if clicking on same cell
-                    if (prev.x === x && prev.y === y)
-                      return { ...prev, show: false };
+                onClick={
+                  isClickable
+                    ? (e) =>
+                        setTileActionsState((prev) => {
+                          // Toggles actions if clicking on same cell
+                          if (prev.x === x && prev.y === y)
+                            return { ...prev, show: !prev.show };
 
-                    // Changes cells if clicking on new cell
-                    return { x, y, ...e, show: true };
-                  })
+                          // Changes cells if clicking on new cell
+                          return {
+                            x,
+                            y,
+                            clientX: e.clientX,
+                            clientY: e.clientY,
+                            show: true,
+                          };
+                        })
+                    : undefined
                 }
                 onWheel={(e) => {
                   const newTilePressure = {
@@ -105,7 +124,11 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
                     });
                   }
                 }}
-                className="cursor-pointer transition-opacity duration-100 sm:hover:opacity-85"
+                className={`group select-none ${
+                  isClickable
+                    ? 'cursor-pointer sm:hover:opacity-80'
+                    : 'cursor-default'
+                }`}
                 fillOpacity={disabled || clear ? 0.5 : playerChanged ? 0.9 : 1}
                 strokeOpacity={playerChanged ? 0.4 : 1}
                 key={`${x},${y}`}
@@ -181,8 +204,11 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
                     {pressure}
                   </text>
                 )}
-                {distance > 1 && pressure > 0 && (
+                {distance > 1 && distance < Infinity && (
                   <text
+                    className={`opacity-0 sm:group-hover:opacity-100 ${
+                      pressure > 0 ? 'opacity-100' : ''
+                    }`}
                     textAnchor={'middle'}
                     alignmentBaseline={'text-before-edge'}
                     fontSize={2.5}
