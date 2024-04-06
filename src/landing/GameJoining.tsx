@@ -65,6 +65,7 @@ const GameJoining = ({ className }: GameCreationProps) => {
       />
 
       <Button
+        disabled={shortId.length !== shortIdLength}
         fontClassName="text-lg font-semibold"
         loading={loading}
         onClick={() => void joinGameAndRedirect(shortId)}>
