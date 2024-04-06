@@ -3,7 +3,7 @@ import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { customAlphabet } from 'nanoid';
 
 import { Game } from 'functions/src/document-types/Games';
-import { shortIdLength } from 'functions/src/game/shortId';
+import { shortIdLength } from 'functions/src/game-logic/GameConstants';
 
 import { auth, firestore } from 'src/firebase/firebaseApp';
 

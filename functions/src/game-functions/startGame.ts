@@ -1,9 +1,9 @@
 import { Game, StartGameData } from '../document-types/Games';
+import { minimumPlayers } from '../game-logic/GameConstants';
+import { addPlayersToBoard } from '../game-logic/addPlayersToBoard';
 import * as admin from 'firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import * as functions from 'firebase-functions';
-
-import { addPlayersToBoard } from '../game-logic/addPlayersToBoard';
 
 const firestore = admin.firestore();
 
@@ -27,22 +27,28 @@ const joinGame = functions
     }
 
     const gameRef = firestore.doc(`games/${gameId}`);
-    const gameData = (await gameRef.get()).data() as Game;
+    const game = (await gameRef.get()).data() as Game;
 
-    if (!gameData.players || !gameData.players.find((p) => p.id === playerId)) {
-      throw new functions.https.HttpsError(
-        'permission-denied',
-        'Not a player in this game',
-      );
-    }
-    if (gameData.hasStarted) {
+    if (game.hasStarted) {
       throw new functions.https.HttpsError(
         'failed-precondition',
         'Game has already started',
       );
     }
+    if (game.players.length < minimumPlayers) {
+      throw new functions.https.HttpsError(
+        'failed-precondition',
+        'Not enough players to start game',
+      );
+    }
+    if (!game.players || !game.players.find((p) => p.id === playerId)) {
+      throw new functions.https.HttpsError(
+        'permission-denied',
+        'Not a player in this game',
+      );
+    }
 
-    const newBoardState = addPlayersToBoard(gameData);
+    const newBoardState = addPlayersToBoard(game);
 
     await gameRef.update({
       boardState: newBoardState,

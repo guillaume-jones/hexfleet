@@ -4,6 +4,10 @@ import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
+import {
+  maximumPlayers,
+  minimumPlayers,
+} from 'functions/src/game-logic/GameConstants';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
 import { addPlayersToBoard } from 'functions/src/game-logic/addPlayersToBoard';
 
@@ -78,8 +82,8 @@ const GameCreation = ({ className }: GameCreationProps) => {
             <Range
               value={playersCount}
               setValue={setPlayersCount}
-              min={2}
-              max={6}
+              min={minimumPlayers}
+              max={maximumPlayers}
             />
           </div>
         </div>

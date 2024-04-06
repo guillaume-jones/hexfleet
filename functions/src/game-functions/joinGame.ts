@@ -1,8 +1,7 @@
 import { Game, JoinGameData, Player } from '../document-types/Games';
+import { maximumPlayers, shortIdLength } from '../game-logic/GameConstants';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-
-import { shortIdLength } from './shortId';
 
 const firestore = admin.firestore();
 
@@ -49,9 +48,16 @@ const joinGame = functions
     }
 
     const gameRef = gameSnapshot.docs[0].ref;
-    const game = gameSnapshot.docs[0].data() as Partial<Game>;
+    const game = gameSnapshot.docs[0].data() as Game;
 
-    if (!game.players?.find((player) => player.id === playerId)) {
+    if (game.players.length >= maximumPlayers) {
+      throw new functions.https.HttpsError(
+        'failed-precondition',
+        'Game is full',
+      );
+    }
+
+    if (!game.players.find((player) => player.id === playerId)) {
       const newPlayer: Player = {
         id: playerId,
         hasResigned: false,
