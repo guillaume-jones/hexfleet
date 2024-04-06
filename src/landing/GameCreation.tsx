@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
-import { addPlayersToBoard } from 'functions/src/game/addPlayersToBoard';
+import { addPlayersToBoard } from 'functions/src/game-logic/addPlayersToBoard';
 
 import Button from 'src/components/interactive/Button';
 import Range from 'src/components/interactive/Range';

@@ -41,5 +41,6 @@ export const validateTileClear = ({
   id: string;
 }): boolean => {
   if (!tile.clear) return true;
+
   return canClear(tile, id);
 };

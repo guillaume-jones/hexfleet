@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import * as functions from 'firebase-functions';
 
-import { addPlayersToBoard } from './addPlayersToBoard';
+import { addPlayersToBoard } from '../game-logic/addPlayersToBoard';
 
 const firestore = admin.firestore();
 

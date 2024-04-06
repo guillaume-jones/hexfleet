@@ -24,14 +24,16 @@ export const updateBoardTurn = ({
 
   // Validates all nextTurns
   const validNextTurns = nextTurns
-    .map((nextTurn, i) => {
+    .map((nextTurn, i): NextTurn | false => {
       const validPressures = nextTurn.pressures.filter((tilePressure) => {
+        // Tries to find the corresponding board tile for the pressure
         const foundTile = boardState.find(({ x, y }) => {
           return x === tilePressure.x && y === tilePressure.y;
         });
         if (!foundTile) return false;
         const tile = { ...foundTile, ...tilePressure };
 
+        // Verifies that the pressure or clear action is valid
         return (
           validateTilePressure({
             tile,
@@ -42,27 +44,28 @@ export const updateBoardTurn = ({
         );
       });
 
+      // Verifies that player did not overspend their influence
       const influenceToSpend = playerInfluences[players[i]];
       const influenceCost = getInfluenceSpent({ pressures: validPressures });
-
       if (!influenceToSpend || influenceCost > influenceToSpend) return false;
 
       return { pressures: validPressures };
     })
     .filter((nextTurn, i): nextTurn is NextTurn => {
-      if (!nextTurn) {
-        players = players.filter((id) => id !== players[i]);
-        return false;
-      }
-      return true;
+      if (nextTurn) return true;
+
+      // Removes player from next turns to apply if their turn was invalid
+      players = players.filter((id) => id !== players[i]);
+      return false;
     });
 
-  // Applies next turn logic
+  // Applies next turns to board state
   const newBoardState = calculateNewBoardState(
     boardState,
     validNextTurns,
     players,
   );
+  // Removes dead players
   const newPlayers = updatePlayerStatus(newBoardState, game.players);
 
   return { newBoardState, newPlayers };
