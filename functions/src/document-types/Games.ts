@@ -29,7 +29,7 @@ export type TileWithBorders<T extends Tile> = T & {
 export type TileWithPressure<T extends TileCoords> = T & {
   pressure: number;
   distance: number;
-  clear?: boolean;
+  clear: boolean;
 };
 
 export type NextTurn = {

@@ -18,7 +18,7 @@ const GameDisplay = () => {
         {!hasStarted && <GameCodeBox />}
       </div>
       {!userResigned && (
-        <GameActions className="lg:absolute lg:bottom-40 lg:left-4" />
+        <GameActions className="lg:absolute lg:bottom-20 lg:left-4" />
       )}
       {userResigned ? (
         <SimpleHexBoard

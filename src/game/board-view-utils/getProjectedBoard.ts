@@ -10,6 +10,12 @@ export type ProjectedTile<T extends Tile> = TileWithPressure<T> & {
   previousPlayerId?: string;
 };
 
+const defaultTileWithPressure = {
+  pressure: 0,
+  distance: 0,
+  clear: false,
+};
+
 export const getProjectedBoard = ({
   boardState,
   boardSize,
@@ -23,8 +29,9 @@ export const getProjectedBoard = ({
 }): ProjectedTile<Tile>[] => {
   if (!boardState || !boardSize) return [];
 
-  if (!nextTurn || !userId)
-    return boardState.map((tile) => ({ ...tile, pressure: 0, distance: 0 }));
+  if (!nextTurn || !userId) {
+    return boardState.map((tile) => ({ ...tile, ...defaultTileWithPressure }));
+  }
 
   const newBoardState = calculateNewBoardState(
     boardState,
@@ -46,10 +53,10 @@ export const getProjectedBoard = ({
 
     return {
       ...tile,
+      ...defaultTileWithPressure,
+      ...tilePressure,
       previousPlayerId: boardState[i].playerId,
-      pressure: tilePressure?.pressure ?? 0,
-      clear: tilePressure?.clear,
-      distance: closestOwnTile?.distance ?? -1,
+      distance: closestOwnTile.distance,
     };
   });
 };

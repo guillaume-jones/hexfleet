@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Lock, Unlock } from 'react-feather';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
@@ -33,13 +33,25 @@ const GameActions = ({ className }: GameActionsProps) => {
 
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
+  useEffect(() => {
+    if (!hasStarted) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === ' ') toggleNextTurnLock();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [hasStarted, toggleNextTurnLock]);
+
   if (!shortId) return null;
 
   return (
     <div
-      className={`flex w-80 flex-col gap-4 rounded-xl bg-zinc-800 px-4 py-3 ${className}
+      className={`flex w-auto flex-col gap-4 rounded-xl bg-zinc-800 px-4 py-3
+      transition-all ${className}
       `}>
-      <h2 className="text-2xl font-semibold">Your Actions</h2>
+      <h2 className="text-2xl font-semibold">Actions</h2>
       {hasStarted && (
         <div>
           <div className="flex">
@@ -58,12 +70,13 @@ const GameActions = ({ className }: GameActionsProps) => {
           </div>
         </div>
       )}
-      <div className="flex flex-row justify-between gap-2">
+      <div className="flex flex-row justify-between gap-3">
         {hasStarted && (
           <Button
+            light={nextTurnLocked}
             disabled={influenceRemaining < 0}
             onClick={() => toggleNextTurnLock()}>
-            <div className="flex flex-row items-center gap-2">
+            <div className="flex w-40 flex-row items-center justify-between gap-2">
               {nextTurnLocked ? 'Unlock next turn' : 'Lock next turn'}
               {nextTurnLocked ? <Lock size={20} /> : <Unlock size={20} />}
             </div>

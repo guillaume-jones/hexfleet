@@ -83,6 +83,8 @@ const useGameProvider = (gameId: string): GameContextType => {
       const newPressures = prev.pressures.filter(
         ({ x, y }) => !(x === tile.x && y === tile.y),
       );
+      // Remove tile from updates if it is not being cleared or pressured
+      if (!tile.clear && !tile.pressure) return { pressures: newPressures };
 
       return { pressures: [...newPressures, tile] };
     });
