@@ -46,10 +46,15 @@ const onNewNextTurn = functions
     await gameRef.update({
       boardState: newBoardState,
       players: newPlayers,
-      pastTurns: [...game.pastTurns, game.boardState],
+      pastTurns: admin.firestore.FieldValue.arrayUnion({
+        boardState: game.boardState,
+      }),
       winner: alivePlayers.length === 1 ? alivePlayers[0].id : null,
       endedAt: alivePlayers.length === 1 ? Timestamp.now() : null,
     });
+
+    // Delete all documents in next turn collection
+    await Promise.all(nextTurnsSnapshot.docs.map((doc) => doc.ref.delete()));
 
     return null;
   });

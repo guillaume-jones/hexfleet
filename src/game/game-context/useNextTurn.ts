@@ -53,7 +53,12 @@ const useNextTurn = (gameId: string) => {
       // Remove tile from updates if it is not being cleared or pressured
       if (!tile.clear && !tile.pressure) return { pressures: newPressures };
 
-      return { pressures: [...newPressures, tile] };
+      return {
+        pressures: [
+          ...newPressures,
+          { ...tile, pressure: tile.pressure || 0, clear: tile.clear ?? false },
+        ],
+      };
     });
   }, []);
 

@@ -43,7 +43,7 @@ export type Game = {
   startedAt: Timestamp | null;
   endedAt: Timestamp | null;
   hasStarted: boolean;
-  pastTurns: BoardState[];
+  pastTurns: { boardState: BoardState }[];
   players: Player[];
   shortId: string;
   winner: string | null;

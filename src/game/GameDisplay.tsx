@@ -11,6 +11,8 @@ const GameDisplay = () => {
   const { hasStarted, userResigned, boardState, boardSize } =
     useContext(GameContext);
 
+  const hexBoardStyling = 'h-full w-full xl:-ml-12 xl:h-[760px]';
+
   return (
     <div className="flex flex-col items-center gap-6 px-4 py-4 xl:flex-row xl:items-stretch">
       <div
@@ -24,12 +26,12 @@ const GameDisplay = () => {
       </div>
       {!hasStarted || userResigned ? (
         <SimpleHexBoard
-          className="max-w-[880px] xl:-ml-12"
+          className={hexBoardStyling}
           board={boardState}
           boardSize={boardSize}
         />
       ) : (
-        <HexagonalBoard className="h-full w-full xl:-ml-12 xl:h-[770px]" />
+        <HexagonalBoard className={hexBoardStyling} />
       )}
     </div>
   );
