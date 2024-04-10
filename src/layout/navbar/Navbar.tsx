@@ -7,7 +7,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from 'src/firebase/firebaseApp';
 import AccountButton from 'src/layout/navbar/AccountButton';
 import PageLink from 'src/layout/navbar/PageLink';
-import { pagesList } from 'src/layout/navbar/pagesList';
+import { hasPagesForLoggedOut, pagesList } from 'src/layout/navbar/pagesList';
 
 export default function Navbar() {
   const { pathname } = useRouter();
@@ -31,58 +31,63 @@ export default function Navbar() {
           />
         </PageLink>
         <div className="flex-1" />
-        <div className="mr-6 hidden space-x-6 sm:flex">
-          {pagesList.map(({ title, path, hideWhenLoggedOut }) => {
-            if (hideWhenLoggedOut && !user) return null;
+        {(user || hasPagesForLoggedOut) && (
+          <div className="mr-6 hidden space-x-6 sm:flex">
+            {pagesList.map(({ title, path, hideWhenLoggedOut }) => {
+              if (hideWhenLoggedOut && !user) return null;
 
-            return (
-              <PageLink
-                href={path}
-                currentPath={pathname}
-                key={path}
-                className="text-xl">
-                {title}
-              </PageLink>
-            );
-          })}
-        </div>
-        <AccountButton />
-        <Menu>
-          <div className="flex outline-none sm:hidden">
-            <Menu.Button
-              className="ml-2 h-10 w-10 rounded-md p-1 text-zinc-50 outline-none transition hover:text-violet-300 active:text-violet-500"
-              aria-label="menu">
-              <Bars3Icon />
-            </Menu.Button>
-            <Transition
-              enter="transition ease-out duration-200"
-              enterFrom="transform opacity-0 translate-x-20 "
-              enterTo="transform opacity-100  translate-x-0 "
-              leave="transition ease-in duration-150"
-              leaveFrom="transform opacity-100 translate-x-0 "
-              leaveTo="transform opacity-0 translate-x-20 ">
-              <Menu.Items className="absolute -right-4 top-12 w-36 rounded-bl-2xl bg-gradient-to-tr from-violet-800 to-violet-700 px-1 shadow-lg outline-none">
-                <div className="flex w-full flex-col divide-y divide-zinc-50 divide-opacity-50">
-                  {pagesList.map(({ title, path }) => {
-                    return (
-                      <Menu.Item key={path}>
-                        {({ close }) => (
-                          <PageLink
-                            href={path}
-                            currentPath={pathname}
-                            className="py-3 pr-3 text-right text-lg"
-                            onClick={close}>
-                            {title}
-                          </PageLink>
-                        )}
-                      </Menu.Item>
-                    );
-                  })}
-                </div>
-              </Menu.Items>
-            </Transition>
+              return (
+                <PageLink
+                  href={path}
+                  currentPath={pathname}
+                  key={path}
+                  className="text-xl">
+                  {title}
+                </PageLink>
+              );
+            })}
           </div>
-        </Menu>
+        )}
+        <AccountButton />
+        {(user || hasPagesForLoggedOut) && (
+          <Menu>
+            <div className="flex outline-none sm:hidden">
+              <Menu.Button
+                className="ml-3 h-10 w-10 rounded-md p-1 text-zinc-50 outline-none transition active:text-violet-500"
+                aria-label="menu">
+                <Bars3Icon />
+              </Menu.Button>
+              <Transition
+                enter="transition ease-out duration-200"
+                enterFrom="transform opacity-0 translate-x-20 "
+                enterTo="transform opacity-100  translate-x-0 "
+                leave="transition ease-in duration-150"
+                leaveFrom="transform opacity-100 translate-x-0 "
+                leaveTo="transform opacity-0 translate-x-20 ">
+                <Menu.Items className="absolute -right-4 top-12 w-36 rounded-bl-2xl  bg-violet-700 px-1 shadow-lg outline-none">
+                  <div className="flex w-full flex-col divide-y divide-zinc-50 divide-opacity-50">
+                    {pagesList.map(({ title, path, hideWhenLoggedOut }) => {
+                      if (hideWhenLoggedOut && !user) return null;
+                      return (
+                        <Menu.Item key={path}>
+                          {({ close }) => (
+                            <PageLink
+                              href={path}
+                              currentPath={pathname}
+                              className="py-3 pr-3 text-right text-lg text-zinc-50"
+                              onClick={close}>
+                              {title}
+                            </PageLink>
+                          )}
+                        </Menu.Item>
+                      );
+                    })}
+                  </div>
+                </Menu.Items>
+              </Transition>
+            </div>
+          </Menu>
+        )}
       </div>
     </div>
   );

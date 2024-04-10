@@ -22,14 +22,14 @@ export default function SecurityBox() {
       show={!userLoading}>
       <h2 className={'mb-2 text-xl font-semibold text-zinc-50'}>Security</h2>
       <AlignedBox>
-        <div className="flex flex-1 flex-col justify-between sm:flex-row">
+        <>
           <p>Email: {user?.email}</p>
           <DeleteAccountLink />
-        </div>
-        <>
+        </>
+        <div className="flex w-full flex-row justify-between">
           <ResetPasswordButton email={user?.email} />
           <LogoutButton />
-        </>
+        </div>
       </AlignedBox>
       <p className="mt-2">
         For any issues, please contact{' '}

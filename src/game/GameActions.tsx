@@ -40,7 +40,10 @@ const GameActions = ({ className }: GameActionsProps) => {
     if (!hasStarted) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === ' ') sendNextTurn().catch(console.error);
+      if (e.key === ' ') {
+        e.stopPropagation();
+        sendNextTurn().catch(console.error);
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -51,10 +54,10 @@ const GameActions = ({ className }: GameActionsProps) => {
 
   return (
     <div
-      className={`flex w-auto flex-col gap-4 rounded-xl bg-zinc-800 px-4 py-3
+      className={`flex w-auto flex-col gap-2 rounded-xl bg-zinc-800 px-4 py-3
       transition-all ${className}
       `}>
-      <h2 className="text-2xl font-semibold">Actions</h2>
+      <h2 className="text-xl font-bold">Actions</h2>
       {hasStarted && (
         <div>
           <div className="flex">

@@ -11,3 +11,7 @@ export const pagesList: Page[] = [
     hideWhenLoggedOut: true,
   },
 ];
+
+export const hasPagesForLoggedOut = pagesList.some(
+  (page) => !page.hideWhenLoggedOut,
+);

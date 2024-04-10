@@ -33,7 +33,7 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
 
   return (
     <div
-      className={`flex h-full w-full ${className}`}
+      className={`${className}`}
       onPointerLeave={() =>
         setTileActionsState((prev) => ({ ...prev, show: false }))
       }>

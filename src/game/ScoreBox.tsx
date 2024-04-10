@@ -16,15 +16,15 @@ const ScoreBox = () => {
   return (
     <div className="flex w-80 flex-col rounded-xl bg-zinc-800 px-4 py-3 text-center">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">Scores</h2>
+        <h2 className="text-xl font-bold">Scores</h2>
         <p className="text-lg font-semibold">Turn: {pastTurns.length}</p>
       </div>
       <table className="text-center">
         <thead>
           <tr>
-            <th className="w-32 text-left">Player</th>
-            <th className="w-20 font-normal">Tiles</th>
-            <th className="w-16 font-normal">Influence</th>
+            <th className="w-36 text-left">Player</th>
+            <th className="w-16 font-normal">Tiles</th>
+            <th className="font-normal">Influence</th>
           </tr>
         </thead>
         <tbody>

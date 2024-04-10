@@ -25,7 +25,7 @@ export default function Footer() {
           className="w-40 break-normal text-right sm:w-auto"
           light
           href="mailto:contact@hexfleet.com">
-          contact@<span className="sm:hidden"> </span>hexfleet.com
+          contact@hexfleet.com
         </StyledLink>
       </div>
     </div>

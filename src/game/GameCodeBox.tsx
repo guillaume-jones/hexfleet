@@ -23,7 +23,7 @@ const GameCodeBox = () => {
   return (
     <div className="flex flex-col items-center gap-2 rounded-xl bg-violet-900 px-4 py-3 text-center">
       <div className="relative flex items-center gap-4">
-        <h2 className="text-2xl font-semibold">Code: {shortId}</h2>
+        <h2 className="text-xl font-semibold">Code: {shortId}</h2>
 
         <Copy
           className={`z-10  transition-opacity ${

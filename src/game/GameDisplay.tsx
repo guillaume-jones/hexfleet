@@ -12,22 +12,24 @@ const GameDisplay = () => {
     useContext(GameContext);
 
   return (
-    <div className="flex flex-col items-center justify-start gap-6 py-2 lg:flex-row lg:items-end">
-      <div className="flex flex-col items-center gap-6 sm:flex-row lg:absolute lg:left-4 lg:top-8 lg:flex-col lg:items-start">
+    <div className="flex flex-col items-center gap-6 py-4 xl:flex-row">
+      <div
+        className="mx-2 flex flex-col items-center gap-4 md:flex-row xl:ml-4 xl:flex-col xl:items-start
+      ">
         <ScoreBox />
-        {!hasStarted && <GameCodeBox />}
+        <div className="flex flex-row items-center justify-between gap-4 xl:h-[69vh] xl:w-auto xl:flex-col xl:items-start">
+          {hasStarted ? <div /> : <GameCodeBox />}
+          {!userResigned && <GameActions />}
+        </div>
       </div>
-      {!userResigned && (
-        <GameActions className="lg:absolute lg:bottom-20 lg:left-4" />
-      )}
-      {userResigned ? (
+      {!hasStarted || userResigned ? (
         <SimpleHexBoard
-          className="lg:ml-72"
+          className="max-w-[880px] xl:-ml-16"
           board={boardState}
           boardSize={boardSize}
         />
       ) : (
-        <HexagonalBoard className="lg:ml-72" />
+        <HexagonalBoard className="max-w-[880px]  xl:-ml-16" />
       )}
     </div>
   );

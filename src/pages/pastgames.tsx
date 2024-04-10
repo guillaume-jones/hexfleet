@@ -8,7 +8,7 @@ import {
 } from 'firebase/firestore';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
 
@@ -24,7 +24,12 @@ const pageSize = 10;
 
 export default function PastGames() {
   const [user, userLoading] = useAuthState(auth);
-  const router = useRouter();
+  const { push } = useRouter();
+
+  // If not logged in, redirect to homepage
+  useEffect(() => {
+    if (!user && !userLoading) void push('/');
+  }, [push, user, userLoading]);
 
   const [pagesToLoad, setPagesToLoad] = useState(1);
   const [pastGames, loading] = useCollection<Partial<Game>>(
@@ -74,7 +79,7 @@ export default function PastGames() {
             showNoGamesText ? 'opacity-100' : 'opacity-0'
           }`}>
           <p>No past games.</p>
-          <StyledLink onClick={() => void router.push('/')}>
+          <StyledLink onClick={() => void push('/')}>
             Want to create a new game?
           </StyledLink>
         </div>

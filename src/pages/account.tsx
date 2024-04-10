@@ -15,9 +15,7 @@ export default function Account() {
   const [user, userLoading] = useAuthState(auth);
   // If not logged in, redirect to homepage
   useEffect(() => {
-    if (!user && !userLoading) {
-      push('/').catch((e) => console.error(e));
-    }
+    if (!user && !userLoading) void push('/');
   }, [push, user, userLoading]);
 
   return (

@@ -20,12 +20,12 @@ function PageLink({
         isCurrentPath
           ? 'text-violet-700'
           : 'text-zinc-50 hover:text-violet-300 active:text-violet-500'
-      } font-semibold transition-colors duration-200  ${className ?? ''}`}
+      } font-semibold transition-colors duration-200  ${className}`}
       href={href}
       onClick={onClick}
       rel="canonical">
       {typeof children === 'string' ? (
-        <h1 className="text-nowrap">{children}</h1>
+        <h1 className={'text-nowrap'}>{children}</h1>
       ) : (
         children
       )}
