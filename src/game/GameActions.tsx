@@ -25,7 +25,7 @@ const GameActions = ({ className }: GameActionsProps) => {
     hasStarted,
     gameId,
     nextTurnSent,
-    nextTurnMatchesSent,
+    nextTurnEqualsSent,
     influenceByPlayer,
     influenceRemaining,
     projectedInfluenceByPlayer,
@@ -41,7 +41,7 @@ const GameActions = ({ className }: GameActionsProps) => {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === ' ') {
-        e.stopPropagation();
+        e.preventDefault();
         sendNextTurn().catch(console.error);
       }
     };
@@ -79,7 +79,7 @@ const GameActions = ({ className }: GameActionsProps) => {
       <div className="flex flex-row justify-between gap-3">
         {hasStarted && (
           <Button
-            light={nextTurnMatchesSent}
+            light={nextTurnEqualsSent}
             loading={sendLoading}
             disabled={influenceRemaining < 0}
             onClick={() => {

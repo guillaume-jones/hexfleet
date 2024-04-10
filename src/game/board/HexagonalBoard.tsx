@@ -26,14 +26,16 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
     clientY: 0,
   });
 
-  if (!boardState || !boardSize) return null;
+  if (!boardState || !boardSize) {
+    return null;
+  }
   const { d, r, R, halfBoardSize, viewBoxW, viewBoxH, baseStrokeWidth } =
     getBoardParameters(boardSize);
   const userColor = getColorForPlayer(userId);
 
   return (
     <div
-      className={`${className}`}
+      className={`${className} sm:flex sm:justify-center`}
       onPointerLeave={() =>
         setTileActionsState((prev) => ({ ...prev, show: false }))
       }>

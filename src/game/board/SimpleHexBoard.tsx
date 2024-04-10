@@ -25,7 +25,7 @@ const SimpleHexBoard = ({
 
   return (
     <svg
-      className={`max-w-4xl ${className}`}
+      className={`${className} sm:flex sm:justify-center`}
       viewBox={`${-baseStrokeWidth / 2} ${-baseStrokeWidth / 2} ${
         viewBoxW + baseStrokeWidth
       } ${viewBoxH + baseStrokeWidth}`}>
