@@ -7,7 +7,7 @@ export type BoardOptions = {
 };
 
 export const defaultBoardOptions: BoardOptions = {
-  boardSize: 15,
+  boardSize: 13,
 };
 
 export const generateBoard = ({ boardSize }: BoardOptions): Tile[] => {

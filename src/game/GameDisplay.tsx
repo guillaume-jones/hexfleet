@@ -8,13 +8,23 @@ import SimpleHexBoard from './board/SimpleHexBoard';
 import { GameContext } from './game-context/GameContext';
 
 const GameDisplay = () => {
-  const { hasStarted, userResigned, boardState, boardSize } =
+  const { hasStarted, userResigned, boardState, boardSize, winner } =
     useContext(GameContext);
 
-  const hexBoardStyling = 'h-full w-full xl:-ml-12 xl:h-[760px]';
-
   return (
-    <div className="flex flex-col items-center gap-6 px-4 py-4 xl:flex-row xl:items-stretch">
+    <div
+      className={`
+      ${
+        // Arranges elements correctly
+        'flex flex-1 flex-col items-center gap-4 p-4 xl:flex-row xl:items-stretch'
+      }
+      ${
+        // Ensures board fits into window height if window is large
+        window.innerHeight > 500
+          ? 'h-auto sm:-mb-10 sm:h-full sm:flex-none sm:pb-14'
+          : ''
+      } 
+     `}>
       <div
         className="flex flex-col items-center gap-4 md:flex-row xl:flex-col xl:items-start
       ">
@@ -24,15 +34,13 @@ const GameDisplay = () => {
           {!userResigned && <GameActions />}
         </div>
       </div>
-      {!hasStarted || userResigned ? (
-        <SimpleHexBoard
-          className={hexBoardStyling}
-          board={boardState}
-          boardSize={boardSize}
-        />
-      ) : (
-        <HexagonalBoard className={hexBoardStyling} />
-      )}
+      <div className="min-h-0 self-stretch xl:-ml-10 ">
+        {!hasStarted || userResigned || winner ? (
+          <SimpleHexBoard board={boardState} boardSize={boardSize} />
+        ) : (
+          <HexagonalBoard />
+        )}
+      </div>
     </div>
   );
 };

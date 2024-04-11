@@ -15,9 +15,7 @@ export default function Game() {
       </Head>
       {typeof gameId === 'string' && (
         <GameProvider gameId={gameId}>
-          <div className="flex-1">
-            <GameDisplay />
-          </div>
+          <GameDisplay />
         </GameProvider>
       )}
     </>

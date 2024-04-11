@@ -56,7 +56,7 @@ export default function PastGame({ index }: PastGameProps) {
       enterTo="opacity-100"
       show={true}
       appear
-      className={`delay ${delays[index]} flex min-h-40 w-full max-w-xl flex-col justify-between gap-4 rounded-2xl bg-zinc-800 p-4 transition duration-300 sm:flex-row-reverse`}>
+      className={`delay ${delays[index]} flex w-full max-w-xl flex-col justify-between gap-4 rounded-2xl bg-zinc-900 p-4 transition duration-300 sm:flex-row-reverse`}>
       <div className="flex flex-1 flex-row items-center justify-around gap-4 sm:flex-col">
         <div className="flex flex-col items-center">
           <p className="text-lg">
@@ -91,15 +91,11 @@ export default function PastGame({ index }: PastGameProps) {
             setLoading(true);
             void router.push(`/games/${gameId}`);
           }}>
-          {winner ? 'View game' : hasStarted ? 'Rejoin Game' : 'Join Game'}
+          {winner ? 'View game' : 'Rejoin Game'}
         </Button>
       </div>
-      <div className="flex flex-col items-center justify-around gap-4 sm:flex-row">
-        <SimpleHexBoard
-          className="h-full max-w-72 sm:h-40"
-          board={boardState}
-          boardSize={boardSize}
-        />
+      <div className="flex h-80 flex-col items-center justify-around gap-4 sm:h-44 sm:flex-row">
+        <SimpleHexBoard board={boardState} boardSize={boardSize} />
         <div className="flex w-40 flex-col items-center">
           <h3 className="self-center pb-2 text-xl font-medium">Players</h3>
           {players.map(({ id, name, hasResigned }) => (

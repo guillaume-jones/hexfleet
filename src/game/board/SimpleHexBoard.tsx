@@ -8,16 +8,11 @@ import { getBoardParameters } from './getBoardParameters';
 import { Tile, TileWithBorders } from 'functions/src/document-types/Games';
 
 type HexagonalBoardProps = {
-  className?: string;
   board?: TileWithBorders<Tile>[];
   boardSize?: number;
 };
 
-const SimpleHexBoard = ({
-  className,
-  board,
-  boardSize,
-}: HexagonalBoardProps) => {
+const SimpleHexBoard = ({ board, boardSize }: HexagonalBoardProps) => {
   if (!board || !boardSize) return null;
 
   const { d, r, R, halfBoardSize, viewBoxW, viewBoxH, baseStrokeWidth } =
@@ -25,7 +20,7 @@ const SimpleHexBoard = ({
 
   return (
     <svg
-      className={`${className} sm:flex sm:justify-center`}
+      className="h-full w-full select-none"
       viewBox={`${-baseStrokeWidth / 2} ${-baseStrokeWidth / 2} ${
         viewBoxW + baseStrokeWidth
       } ${viewBoxH + baseStrokeWidth}`}>
