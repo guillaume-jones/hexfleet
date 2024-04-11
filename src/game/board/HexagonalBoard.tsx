@@ -1,9 +1,11 @@
 import { GameContext } from '../game-context/GameContext';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 
-import TileActions, { TileActionsProps } from './TileActions';
 import { getBoardParameters } from './getBoardParameters';
-import { maxInfluenceReach } from 'functions/src/game-logic/GameConstants';
+import {
+  maxInfluenceReach,
+  pressureToConquer,
+} from 'functions/src/game-logic/GameConstants';
 import {
   canApplyPressure,
   canClear,
@@ -21,10 +23,6 @@ type HexagonalBoardProps = {
 const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
   const { boardState, boardSize, userId, updateNextTurn } =
     useContext(GameContext);
-  const [tileActionsState, setTileActionsState] = useState<TileActionsProps>({
-    clientX: 0,
-    clientY: 0,
-  });
 
   if (!boardState || !boardSize) {
     return null;
@@ -34,14 +32,9 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
   const userColor = getColorForPlayer(userId);
 
   return (
-    <div
-      className={`${className} sm:flex sm:justify-center`}
-      onPointerLeave={() =>
-        setTileActionsState((prev) => ({ ...prev, show: false }))
-      }>
-      <TileActions {...tileActionsState} />
+    <div className={`${className} sm:flex sm:justify-center`}>
       <svg
-        className="max-w-4xl"
+        className="max-w-4xl select-none"
         viewBox={`${-baseStrokeWidth / 2} ${-baseStrokeWidth / 2} ${
           viewBoxW + baseStrokeWidth
         } ${viewBoxH + baseStrokeWidth}`}>
@@ -64,42 +57,41 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
             const fill = getFillColor(stroke);
             const playerChanged = playerId !== previousPlayerId;
             const isClickable = distance <= maxInfluenceReach;
+            const baseNewTilePressure = { x, y, distance, clear, pressure };
 
             return (
               <g
-                onMouseEnter={
-                  isClickable
-                    ? (e) =>
-                        setTileActionsState((prev) => {
-                          if (prev.show) return prev;
-                          // Reduces animation by moving actions closer before click
-                          return {
-                            ...prev,
-                            clientX: e.clientX,
-                            clientY: e.clientY,
-                          };
-                        })
-                    : undefined
-                }
-                onClick={
-                  isClickable
-                    ? (e) =>
-                        setTileActionsState((prev) => {
-                          // Toggles actions if clicking on same cell
-                          if (prev.x === x && prev.y === y)
-                            return { ...prev, show: !prev.show };
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (
+                    canClear({ homeworld, playerId: previousPlayerId }, userId)
+                  ) {
+                    updateNextTurn?.({
+                      ...baseNewTilePressure,
+                      clear: !clear,
+                    });
+                    return;
+                  }
+                  const newTilePressure = {
+                    ...baseNewTilePressure,
+                    pressure: pressure - pressureToConquer,
+                  };
 
-                          // Changes cells if clicking on new cell
-                          return {
-                            x,
-                            y,
-                            clientX: e.clientX,
-                            clientY: e.clientY,
-                            show: true,
-                          };
-                        })
-                    : undefined
-                }
+                  if (canApplyPressure(newTilePressure)) {
+                    updateNextTurn?.(newTilePressure);
+                  }
+                }}
+                onClick={() => {
+                  const newTilePressure = {
+                    ...baseNewTilePressure,
+                    pressure: pressure + pressureToConquer,
+                  };
+
+                  if (canApplyPressure(newTilePressure)) {
+                    updateNextTurn?.(newTilePressure);
+                  }
+                }}
                 onWheel={(e) => {
                   const newTilePressure = {
                     x,
@@ -113,26 +105,19 @@ const HexagonalBoard = ({ className }: HexagonalBoardProps) => {
                     updateNextTurn?.(newTilePressure);
                   }
                 }}
-                onAuxClick={() => {
-                  if (
-                    canClear({ homeworld, playerId: previousPlayerId }, userId)
-                  ) {
-                    updateNextTurn?.({
-                      x,
-                      y,
-                      pressure,
-                      distance,
-                      clear: !clear,
-                    });
-                  }
-                }}
                 className={`group select-none ${
                   isClickable
                     ? 'cursor-pointer sm:hover:opacity-80'
-                    : 'cursor-default'
+                    : 'cursor-not-allowed'
                 }`}
-                fillOpacity={disabled || clear ? 0.5 : playerChanged ? 0.9 : 1}
-                strokeOpacity={playerChanged ? 0.4 : 1}
+                fillOpacity={
+                  disabled || clear
+                    ? 0.5
+                    : playerChanged || distance > maxInfluenceReach
+                    ? 0.8
+                    : 1
+                }
+                strokeOpacity={playerChanged ? 0.5 : 1}
                 key={`${x},${y}`}
                 transform={`translate(${halfBoardSize * r + x * d - r * y},${
                   y * R * 1.5 + R
