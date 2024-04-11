@@ -1,19 +1,19 @@
+import { GameContext } from '../game-context/GameContext';
 import { useContext, useEffect, useState } from 'react';
 import { ArrowRightCircle, RefreshCw } from 'react-feather';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
-import { GameContext } from './game-context/GameContext';
 import { EditGamePlayerData } from 'functions/src/document-types/Games';
 
 import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
 import { functions } from 'src/firebase/firebaseApp';
 
-type GameActionsProps = {
+type ActionsBoxProps = {
   className?: string;
 };
 
-const GameActions = ({ className }: GameActionsProps) => {
+const ActionsBox = ({ className }: ActionsBoxProps) => {
   const [editGamePlayer, loading] = useHttpsCallable<EditGamePlayerData>(
     functions,
     'editGamePlayer',
@@ -130,4 +130,4 @@ const GameActions = ({ className }: GameActionsProps) => {
   );
 };
 
-export default GameActions;
+export default ActionsBox;

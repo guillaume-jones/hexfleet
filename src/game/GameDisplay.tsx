@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 
-import GameActions from './GameActions';
-import GameCodeBox from './GameCodeBox';
-import ScoreBox from './ScoreBox';
 import HexagonalBoard from './board/HexagonalBoard';
 import SimpleHexBoard from './board/SimpleHexBoard';
 import { GameContext } from './game-context/GameContext';
+import ActionsBox from './game-elements/ActionsBox';
+import GameCodeBox from './game-elements/GameCodeBox';
+import PlayersBox from './game-elements/PlayersBox';
 
 const GameDisplay = () => {
   const { hasStarted, userResigned, boardState, boardSize, winner } =
@@ -28,10 +28,10 @@ const GameDisplay = () => {
       <div
         className="flex flex-col items-center gap-4 md:flex-row xl:flex-col xl:items-start
       ">
-        <ScoreBox />
+        <PlayersBox />
         <div className="flex flex-1 flex-row items-center justify-between gap-4 xl:w-auto xl:flex-col xl:items-start">
           {hasStarted ? <div className="hidden xl:block" /> : <GameCodeBox />}
-          {!userResigned && <GameActions />}
+          {!userResigned && <ActionsBox />}
         </div>
       </div>
       <div className="min-h-0 self-stretch xl:-ml-10 ">

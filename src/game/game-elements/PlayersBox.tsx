@@ -1,12 +1,11 @@
+import { getColorForPlayer } from '../board-view-utils/boardColors';
+import { GameContext } from '../game-context/GameContext';
 import { useContext } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
-import { getColorForPlayer } from './board-view-utils/boardColors';
-import { GameContext } from './game-context/GameContext';
-
 import { auth } from 'src/firebase/firebaseApp';
 
-const ScoreBox = () => {
+const PlayersBox = () => {
   const [user] = useAuthState(auth);
   const { players, pastTurns, tilesByPlayer, influenceByPlayer, winner } =
     useContext(GameContext);
@@ -51,4 +50,4 @@ const ScoreBox = () => {
   );
 };
 
-export default ScoreBox;
+export default PlayersBox;

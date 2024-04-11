@@ -1,8 +1,8 @@
+import { GameContext } from '../game-context/GameContext';
 import { useContext, useState } from 'react';
 import { Check, Copy } from 'react-feather';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
-import { GameContext } from './game-context/GameContext';
 import { StartGameData } from 'functions/src/document-types/Games';
 
 import Button from 'src/components/interactive/Button';
