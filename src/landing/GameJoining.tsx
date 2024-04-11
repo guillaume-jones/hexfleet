@@ -45,11 +45,15 @@ const GameJoining = ({ className }: GameCreationProps) => {
 
   useEffect(() => {
     const shortId = router.query.shortId;
-    if (user && shortId && typeof shortId === 'string') {
-      setShortId(shortId.toUpperCase());
-      void joinGameAndRedirect(shortId.toUpperCase());
+    if (typeof shortId !== 'string') return;
+
+    setShortId(shortId.toUpperCase());
+    if (!user) {
+      void router.push(`/${loginUrlQuery}`);
+      return;
     }
-  }, [joinGameAndRedirect, router.query, user]);
+    void joinGameAndRedirect(shortId.toUpperCase());
+  }, [joinGameAndRedirect, router, router.query, user]);
 
   return (
     <div className={`flex w-60 flex-col items-center gap-4 ${className}`}>
