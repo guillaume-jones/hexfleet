@@ -62,10 +62,15 @@ const useNextTurn = (gameId: string) => {
     });
   }, []);
 
+  const resetNextTurn = useCallback(() => {
+    setNextTurn({ pressures: [] });
+  }, []);
+
   return {
     nextTurn,
     sendNextTurn,
     updateNextTurn,
+    resetNextTurn,
     nextTurnSent: !!sentNextTurn,
     nextTurnEqualsSent:
       JSON.stringify(nextTurn) === JSON.stringify(sentNextTurn),

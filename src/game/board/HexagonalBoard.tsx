@@ -98,7 +98,7 @@ const HexagonalBoard = () => {
                   updateNextTurn?.(newTilePressure);
                 }
               }}
-              className={`group select-none ${
+              className={`group select-none transition-all ${
                 isClickable
                   ? 'cursor-pointer sm:hover:opacity-80'
                   : 'cursor-not-allowed'
@@ -116,6 +116,7 @@ const HexagonalBoard = () => {
                 y * R * 1.5 + R
               }) scale(0.99)`}>
               <polygon
+                className="transition-all"
                 fill={fill}
                 strokeWidth={baseStrokeWidth}
                 stroke={stroke}

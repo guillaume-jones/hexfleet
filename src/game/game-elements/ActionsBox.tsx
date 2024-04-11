@@ -1,6 +1,6 @@
 import { GameContext } from '../game-context/GameContext';
 import { useContext, useEffect, useState } from 'react';
-import { ArrowRightCircle, RefreshCw } from 'react-feather';
+import { ArrowRightCircle, RefreshCw, RotateCcw } from 'react-feather';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
 import { EditGamePlayerData } from 'functions/src/document-types/Games';
@@ -30,6 +30,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
     influenceRemaining,
     projectedInfluenceByPlayer,
     sendNextTurn,
+    resetNextTurn,
     userId,
   } = useContext(GameContext);
 
@@ -60,7 +61,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
       <h2 className="text-xl font-bold">Actions</h2>
       {hasStarted && (
         <div>
-          <div className="flex">
+          <div className="flex items-center">
             <p>Influence left to spend:</p>
             <p
               className={`ml-2 font-bold ${
@@ -69,6 +70,11 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
               {influenceRemaining}
             </p>
             <p className="font-bold">/{influenceByPlayer[userId]}</p>
+            <RotateCcw
+              className="ml-4 cursor-pointer hover:opacity-80 active:opacity-50"
+              size={20}
+              onClick={() => resetNextTurn()}
+            />
           </div>
           <div className="flex italic">
             <p>Projected future influence:</p>
