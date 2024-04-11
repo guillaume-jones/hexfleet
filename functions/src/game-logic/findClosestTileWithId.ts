@@ -21,7 +21,9 @@ export const findClosestTileWithId = ({
     const neighbors = getValidNeighbors({ tile: coords, boardSize, distance });
     for (const { x, y } of neighbors) {
       const tile = boardState.find((t) => t.x === x && t.y === y);
-      if (tile?.playerId === id) return { tile, distance };
+      if (tile?.playerId === id) {
+        return { tile, distance: Math.max(distance, 1) };
+      }
     }
   }
 
