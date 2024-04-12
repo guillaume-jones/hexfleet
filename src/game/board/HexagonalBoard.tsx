@@ -129,7 +129,7 @@ const HexagonalBoard = () => {
                     x2={R / 2 - 1.1}
                     y2={-r + 0.9}
                     stroke={stroke}
-                    strokeWidth={disabled ? 0 : baseStrokeWidth * 2.5}
+                    strokeWidth={baseStrokeWidth * 2.5}
                     transform={`rotate(${angle})`}
                   />
                 );

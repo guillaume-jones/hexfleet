@@ -37,6 +37,7 @@ export const getProjectedBoard = ({
     boardState,
     [nextTurn],
     [userId],
+    true,
   );
 
   return newBoardState?.map((tile, i) => {

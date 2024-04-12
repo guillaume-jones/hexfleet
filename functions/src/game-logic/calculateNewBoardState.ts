@@ -12,8 +12,11 @@ export function calculateNewBoardState(
   nextTurns: NextTurn[],
   // Expects player ids to be in same order as nextTurns
   players: string[],
+  keepDisabled?: boolean,
 ): BoardState {
-  return boardState.map(({ playerId, disabled: _, ...tile }) => {
+  return boardState.map(({ playerId, ...tile }) => {
+    if (!keepDisabled) delete tile.disabled;
+
     const appliedPressures: (TileWithPressure<TileCoords> & {
       pressureId: string;
     })[] = [];
@@ -49,6 +52,7 @@ export function calculateNewBoardState(
 
       const onlyPressure = appliedPressures[0];
       if (onlyPressure.pressure >= pressureToConquer) {
+        delete tile.disabled;
         return { ...tile, playerId: onlyPressure.pressureId };
       }
       if (playerId && onlyPressure.pressure >= pressureToDisable) {
@@ -66,6 +70,7 @@ export function calculateNewBoardState(
 
     // Early return: top pressure has enough power to conquer tile
     if (topPressure.pressure - secondPressure.pressure >= pressureToConquer) {
+      delete tile.disabled;
       return { ...tile, playerId: topPressure.pressureId };
     }
 

@@ -35,7 +35,7 @@ export const addBordersToBoard = <T extends Tile>(
   return board.map((tile) => {
     const baseTile: TileWithBorders<T> = { ...tile, borders: [] };
 
-    if (!baseTile.playerId) return baseTile;
+    if (!baseTile.playerId || baseTile.disabled) return baseTile;
 
     const neighbors = getValidNeighbors({ tile: baseTile, boardSize });
 
