@@ -46,11 +46,11 @@ const HexagonalBoard = () => {
           clear,
           previousPlayerId,
         }) => {
-          const stroke = getColorForPlayer(clear ? previousPlayerId : playerId);
-          const fill = getFillColor(stroke);
           const playerChanged = playerId !== previousPlayerId;
           const isClickable = distance <= maxInfluenceReach;
           const baseNewTilePressure = { x, y, distance, clear, pressure };
+          const stroke = getColorForPlayer(clear ? previousPlayerId : playerId);
+          const fill = getFillColor(stroke, isClickable);
 
           return (
             <g
@@ -100,23 +100,17 @@ const HexagonalBoard = () => {
               }}
               className={`group select-none transition-all ${
                 isClickable
-                  ? 'cursor-pointer sm:hover:opacity-80'
+                  ? 'cursor-pointer sm:hover:opacity-90'
                   : 'cursor-not-allowed'
               }`}
-              fillOpacity={
-                disabled || clear
-                  ? 0.5
-                  : playerChanged || distance > maxInfluenceReach
-                  ? 0.8
-                  : 1
-              }
-              strokeOpacity={playerChanged ? 0.5 : 1}
+              fillOpacity={clear || disabled ? 0.8 : 1}
+              strokeOpacity={playerChanged ? 0.4 : 1}
               key={`${x},${y}`}
               transform={`translate(${halfBoardSize * r + x * d - r * y},${
                 y * R * 1.5 + R
               }) scale(0.99)`}>
               <polygon
-                className="transition-all"
+                className="transition-colors"
                 fill={fill}
                 strokeWidth={baseStrokeWidth}
                 stroke={stroke}
@@ -127,6 +121,7 @@ const HexagonalBoard = () => {
               {borders.map(({ angle }) => {
                 return (
                   <line
+                    className="transition-all"
                     key={angle}
                     strokeLinecap={'round'}
                     x1={-R / 2 + 1.1}
@@ -134,7 +129,7 @@ const HexagonalBoard = () => {
                     x2={R / 2 - 1.1}
                     y2={-r + 0.9}
                     stroke={stroke}
-                    strokeWidth={baseStrokeWidth * (disabled ? 1.5 : 2.5)}
+                    strokeWidth={disabled ? 0 : baseStrokeWidth * 2.5}
                     transform={`rotate(${angle})`}
                   />
                 );

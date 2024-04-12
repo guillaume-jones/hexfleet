@@ -2,7 +2,6 @@ import randomColor from 'randomcolor';
 import tinycolor from 'tinycolor2';
 
 const defaultColor = '#52525b';
-const defaultFillColor = '#27272a';
 
 const colorCache: Record<string, string> = {};
 const fillColorCache: Record<string, string> = {};
@@ -19,13 +18,13 @@ export const getColorForPlayer = (playerId?: string) => {
   return colorCache[playerId];
 };
 
-export const getFillColor = (color: string) => {
-  if (color === defaultColor) return defaultFillColor;
+export const getFillColor = (color: string, isClickable?: boolean) => {
   if (fillColorCache[color]) return fillColorCache[color];
+  const isDefault = color === defaultColor;
 
   const tColor = tinycolor(color);
-  tColor.darken(20);
-  tColor.desaturate(20);
+  tColor.darken(isDefault && !isClickable ? 26 : 20);
+  tColor.desaturate(isDefault ? 0 : 20);
   fillColorCache[color] = tColor.toHexString();
   return fillColorCache[color];
 };
