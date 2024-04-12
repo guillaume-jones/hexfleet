@@ -26,11 +26,11 @@ const SimpleHexBoard = ({ board, boardSize }: HexagonalBoardProps) => {
       } ${viewBoxH + baseStrokeWidth}`}>
       {board.map(({ x, y, playerId, borders, homeworld, disabled }) => {
         const stroke = getColorForPlayer(playerId);
-        const fill = getFillColor(stroke);
+        const fill = getFillColor(stroke, true);
         return (
           <g
-            className="transition-opacity duration-100"
-            fillOpacity={disabled ? 0.5 : 1}
+            className="select-none duration-100"
+            fillOpacity={disabled ? 0.8 : 1}
             key={`${x},${y}`}
             transform={`translate(${halfBoardSize * r + x * d - r * y},${
               y * R * 1.5 + R
