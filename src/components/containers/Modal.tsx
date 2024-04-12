@@ -27,7 +27,7 @@ export default function Modal({
         leaveFrom="opacity-50"
         leaveTo="opacity-0"
         show={open}
-        className="fixed inset-0"
+        className="fixed inset-0 z-10"
         appear>
         <div className="h-full w-full bg-black" />
       </Transition>

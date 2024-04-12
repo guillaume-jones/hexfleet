@@ -43,9 +43,7 @@ const GameDisplay = () => {
           <HexagonalBoard />
         )}
       </div>
-      {hasStarted && (
-        <HelpBox className="flex flex-1 justify-end sm:self-end" />
-      )}
+      <HelpBox className="flex flex-1 justify-end sm:self-end" />
     </div>
   );
 };

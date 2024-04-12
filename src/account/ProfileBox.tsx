@@ -7,7 +7,7 @@ import Button from 'src/components/interactive/Button';
 import Input from 'src/components/interactive/Input';
 import { SettingsContext } from 'src/context/SettingsContext';
 
-const maxNameLength = 20;
+const maxNameLength = 16;
 
 export default function ProfileBox() {
   const {

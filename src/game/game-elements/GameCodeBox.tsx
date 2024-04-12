@@ -26,7 +26,7 @@ const GameCodeBox = () => {
         <h2 className="text-xl font-semibold">Code: {shortId}</h2>
 
         <Copy
-          className={`z-10  transition-opacity ${
+          className={`z-[1] transition-opacity ${
             justCopied ? 'opacity-0' : 'cursor-pointer'
           }`}
           onClick={() => {

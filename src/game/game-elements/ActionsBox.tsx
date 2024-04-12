@@ -55,7 +55,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
 
   return (
     <div
-      className={`flex w-auto flex-col gap-2 rounded-xl bg-zinc-800 px-4 py-3
+      className={`flex w-auto flex-col gap-2 rounded-xl bg-zinc-900 px-4 py-3
       transition-all ${className}
       `}>
       <h2 className="text-xl font-bold">Actions</h2>
