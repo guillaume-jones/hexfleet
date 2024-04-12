@@ -17,7 +17,7 @@ type GameCreationProps = {
 };
 
 const GameJoining = ({ className }: GameCreationProps) => {
-  const [user] = useAuthState(auth);
+  const [user, userLoading] = useAuthState(auth);
   const router = useRouter();
 
   const [shortId, setShortId] = useState('');
@@ -29,10 +29,12 @@ const GameJoining = ({ className }: GameCreationProps) => {
 
   const joinGameAndRedirect = useCallback(
     async (id: string) => {
+      if (userLoading) return;
       if (!user) {
         await router.push(`/${loginUrlQuery}`);
         return;
       }
+
       const result = await joinGame({ shortId: id });
       if (result && typeof result.data === 'string') {
         await router.push(`/games/${result.data}`);
@@ -40,7 +42,7 @@ const GameJoining = ({ className }: GameCreationProps) => {
         setErrorShown(true);
       }
     },
-    [joinGame, router, user],
+    [joinGame, router, user, userLoading],
   );
 
   useEffect(() => {
@@ -48,12 +50,8 @@ const GameJoining = ({ className }: GameCreationProps) => {
     if (typeof shortId !== 'string') return;
 
     setShortId(shortId.toUpperCase());
-    if (!user) {
-      void router.push(`/${loginUrlQuery}`);
-      return;
-    }
     void joinGameAndRedirect(shortId.toUpperCase());
-  }, [joinGameAndRedirect, router, router.query, user]);
+  }, [joinGameAndRedirect, router.query]);
 
   return (
     <div className={`flex w-60 flex-col items-center gap-4 ${className}`}>
