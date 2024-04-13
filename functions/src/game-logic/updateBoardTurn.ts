@@ -67,6 +67,12 @@ export const updateBoardTurn = ({
   );
   // Removes dead players
   const newPlayers = updatePlayerStatus(newBoardState, game.players);
+  // Detects a winner
+  const alivePlayers = newPlayers.filter((p) => !p.hasResigned);
 
-  return { newBoardState, newPlayers };
+  return {
+    newBoardState,
+    newPlayers,
+    winner: alivePlayers.length === 1 ? alivePlayers[0].id : null,
+  };
 };

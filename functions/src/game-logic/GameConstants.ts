@@ -1,8 +1,8 @@
 // Game logic
 export const pressureToConquer = 4;
 export const pressureToDisable = 2;
-export const pressureToClear = 4;
-export const maxInfluenceReach = 3;
+export const pressureToClear = 2;
+export const maxInfluenceReach = 2;
 
 // Game setup
 export const shortIdLength = 5;

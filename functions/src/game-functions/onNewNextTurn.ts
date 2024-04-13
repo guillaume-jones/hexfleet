@@ -13,35 +13,32 @@ const onNewNextTurn = functions
     const { gameId } = context.params;
     const gameRef = firestore.doc(`games/${gameId}`);
     const game = (await gameRef.get()).data() as Game;
-    const players = game.players
+    const activePlayers = game.players
       .filter((player) => !player.hasResigned)
       .map((player) => player.id);
 
     const nextTurnsRef = firestore.collection(`games/${gameId}/nextTurns`);
     const nextTurnsSnapshot = await nextTurnsRef.get();
 
-    // Not all players have submitted their next turn
-    if (nextTurnsSnapshot.size < players.length) return;
-
     // Filters out any dead players who somehow submitted a next turn
     const nextTurnsDocs = nextTurnsSnapshot.docs.filter(({ id }) =>
-      players.includes(id),
+      activePlayers.includes(id),
     );
-    if (nextTurnsDocs.length !== players.length) return;
+    // Not all players have submitted their next turn
+    if (nextTurnsDocs.length < activePlayers.length) return;
 
     // Ensure same order of players as nextTurns
-    nextTurnsDocs.sort((a, b) => players.indexOf(a.id) - players.indexOf(b.id));
+    nextTurnsDocs.sort(
+      (a, b) => activePlayers.indexOf(a.id) - activePlayers.indexOf(b.id),
+    );
     const nextTurns = nextTurnsDocs.map((doc) => doc.data() as NextTurn);
 
-    // Updates board state
-    const { newBoardState, newPlayers } = updateBoardTurn({
+    // Get new board state & players state
+    const { newBoardState, newPlayers, winner } = updateBoardTurn({
       game,
       nextTurns,
-      players,
+      players: activePlayers,
     });
-
-    // Checks for a winner
-    const alivePlayers = newPlayers.filter((p) => !p.hasResigned);
 
     await gameRef.update({
       boardState: newBoardState,
@@ -49,8 +46,8 @@ const onNewNextTurn = functions
       pastTurns: admin.firestore.FieldValue.arrayUnion({
         boardState: game.boardState,
       }),
-      winner: alivePlayers.length === 1 ? alivePlayers[0].id : null,
-      endedAt: alivePlayers.length === 1 ? Timestamp.now() : null,
+      winner: winner,
+      endedAt: winner ? Timestamp.now() : null,
     });
 
     // Delete all documents in next turn collection

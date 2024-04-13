@@ -52,6 +52,9 @@ const joinGame = functions
           );
           const alivePlayers = newPlayers.filter((p) => !p.hasResigned);
 
+          // Multiple players have resigned at the same time
+          if (alivePlayers.length === 0) return;
+
           await gameRef.update({
             players: newPlayers,
             winner: alivePlayers.length === 1 ? alivePlayers[0].id : null,
