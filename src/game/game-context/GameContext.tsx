@@ -28,6 +28,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   boardState: TileWithBorders<ProjectedTile<Tile>>[];
   tilesByPlayer: Dictionary<number>;
   influenceByPlayer: Dictionary<number>;
+  influenceByPlayerWithoutDisabled: Dictionary<number>;
   projectedInfluenceByPlayer: Dictionary<number>;
   influenceRemaining: number;
   nextTurnSent: boolean;

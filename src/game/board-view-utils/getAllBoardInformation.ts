@@ -6,6 +6,7 @@ import {
   Player,
 } from 'functions/src/document-types/Games';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
+import { calculateNewBoardState } from 'functions/src/game-logic/calculateNewBoardState';
 import {
   getInfluenceSpent,
   getPlayersInfluence,
@@ -28,7 +29,14 @@ export const getAllBoardInformation = ({
 }) => {
   // Get influence & tile info from old board
   const oldBoardWithBorders = addBordersToBoard(boardState, boardSize);
+  const oldBoardWithBordersWithoutDisabled = addBordersToBoard(
+    calculateNewBoardState(boardState ?? [], [], []),
+    boardSize,
+  );
   const influenceByPlayer = getPlayersInfluence(oldBoardWithBorders);
+  const influenceByPlayerWithoutDisabled = getPlayersInfluence(
+    oldBoardWithBordersWithoutDisabled,
+  );
   const tilesByPlayer = countBy(oldBoardWithBorders, 'playerId');
   const influenceRemaining = userId
     ? influenceByPlayer[userId] - getInfluenceSpent(nextTurn)
@@ -52,6 +60,7 @@ export const getAllBoardInformation = ({
     boardState: newBoardWithBorders,
     tilesByPlayer,
     influenceByPlayer,
+    influenceByPlayerWithoutDisabled,
     projectedInfluenceByPlayer,
     influenceRemaining,
   };
