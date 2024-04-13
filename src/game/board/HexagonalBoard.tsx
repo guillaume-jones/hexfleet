@@ -182,7 +182,7 @@ const HexagonalBoard = () => {
               )}
               {distance > 1 && distance < Infinity && (
                 <text
-                  className={`opacity-0 sm:group-hover:opacity-100 ${
+                  className={`opacity-0 transition-opacity duration-100 sm:group-hover:opacity-100 ${
                     pressure > 0 ? 'opacity-100' : ''
                   }`}
                   textAnchor={'middle'}

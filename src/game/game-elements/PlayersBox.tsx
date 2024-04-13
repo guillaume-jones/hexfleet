@@ -35,9 +35,9 @@ const PlayersBox = () => {
                   {name}
                 </p>
                 {id === winner && (
-                  <div className="rounded-full bg-violet-800 px-2 py-1">
-                    <p className="text-xs font-bold text-white">W</p>
-                  </div>
+                  <p className="text h-6 w-6 rounded-full bg-violet-800 align-top text-xs font-bold leading-6 text-white">
+                    W
+                  </p>
                 )}
               </th>
               <td>{tilesByPlayer[id] ?? 0}</td>

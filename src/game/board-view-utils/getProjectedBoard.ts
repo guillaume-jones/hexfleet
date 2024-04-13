@@ -1,8 +1,10 @@
 import {
   NextTurn,
+  Player,
   Tile,
   TileWithPressure,
 } from 'functions/src/document-types/Games';
+import { maxInfluenceReach } from 'functions/src/game-logic/GameConstants';
 import { calculateNewBoardState } from 'functions/src/game-logic/calculateNewBoardState';
 import { findClosestTileWithId } from 'functions/src/game-logic/findClosestTileWithId';
 
@@ -20,11 +22,13 @@ export const getProjectedBoard = ({
   boardState,
   boardSize,
   nextTurn,
+  players,
   userId,
 }: {
   boardState?: Tile[];
   boardSize?: number;
   nextTurn?: NextTurn;
+  players?: Player[];
   userId?: string;
 }): ProjectedTile<Tile>[] => {
   if (!boardState || !boardSize) return [];
@@ -39,25 +43,29 @@ export const getProjectedBoard = ({
     [userId],
     true,
   );
+  const deadPlayers = (players ?? [])
+    .filter((player) => player.hasResigned)
+    .map((player) => player.id);
 
   return newBoardState?.map((tile, i) => {
-    const tilePressure = nextTurn.pressures.find(
-      (pressure) => pressure.x === tile.x && pressure.y === tile.y,
-    );
+    const tilePressure =
+      nextTurn.pressures.find(
+        (pressure) => pressure.x === tile.x && pressure.y === tile.y,
+      ) ?? defaultTileWithPressure;
     const closestOwnTile = findClosestTileWithId({
       coords: { x: tile.x, y: tile.y },
       boardState,
       boardSize,
       id: userId,
-      maxDistance: 3,
+      maxDistance: maxInfluenceReach,
     });
 
     return {
       ...tile,
-      ...defaultTileWithPressure,
       ...tilePressure,
       previousPlayerId: boardState[i].playerId,
       distance: closestOwnTile.distance,
+      disabled: tile.disabled || deadPlayers.includes(tile.playerId ?? ''),
     };
   });
 };

@@ -70,7 +70,7 @@ const GameCreation = ({ className }: GameCreationProps) => {
               value={boardSize}
               setValue={setBoardSize}
               min={5}
-              max={31}
+              max={25}
               step={2}
             />
           </div>

@@ -64,9 +64,16 @@ const useGameProvider = (gameId: string): GameContextType => {
       boardState: game?.boardState,
       boardSize: game?.boardSize,
       nextTurn: nextTurnParams.nextTurn,
+      players: game?.players,
       userId: user?.uid,
     });
-  }, [game?.boardState, game?.boardSize, nextTurnParams, user?.uid]);
+  }, [
+    game?.boardState,
+    game?.boardSize,
+    game?.players,
+    nextTurnParams.nextTurn,
+    user?.uid,
+  ]);
 
   return {
     ...game,

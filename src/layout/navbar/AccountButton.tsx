@@ -30,6 +30,7 @@ function AccountButton() {
         {loggedIn ? 'Account' : 'Sign up or log in'}
       </Button>
       <Modal
+        className="overflow-visible"
         open={isModalOpen}
         setOpen={(open) =>
           void router.push(

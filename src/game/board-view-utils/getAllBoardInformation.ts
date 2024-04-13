@@ -1,6 +1,10 @@
 import countBy from 'lodash/countBy';
 
-import { BoardState, NextTurn } from 'functions/src/document-types/Games';
+import {
+  BoardState,
+  NextTurn,
+  Player,
+} from 'functions/src/document-types/Games';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
 import {
   getInfluenceSpent,
@@ -14,11 +18,13 @@ export const getAllBoardInformation = ({
   boardSize,
   nextTurn,
   userId,
+  players,
 }: {
   boardState?: BoardState;
   boardSize?: number;
   nextTurn?: NextTurn;
   userId?: string;
+  players?: Player[];
 }) => {
   // Get influence & tile info from old board
   const oldBoardWithBorders = addBordersToBoard(boardState, boardSize);
@@ -33,6 +39,7 @@ export const getAllBoardInformation = ({
     boardState,
     boardSize,
     nextTurn,
+    players,
     userId,
   });
   const newBoardWithBorders = addBordersToBoard(newBoardState, boardSize).sort(
