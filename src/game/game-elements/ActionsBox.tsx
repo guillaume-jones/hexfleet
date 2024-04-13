@@ -20,8 +20,6 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
   );
 
   const {
-    winner,
-    shortId,
     hasStarted,
     gameId,
     nextTurnSent,
@@ -50,8 +48,6 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [hasStarted, sendNextTurn]);
-
-  if (!shortId || winner) return null;
 
   return (
     <div

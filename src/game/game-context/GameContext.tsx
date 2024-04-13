@@ -23,6 +23,7 @@ import { PlayerWithName } from 'src/game/board-view-utils/addNamesToPlayers';
 export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   gameId: string;
   userId: string;
+  loading: boolean;
   players: PlayerWithName[];
   boardState: TileWithBorders<ProjectedTile<Tile>>[];
   tilesByPlayer: Dictionary<number>;
@@ -44,7 +45,7 @@ const useGameProvider = (gameId: string): GameContextType => {
   const [user] = useAuthState(auth);
   const router = useRouter();
 
-  const [game, , error] = useDocumentData<Partial<Game>>(
+  const [game, loading, error] = useDocumentData<Partial<Game>>(
     doc(firestore, 'games', gameId),
   );
   const players = usePlayers(game);
@@ -76,6 +77,7 @@ const useGameProvider = (gameId: string): GameContextType => {
   ]);
 
   return {
+    loading,
     ...game,
     ...information,
     ...nextTurnParams,
