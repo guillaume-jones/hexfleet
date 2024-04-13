@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { getBoardParameters } from './getBoardParameters';
 import {
   maxInfluenceReach,
+  minPressureInterval,
   pressureToConquer,
 } from 'functions/src/game-logic/GameConstants';
 import {
@@ -52,52 +53,24 @@ const HexagonalBoard = () => {
           const stroke = getColorForPlayer(clear ? previousPlayerId : playerId);
           const fill = getFillColor(stroke, isClickable);
 
+          const changePressure = (delta: number) => {
+            const newPressure = pressure + delta;
+            const newTilePressure = {
+              ...baseNewTilePressure,
+              pressure: newPressure,
+              clear:
+                previousPlayerId !== userId && newPressure < pressureToConquer
+                  ? false
+                  : clear,
+            };
+
+            if (canApplyPressure(newTilePressure)) {
+              updateNextTurn?.(newTilePressure);
+            }
+          };
+
           return (
             <g
-              onContextMenu={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (
-                  canClear({ homeworld, playerId: previousPlayerId }, userId)
-                ) {
-                  updateNextTurn?.({
-                    ...baseNewTilePressure,
-                    clear: !clear,
-                  });
-                  return;
-                }
-                const newTilePressure = {
-                  ...baseNewTilePressure,
-                  pressure: pressure - pressureToConquer,
-                };
-
-                if (canApplyPressure(newTilePressure)) {
-                  updateNextTurn?.(newTilePressure);
-                }
-              }}
-              onClick={() => {
-                const newTilePressure = {
-                  ...baseNewTilePressure,
-                  pressure: pressure + pressureToConquer,
-                };
-
-                if (canApplyPressure(newTilePressure)) {
-                  updateNextTurn?.(newTilePressure);
-                }
-              }}
-              onWheel={(e) => {
-                const newTilePressure = {
-                  x,
-                  y,
-                  clear,
-                  distance,
-                  pressure: pressure + (e.deltaY > 0 ? -1 : 1),
-                };
-
-                if (canApplyPressure(newTilePressure)) {
-                  updateNextTurn?.(newTilePressure);
-                }
-              }}
               className={`group select-none transition-all ${
                 isClickable
                   ? 'cursor-pointer sm:hover:opacity-90'
@@ -108,7 +81,30 @@ const HexagonalBoard = () => {
               key={`${x},${y}`}
               transform={`translate(${halfBoardSize * r + x * d - r * y},${
                 y * R * 1.5 + R
-              }) scale(0.99)`}>
+              }) scale(0.99)`}
+              onMouseUp={(e) => {
+                const button = e.button;
+
+                if (button === 0) {
+                  changePressure(pressureToConquer);
+                } else if (button === 2) {
+                  changePressure(-pressureToConquer);
+                } else if (button === 1) {
+                  if (
+                    canClear({
+                      homeworld,
+                      playerId: playerId ?? previousPlayerId,
+                      clear,
+                    })
+                  ) {
+                    updateNextTurn?.({ ...baseNewTilePressure, clear: !clear });
+                  }
+                }
+              }}
+              onWheel={(e) =>
+                changePressure(-Math.sign(e.deltaY) * minPressureInterval)
+              }
+              onContextMenu={(e) => e.preventDefault()}>
               <polygon
                 className="transition-colors"
                 fill={fill}
@@ -150,17 +146,17 @@ const HexagonalBoard = () => {
                     pressure === 0 ? '' : `translate(${-R / 4},${R / 4})`
                   }>
                   <circle
-                    r={R / 4}
+                    r={R / 5}
                     fill={'#00000000'}
                     stroke={stroke}
                     strokeWidth={baseStrokeWidth * 2}
                     strokeOpacity={1}
                   />
                   <line
-                    x1={-R / 4}
-                    y1={-R / 4}
-                    x2={R / 4}
-                    y2={R / 4}
+                    x1={-R / 5}
+                    y1={-R / 5}
+                    x2={R / 5}
+                    y2={R / 5}
                     strokeLinecap={'round'}
                     stroke={stroke}
                     strokeWidth={baseStrokeWidth * 2}
@@ -185,6 +181,7 @@ const HexagonalBoard = () => {
                   className={`opacity-0 transition-opacity duration-100 sm:group-hover:opacity-100 ${
                     pressure > 0 ? 'opacity-100' : ''
                   }`}
+                  transform={clear ? `translate(${R / 3}, 0)` : ''}
                   textAnchor={'middle'}
                   alignmentBaseline={'text-before-edge'}
                   fontSize={2.5}

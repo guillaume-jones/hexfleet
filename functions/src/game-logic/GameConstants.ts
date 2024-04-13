@@ -1,6 +1,7 @@
 // Game logic
-export const pressureToConquer = 4;
-export const pressureToDisable = 2;
+export const minPressureInterval = 2;
+export const pressureToConquer = minPressureInterval * 2;
+export const pressureToDisable = minPressureInterval * 1;
 export const pressureToClear = 2;
 export const maxInfluenceReach = 2;
 

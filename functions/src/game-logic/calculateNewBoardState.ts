@@ -14,7 +14,7 @@ export function calculateNewBoardState(
   players: string[],
   keepDisabled?: boolean,
 ): BoardState {
-  return boardState.map(({ playerId, ...tile }) => {
+  return boardState.map(({ ...tile }) => {
     if (!keepDisabled) delete tile.disabled;
 
     const appliedPressures: (TileWithPressure<TileCoords> & {
@@ -32,34 +32,37 @@ export function calculateNewBoardState(
 
     // Early return: nothing to calculate
     if (appliedPressures.length === 0) {
-      if (playerId) return { ...tile, playerId };
-      return { ...tile };
+      return tile;
     }
 
     // Attempt to clear tile if owner requested clear
     const ownerPressure = appliedPressures.find(
-      (p) => p.pressureId === playerId,
+      (p) => p.pressureId === tile.playerId,
     );
-    if (ownerPressure?.clear) playerId = undefined;
+    if (ownerPressure?.clear) delete tile.playerId;
 
     // Early return: only 1 player applied pressure
     if (appliedPressures.length === 1) {
       // Only owner is applying pressure
       if (ownerPressure) {
-        if (playerId) return { ...tile, playerId };
-        return { ...tile };
+        return tile;
       }
 
       const onlyPressure = appliedPressures[0];
       if (onlyPressure.pressure >= pressureToConquer) {
         delete tile.disabled;
-        return { ...tile, playerId: onlyPressure.pressureId };
+        if (onlyPressure.clear) {
+          delete tile.playerId;
+        } else {
+          tile.playerId = onlyPressure.pressureId;
+        }
+        return tile;
       }
-      if (playerId && onlyPressure.pressure >= pressureToDisable) {
-        return { ...tile, playerId, disabled: true };
+      if (tile.playerId && onlyPressure.pressure >= pressureToDisable) {
+        tile.disabled = true;
+        return tile;
       }
-      if (playerId) return { ...tile, playerId };
-      return { ...tile };
+      return tile;
     }
 
     // Sorts pressures and resolves conflicts
@@ -71,19 +74,24 @@ export function calculateNewBoardState(
     // Early return: top pressure has enough power to conquer tile
     if (topPressure.pressure - secondPressure.pressure >= pressureToConquer) {
       delete tile.disabled;
-      return { ...tile, playerId: topPressure.pressureId };
+      if (topPressure.clear) {
+        delete tile.playerId;
+      } else {
+        tile.playerId = topPressure.pressureId;
+      }
+      return tile;
     }
 
     // Early return: top pressure can overpower owner to disable tile
     if (
-      playerId &&
+      tile.playerId &&
       topPressure.pressure - (ownerPressure?.pressure ?? 0) >= pressureToDisable
     ) {
-      return { ...tile, playerId, disabled: true };
+      tile.disabled = true;
+      return tile;
     }
 
     // Final return: no change, tile remains the same
-    if (playerId) return { ...tile, playerId };
-    return { ...tile };
+    return tile;
   });
 }
