@@ -11,6 +11,8 @@ import {
 
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
+const nextTurnKey = 'next-turn';
+
 const useNextTurn = (gameId: string) => {
   const [user] = useAuthState(auth);
 
@@ -24,15 +26,24 @@ const useNextTurn = (gameId: string) => {
 
   const [nextTurn, setNextTurn] = useState<NextTurn>({ pressures: [] });
 
-  // Loads in next turn on reload, or clears next turn if server cleared
   useEffect(() => {
     if (sentNextTurnLoading) return;
 
+    // Tries to load next turn from server
     if (sentNextTurn) {
       setNextTurn(sentNextTurn as NextTurn);
-    } else {
-      setNextTurn({ pressures: [] });
+      return;
     }
+
+    // Tries to load next turn from local storage if not sent
+    const localNextTurn = localStorage.getItem(nextTurnKey);
+    if (localNextTurn) {
+      setNextTurn(JSON.parse(localNextTurn) as NextTurn);
+      return;
+    }
+
+    // Resets next turn if server just updated and cleared my turn
+    setNextTurn({ pressures: [] });
   }, [sentNextTurn, sentNextTurnLoading]);
 
   const sendNextTurn = useCallback(async () => {
@@ -40,6 +51,7 @@ const useNextTurn = (gameId: string) => {
 
     try {
       await setDoc(nextTurnRef, nextTurn);
+      localStorage.removeItem(nextTurnKey);
     } catch (e) {
       console.error(e);
     }
@@ -47,18 +59,18 @@ const useNextTurn = (gameId: string) => {
 
   const updateNextTurn = useCallback((tile: TileWithPressure<TileCoords>) => {
     setNextTurn((prev) => {
-      const newPressures = prev.pressures.filter(
+      const filteredPressures = prev.pressures.filter(
         ({ x, y }) => !(x === tile.x && y === tile.y),
       );
-      // Remove tile from updates if it is not being cleared or pressured
-      if (!tile.clear && !tile.pressure) return { pressures: newPressures };
-
-      return {
+      const newNextTurn = {
         pressures: [
-          ...newPressures,
-          { ...tile, pressure: tile.pressure || 0, clear: tile.clear ?? false },
+          ...filteredPressures,
+          ...(tile.clear || tile.pressure ? [tile] : []),
         ],
       };
+
+      localStorage.setItem(nextTurnKey, JSON.stringify(newNextTurn));
+      return newNextTurn;
     });
   }, []);
 

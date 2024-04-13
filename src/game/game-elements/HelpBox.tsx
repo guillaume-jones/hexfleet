@@ -95,7 +95,7 @@ const HelpBox = ({ className }: HelpBoxProps) => {
           {
             Icon: ChevronDoubleDownIcon,
             actionName: 'Spacebar',
-            result: 'Send your turn (cannot be undone).',
+            result: 'Send or re-send your turn.',
           },
         ].map(({ Icon, actionName, result }) => (
           <div key={actionName} className="flex items-center gap-3">
