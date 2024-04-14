@@ -6,8 +6,6 @@ import Button from 'src/components/interactive/Button';
 import { auth } from 'src/firebase/firebaseApp';
 import Login from 'src/login/login';
 
-export const loginUrlQuery = '?login=true';
-
 function AccountButton() {
   const router = useRouter();
   const [user, userLoading] = useAuthState(auth);
@@ -15,15 +13,20 @@ function AccountButton() {
   const loggedIn = !!user;
   const isModalOpen = !!router.query?.login;
 
+  const replaceUrl = (open: boolean) => {
+    const { login, ...newQuery } = router.query;
+    if (!open) {
+      void router.replace({ query: newQuery });
+    } else {
+      void router.replace({ query: { ...newQuery, login: true } });
+    }
+  };
+
   return (
     <>
       <Button
         href={loggedIn ? '/account' : undefined}
-        onClick={
-          loggedIn
-            ? undefined
-            : () => void router.push(`${router.basePath}${loginUrlQuery}`)
-        }
+        onClick={loggedIn ? undefined : () => replaceUrl(true)}
         className="ml-2 whitespace-nowrap rounded-full px-4 py-2"
         fontClassName="font-bold"
         loading={userLoading}>
@@ -32,13 +35,9 @@ function AccountButton() {
       <Modal
         className="overflow-visible"
         open={isModalOpen}
-        setOpen={(open) =>
-          void router.push(
-            open ? `${router.basePath}${loginUrlQuery}` : router.basePath,
-          )
-        }
+        setOpen={(open) => replaceUrl(open)}
         title="Sign up or log in">
-        <Login onSuccess={() => void router.push(router.basePath)} />
+        <Login onSuccess={() => replaceUrl(false)} />
       </Modal>
     </>
   );

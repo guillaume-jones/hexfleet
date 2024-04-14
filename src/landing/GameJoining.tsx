@@ -10,7 +10,6 @@ import { shortIdLength } from 'functions/src/game-logic/GameConstants';
 import Button from 'src/components/interactive/Button';
 import Input from 'src/components/interactive/Input';
 import { auth, functions } from 'src/firebase/firebaseApp';
-import { loginUrlQuery } from 'src/layout/navbar/AccountButton';
 
 type GameCreationProps = {
   className?: string;
@@ -31,7 +30,9 @@ const GameJoining = ({ className }: GameCreationProps) => {
     async (id: string) => {
       if (userLoading) return;
       if (!user) {
-        await router.push(`/${loginUrlQuery}`);
+        await router.replace({
+          query: { ...router.query, login: true },
+        });
         return;
       }
 

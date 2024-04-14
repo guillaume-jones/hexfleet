@@ -75,8 +75,9 @@ const useNextTurn = (gameId: string) => {
   }, []);
 
   const resetNextTurn = useCallback(() => {
-    setNextTurn({ pressures: [] });
-  }, []);
+    setNextTurn((sentNextTurn as NextTurn) ?? { pressures: [] });
+    localStorage.removeItem(nextTurnKey);
+  }, [sentNextTurn]);
 
   return {
     nextTurn,

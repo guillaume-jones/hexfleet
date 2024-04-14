@@ -1,6 +1,5 @@
 import { Transition } from '@headlessui/react';
-import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 
 import Button from 'src/components/interactive/Button';
 import { getColorForPlayer } from 'src/game/board-view-utils/boardColors';
@@ -27,8 +26,6 @@ const delays = [
 ];
 
 export default function PastGame({ index }: PastGameProps) {
-  const router = useRouter();
-
   const {
     gameId,
     boardSize,
@@ -40,8 +37,6 @@ export default function PastGame({ index }: PastGameProps) {
     startedAt,
     winner,
   } = useContext(GameContext);
-
-  const [loading, setLoading] = useState(false);
 
   const gameDuration =
     endedAt && startedAt && endedAt.seconds - startedAt.seconds;
@@ -84,13 +79,9 @@ export default function PastGame({ index }: PastGameProps) {
           )}
         </div>
         <Button
-          loading={loading}
           className="max-w-32 flex-1 sm:flex-none"
           light={winner != null}
-          onClick={() => {
-            setLoading(true);
-            void router.push(`/games/${gameId}`);
-          }}>
+          href={`/games/${gameId}`}>
           {winner ? 'View game' : 'Rejoin Game'}
         </Button>
       </div>

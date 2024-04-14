@@ -19,7 +19,6 @@ import {
   generateBoard,
 } from 'src/game/board/generateBoard';
 import { createGame } from 'src/game/create-game/createGame';
-import { loginUrlQuery } from 'src/layout/navbar/AccountButton';
 
 type CreateNewGameProps = {
   onCancel: () => void;
@@ -81,7 +80,9 @@ const CreateNewGame = ({ onCancel }: CreateNewGameProps) => {
           onClick={() => {
             const asyncFunction = async () => {
               if (!user) {
-                await router.push(`/${loginUrlQuery}`);
+                await router.replace({
+                  query: { ...router.query, login: true },
+                });
                 return;
               }
               const id = await createGame({ boardSize });

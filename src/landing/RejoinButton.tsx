@@ -1,5 +1,4 @@
 import { collection, limit, orderBy, query, where } from 'firebase/firestore';
-import { useRouter } from 'next/router';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionOnce } from 'react-firebase-hooks/firestore';
 
@@ -12,7 +11,6 @@ type GameCreationProps = {
 
 const RejoinButton = ({ className }: GameCreationProps) => {
   const [user] = useAuthState(auth);
-  const router = useRouter();
 
   const [pastGames, loading] = useCollectionOnce(
     user &&
@@ -35,13 +33,7 @@ const RejoinButton = ({ className }: GameCreationProps) => {
         pastGames ? 'opacity-100' : 'opacity-0'
       } ${className}`}
       loading={loading}
-      onClick={() => {
-        const asyncFunction = async () => {
-          if (!pastGames || pastGames.empty) return;
-          await router.push(`/games/${pastGames.docs[0].id}`);
-        };
-        void asyncFunction();
-      }}>
+      href={`/games/${pastGames.docs[0].id}`}>
       Rejoin Game
     </Button>
   );

@@ -2,7 +2,7 @@ import { Transition } from '@headlessui/react';
 import { useState } from 'react';
 
 import Button from 'src/components/interactive/Button';
-import CreateGameBox from 'src/game/create-game/CreateNewGame';
+import CreateNewGame from 'src/game/create-game/CreateNewGame';
 
 type GameCreationProps = {
   className?: string;
@@ -27,7 +27,7 @@ const GameCreation = ({ className }: GameCreationProps) => {
         leaveFrom="opacity-100 max-h-[420px]"
         leaveTo="opacity-0 max-h-0"
         show={show}>
-        <CreateGameBox onCancel={() => setShown(false)} />
+        <CreateNewGame onCancel={() => setShown(false)} />
       </Transition>
     </div>
   );
