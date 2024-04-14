@@ -52,7 +52,7 @@ export default function PastGame({ index }: PastGameProps) {
       enterTo="opacity-100"
       show={true}
       appear
-      className={`delay ${delays[index]} flex w-full max-w-2xl flex-col justify-between gap-4 rounded-2xl bg-zinc-900 p-4 transition duration-300 sm:flex-row-reverse`}>
+      className={`${delays[index]} flex w-full max-w-2xl flex-col justify-between gap-4 rounded-2xl bg-zinc-900 p-4 transition duration-300 sm:flex-row-reverse`}>
       <div className="flex flex-1 flex-row items-center justify-around gap-4 sm:flex-col">
         <div className="flex flex-col items-center">
           <p className="text-lg">

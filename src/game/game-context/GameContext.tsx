@@ -11,6 +11,7 @@ import useNextTurn from './useNextTurn';
 import usePlayers from './usePlayers';
 import {
   Game,
+  NextTurn,
   Tile,
   TileCoords,
   TileWithBorders,
@@ -31,6 +32,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   influenceByPlayerWithoutDisabled: Dictionary<number>;
   projectedInfluenceByPlayer: Dictionary<number>;
   influenceRemaining: number;
+  nextTurn: NextTurn;
   nextTurnSent: boolean;
   nextTurnEqualsSent: boolean;
   userDead: boolean | undefined;
