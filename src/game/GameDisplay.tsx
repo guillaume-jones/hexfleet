@@ -42,14 +42,14 @@ const GameDisplay = () => {
           {winner && <RematchButton />}
         </div>
       </div>
-      <div className="min-h-0 self-stretch xl:-mx-10">
+      <div className="min-h-0 self-stretch xl:-mx-12">
         {!hasStarted || userDead || winner ? (
           <SimpleHexBoard board={boardState} boardSize={boardSize} />
         ) : (
           <HexagonalBoard />
         )}
       </div>
-      <HelpBox className="flex flex-1 justify-end sm:self-end" />
+      <HelpBox className="sm:absolute sm:bottom-16 sm:right-4" />
     </div>
   );
 };

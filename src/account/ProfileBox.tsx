@@ -1,6 +1,6 @@
 import { Transition } from '@headlessui/react';
+import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { useContext, useEffect, useState } from 'react';
-import { CheckCircle } from 'react-feather';
 
 import AlignedBox from 'src/account/AlignedBox';
 import Button from 'src/components/interactive/Button';
@@ -61,7 +61,7 @@ export default function ProfileBox() {
                 leave="transition-opacity duration-200"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0">
-                <CheckCircle size={24} />
+                <CheckCircleIcon className="h-6 w-6" />
               </Transition>
               Update
             </Button>

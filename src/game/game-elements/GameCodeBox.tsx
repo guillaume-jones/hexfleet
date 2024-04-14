@@ -1,6 +1,7 @@
 import { GameContext } from '../game-context/GameContext';
+import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { useContext, useState } from 'react';
-import { Check, Copy } from 'react-feather';
+import { Copy } from 'react-feather';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
 import { StartGameData } from 'functions/src/document-types/Games';
@@ -37,8 +38,8 @@ const GameCodeBox = () => {
             setTimeout(() => setJustCopied(false), 1000);
           }}
         />
-        <Check
-          className={`absolute right-0 z-0 opacity-0 transition-opacity ${
+        <CheckCircleIcon
+          className={`absolute right-0 z-0 h-6 w-6 opacity-0 transition-opacity ${
             justCopied ? 'opacity-100' : ''
           }`}
         />

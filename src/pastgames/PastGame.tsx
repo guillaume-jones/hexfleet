@@ -5,6 +5,7 @@ import Button from 'src/components/interactive/Button';
 import { getColorForPlayer } from 'src/game/board-view-utils/boardColors';
 import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
 import { GameContext } from 'src/game/game-context/GameContext';
+import WinnerChip from 'src/game/game-elements/WinnerChip';
 
 export type PastGameProps = {
   index: number;
@@ -98,11 +99,7 @@ export default function PastGame({ index }: PastGameProps) {
                 } max-w-36 overflow-hidden overflow-ellipsis text-nowrap`}>
                 {name}
               </p>
-              {id === winner && (
-                <div className="rounded-full bg-violet-800 px-2 py-1">
-                  <p className="text-xs font-bold">W</p>
-                </div>
-              )}
+              {id === winner && <WinnerChip />}
             </div>
           ))}
         </div>

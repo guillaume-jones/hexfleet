@@ -10,7 +10,7 @@ const onNewNextTurn = functions
   .runWith({ minInstances: 0, memory: '512MB' })
   .firestore.document('games/{gameId}/nextTurns/{playerId}')
   .onCreate(async (_, context) => {
-    const { gameId } = context.params;
+    const { gameId, playerId } = context.params;
     const gameRef = firestore.doc(`games/${gameId}`);
     const game = (await gameRef.get()).data() as Game;
     const activePlayers = game.players
@@ -24,6 +24,11 @@ const onNewNextTurn = functions
     const nextTurnsDocs = nextTurnsSnapshot.docs.filter(({ id }) =>
       activePlayers.includes(id),
     );
+    await gameRef.update({
+      players: game.players.map((player) =>
+        player.id === playerId ? { ...player, sent: true } : player,
+      ),
+    });
     // Not all players have submitted their next turn
     if (nextTurnsDocs.length < activePlayers.length) return;
 
