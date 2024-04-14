@@ -3,7 +3,10 @@ import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { customAlphabet } from 'nanoid';
 
 import { Game } from 'functions/src/document-types/Games';
-import { shortIdLength } from 'functions/src/game-logic/GameConstants';
+import {
+  defaultPlayer,
+  shortIdLength,
+} from 'functions/src/game-logic/GameConstants';
 
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
@@ -29,7 +32,7 @@ export const createGame = async (boardOptions: BoardOptions) => {
     startedAt: null,
     endedAt: null,
     pastTurns: [],
-    players: [{ id, hasResigned: false }],
+    players: [{ id, ...defaultPlayer }],
     shortId: nanoid(),
     winner: null,
   };

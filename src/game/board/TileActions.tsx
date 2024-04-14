@@ -18,7 +18,7 @@ export type TileActionsProps = {
 };
 
 const TileActions = ({ clientX, clientY, x, y, show }: TileActionsProps) => {
-  const { boardState, updateNextTurn, userId } = useContext(GameContext);
+  const { boardState, updateNextTurn } = useContext(GameContext);
 
   const tile = useMemo(
     () => boardState?.find((t) => t.x === x && t.y === y),
@@ -48,10 +48,11 @@ const TileActions = ({ clientX, clientY, x, y, show }: TileActionsProps) => {
         />
       )}
       {tile &&
-        canClear(
-          { homeworld: tile.homeworld, playerId: tile.previousPlayerId },
-          userId,
-        ) && (
+        canClear({
+          homeworld: tile.homeworld,
+          playerId: tile.playerId ?? tile.previousPlayerId,
+          clear: tile.clear,
+        }) && (
           <Button
             disabled={!tile}
             onClick={() => {

@@ -14,7 +14,7 @@ const onNewNextTurn = functions
     const gameRef = firestore.doc(`games/${gameId}`);
     const game = (await gameRef.get()).data() as Game;
     const activePlayers = game.players
-      .filter((player) => !player.hasResigned)
+      .filter((player) => !player.dead)
       .map((player) => player.id);
 
     const nextTurnsRef = firestore.collection(`games/${gameId}/nextTurns`);

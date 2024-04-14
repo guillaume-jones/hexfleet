@@ -1,4 +1,12 @@
-import { collection, limit, orderBy, query, where } from 'firebase/firestore';
+import {
+  and,
+  collection,
+  limit,
+  or,
+  orderBy,
+  query,
+  where,
+} from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionOnce } from 'react-firebase-hooks/firestore';
 
@@ -16,11 +24,21 @@ const RejoinButton = ({ className }: GameCreationProps) => {
     user &&
       query(
         collection(firestore, 'games'),
-        where('players', 'array-contains', {
-          id: user.uid,
-          hasResigned: false,
-        }),
-        where('winner', '==', null),
+        and(
+          or(
+            where('players', 'array-contains', {
+              id: user.uid,
+              dead: false,
+              sent: false,
+            }),
+            where('players', 'array-contains', {
+              id: user.uid,
+              dead: false,
+              sent: true,
+            }),
+          ),
+          where('winner', '==', null),
+        ),
         orderBy('createdAt', 'desc'),
         limit(1),
       ),

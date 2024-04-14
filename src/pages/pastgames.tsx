@@ -39,11 +39,23 @@ export default function PastGames() {
         or(
           where('players', 'array-contains', {
             id: user.uid,
-            hasResigned: false,
+            dead: false,
+            sent: false,
           }),
           where('players', 'array-contains', {
             id: user.uid,
-            hasResigned: true,
+            dead: false,
+            sent: true,
+          }),
+          where('players', 'array-contains', {
+            id: user.uid,
+            dead: true,
+            sent: false,
+          }),
+          where('players', 'array-contains', {
+            id: user.uid,
+            dead: true,
+            sent: true,
           }),
         ),
         orderBy('createdAt', 'desc'),

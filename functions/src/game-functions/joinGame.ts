@@ -1,5 +1,9 @@
 import { Game, JoinGameData, Player } from '../document-types/Games';
-import { maximumPlayers, shortIdLength } from '../game-logic/GameConstants';
+import {
+  defaultPlayer,
+  maximumPlayers,
+  shortIdLength,
+} from '../game-logic/GameConstants';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 
@@ -58,10 +62,7 @@ const joinGame = functions
     }
 
     if (!game.players.find((player) => player.id === playerId)) {
-      const newPlayer: Player = {
-        id: playerId,
-        hasResigned: false,
-      };
+      const newPlayer: Player = { id: playerId, ...defaultPlayer };
 
       await gameRef.update({
         players: admin.firestore.FieldValue.arrayUnion(newPlayer),

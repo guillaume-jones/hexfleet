@@ -2,7 +2,8 @@ import { Timestamp } from 'firebase/firestore';
 
 export type Player = {
   id: string;
-  hasResigned?: boolean;
+  dead: boolean;
+  sent: boolean;
 };
 
 export type TileCoords = {

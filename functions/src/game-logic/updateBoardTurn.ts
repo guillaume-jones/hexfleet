@@ -56,10 +56,10 @@ export const updateBoardTurn = ({
     validNextTurns,
     players,
   );
-  // Removes dead players
+  // Removes dead players, resets sent status
   const newPlayers = updatePlayerStatus(newBoardState, game.players);
   // Detects a winner
-  const alivePlayers = newPlayers.filter((p) => !p.hasResigned);
+  const alivePlayers = newPlayers.filter((p) => !p.dead);
 
   return {
     newBoardState,

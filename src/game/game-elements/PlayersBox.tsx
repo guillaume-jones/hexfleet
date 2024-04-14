@@ -28,18 +28,18 @@ const PlayersBox = () => {
           <p className="w-10 font-normal">Tiles</p>
           <p className="w-16 font-normal">Influence</p>
         </div>
-        {players.map(({ id, name, hasResigned }) => {
+        {players.map(({ id, name, dead }) => {
           const color = getColorForPlayer(id);
           return (
             <div
               key={id}
-              className={`flex gap-2 ${hasResigned ? 'opacity-60' : ''}`}
+              className={`flex gap-2 ${dead ? 'opacity-60' : ''}`}
               style={{ color }}>
               <div className="flex flex-1 items-center gap-2" key={id}>
                 <p
                   style={{ color }}
                   className={`
-                ${hasResigned ? 'line-through' : ''}
+                ${dead ? 'line-through' : ''}
                   max-w-32 overflow-hidden overflow-ellipsis text-nowrap text-left
                 `}>
                   {name}
@@ -47,15 +47,12 @@ const PlayersBox = () => {
                 {id === winner && (
                   <p className="group relative h-5 w-5 rounded-full bg-violet-800 text-xs font-semibold leading-5 text-white">
                     W
-                    <Tooltip className="-left-10 -right-10 w-auto text-black opacity-100">
-                      Winner
-                    </Tooltip>
                   </p>
                 )}
               </div>
               <p className="w-10">{tilesByPlayer[id] ?? 0}</p>
               <div className="group relative flex w-16 items-center justify-center">
-                {hasResigned ? (
+                {dead ? (
                   <p>-</p>
                 ) : (
                   <>

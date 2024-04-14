@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import {
+  defaultPlayer,
   maximumPlayers,
   minimumPlayers,
 } from 'functions/src/game-logic/GameConstants';
@@ -37,6 +38,7 @@ const CreateNewGame = ({ onCancel }: CreateNewGameProps) => {
       boardSize,
       players: range(playersCount).map((i) => ({
         id: String(i * 8618), // Value chosen because colors look good
+        ...defaultPlayer
       })),
     });
     return addBordersToBoard(board, boardSize);

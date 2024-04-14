@@ -13,7 +13,8 @@ export const updatePlayerStatus = (
 
     return {
       ...player,
-      hasResigned: player.hasResigned || playerHasLostHomeworld,
+      dead: player.dead || playerHasLostHomeworld,
+      sent: false,
     };
   });
 };

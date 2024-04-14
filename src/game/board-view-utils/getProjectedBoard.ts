@@ -44,7 +44,7 @@ export const getProjectedBoard = ({
     true,
   );
   const deadPlayers = (players ?? [])
-    .filter((player) => player.hasResigned)
+    .filter((player) => player.dead)
     .map((player) => player.id);
 
   return newBoardState?.map((tile, i) => {

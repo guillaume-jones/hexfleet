@@ -10,7 +10,7 @@ import PlayersBox from './game-elements/PlayersBox';
 import RematchButton from './game-elements/RematchButton';
 
 const GameDisplay = () => {
-  const { loading, hasStarted, userResigned, boardState, boardSize, winner } =
+  const { loading, hasStarted, userDead, boardState, boardSize, winner } =
     useContext(GameContext);
 
   return (
@@ -38,12 +38,12 @@ const GameDisplay = () => {
 
         <div className="flex flex-1 flex-row items-center justify-between gap-4 xl:w-auto xl:flex-col xl:items-start">
           {hasStarted ? <div className="hidden xl:block" /> : <GameCodeBox />}
-          {!userResigned && !winner && <ActionsBox />}
+          {!userDead && !winner && <ActionsBox />}
           {winner && <RematchButton />}
         </div>
       </div>
       <div className="min-h-0 self-stretch xl:-mx-10">
-        {!hasStarted || userResigned || winner ? (
+        {!hasStarted || userDead || winner ? (
           <SimpleHexBoard board={boardState} boardSize={boardSize} />
         ) : (
           <HexagonalBoard />

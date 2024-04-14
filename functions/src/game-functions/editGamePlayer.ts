@@ -48,9 +48,9 @@ const joinGame = functions
       case 'resign':
         {
           const newPlayers = gameData.players.map((p) =>
-            p.id === playerId ? { ...p, hasResigned: true } : p,
+            p.id === playerId ? { ...p, dead: true } : p,
           );
-          const alivePlayers = newPlayers.filter((p) => !p.hasResigned);
+          const alivePlayers = newPlayers.filter((p) => !p.dead);
 
           // Multiple players have resigned at the same time
           if (alivePlayers.length === 0) return;

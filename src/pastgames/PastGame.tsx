@@ -89,12 +89,12 @@ export default function PastGame({ index }: PastGameProps) {
         <SimpleHexBoard board={boardState} boardSize={boardSize} />
         <div className="flex w-44 flex-col items-center gap-1">
           <h3 className="self-center pb-2 text-xl font-medium">Players</h3>
-          {players.map(({ id, name, hasResigned }) => (
+          {players.map(({ id, name, dead }) => (
             <div className="flex items-center gap-1" key={id}>
               <p
                 style={{ color: getColorForPlayer(id) }}
                 className={`${
-                  hasResigned ? 'opacity-60' : ''
+                  dead ? 'line-through opacity-60' : ''
                 } max-w-36 overflow-hidden overflow-ellipsis text-nowrap`}>
                 {name}
               </p>
