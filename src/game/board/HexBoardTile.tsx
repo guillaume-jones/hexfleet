@@ -33,7 +33,7 @@ const HexBoardTile = ({
   return (
     <>
       <polygon
-        className="transition-colors duration-200"
+        className="transition-colors duration-150"
         fill={fill}
         strokeWidth={baseStrokeWidth}
         stroke={stroke}
@@ -49,7 +49,7 @@ const HexBoardTile = ({
         return (
           <line
             key={angle}
-            className="transition-all duration-300"
+            className="transition-all duration-200"
             strokeLinecap={'round'}
             x1={-R / 2 + 1.1}
             y1={-r + 0.9}
@@ -63,7 +63,7 @@ const HexBoardTile = ({
       })}
       {homeworld && (
         <polygon
-          className="transition-all duration-300"
+          className="transition-opacity duration-300"
           fillOpacity={textDisplayed ? 0.3 : 1}
           fill={stroke}
           points={`0,${-R} ${r},${-R / 2} ${r},${R / 2} 0,${R} ${-r},${

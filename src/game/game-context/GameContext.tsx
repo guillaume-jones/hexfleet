@@ -1,4 +1,4 @@
-import { getAllBoardInformation } from '../board-view-utils/getAllBoardInformation';
+import { getInfluenceInformation } from '../board-view-utils/getInfluenceInformation';
 import { ProjectedTile } from '../board-view-utils/getProjectedBoard';
 import { doc } from 'firebase/firestore';
 import { Dictionary } from 'lodash';
@@ -7,6 +7,7 @@ import { ReactNode, createContext, useEffect, useMemo } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
+import useBoardState from './useBoardState';
 import useNextTurn from './useNextTurn';
 import usePlayers from './usePlayers';
 import {
@@ -26,7 +27,9 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   userId: string;
   loading: boolean;
   players: PlayerWithName[];
-  boardState: TileWithBorders<ProjectedTile<Tile>>[];
+  boardWithBorders: TileWithBorders<ProjectedTile<Tile>>[];
+  turn: number;
+  setTurn: (turn: number) => void;
   tilesByPlayer: Dictionary<number>;
   influenceByPlayer: Dictionary<number>;
   influenceByPlayerWithoutDisabled: Dictionary<number>;
@@ -53,6 +56,7 @@ const useGameProvider = (gameId: string): GameContextType => {
   );
   const players = usePlayers(game);
   const nextTurnParams = useNextTurn(gameId);
+  const boardParams = useBoardState(game, nextTurnParams.nextTurn);
 
   // Redirects to landing page if game is not accessible
   useEffect(() => {
@@ -63,27 +67,28 @@ const useGameProvider = (gameId: string): GameContextType => {
   }, [error, router]);
 
   // Board processing for display
-  const information = useMemo(() => {
-    return getAllBoardInformation({
-      boardState: game?.boardState,
+  const influenceInformation = useMemo(() => {
+    return getInfluenceInformation({
+      newBoardWithBorders: boardParams.boardWithBorders,
+      oldBoard: game?.boardState,
       boardSize: game?.boardSize,
       nextTurn: nextTurnParams.nextTurn,
-      players: game?.players,
       userId: user?.uid,
     });
   }, [
+    boardParams.boardWithBorders,
     game?.boardState,
     game?.boardSize,
-    game?.players,
     nextTurnParams.nextTurn,
     user?.uid,
   ]);
 
   return {
-    loading,
     ...game,
-    ...information,
+    ...boardParams,
+    ...influenceInformation,
     ...nextTurnParams,
+    loading,
     players,
     gameId,
     userId: user?.uid ?? '',

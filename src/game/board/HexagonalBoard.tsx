@@ -19,10 +19,10 @@ import {
 } from 'src/game/board-view-utils/boardColors';
 
 const HexagonalBoard = () => {
-  const { boardState, boardSize, userId, updateNextTurn } =
+  const { boardWithBorders, boardSize, userId, updateNextTurn } =
     useContext(GameContext);
 
-  if (!boardState || !boardSize) {
+  if (!boardWithBorders || !boardSize) {
     return null;
   }
   const { d, r, R, halfBoardSize, viewBoxW, viewBoxH, baseStrokeWidth } =
@@ -35,7 +35,7 @@ const HexagonalBoard = () => {
       viewBox={`${-baseStrokeWidth / 2} ${-baseStrokeWidth / 2} ${
         viewBoxW + baseStrokeWidth
       } ${viewBoxH + baseStrokeWidth}`}>
-      {boardState.map((tile) => {
+      {boardWithBorders.map((tile) => {
         const {
           x,
           y,
