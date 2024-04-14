@@ -114,6 +114,7 @@ const HexagonalBoard = () => {
               R={R}
               r={r}
               textDisplayed={pressure > 0}
+              animateBorders
             />
             {clear && (
               <g
@@ -166,12 +167,9 @@ const HexagonalBoard = () => {
               </text>
             )}
             {/* Uncomment if needed for debugging */}
-            {/* <text
-                  textAnchor="middle"
-                  alignmentBaseline="middle"
-                  fontSize={3}>
-                  {x},{y}
-                </text> */}
+            {/* <text textAnchor="middle" alignmentBaseline="middle" fontSize={3}>
+              {x},{y}
+            </text> */}
           </g>
         );
       })}

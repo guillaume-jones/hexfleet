@@ -7,7 +7,17 @@ type HexBoardTileProps = TileWithBorders<Tile> & {
   R: number;
   r: number;
   textDisplayed?: boolean;
+  animateBorders?: boolean;
 };
+
+const allBorders = [
+  { angle: -150 },
+  { angle: -90 },
+  { angle: -30 },
+  { angle: 30 },
+  { angle: 90 },
+  { angle: 150 },
+];
 
 const HexBoardTile = ({
   fill,
@@ -18,6 +28,7 @@ const HexBoardTile = ({
   textDisplayed,
   homeworld,
   borders,
+  animateBorders,
 }: HexBoardTileProps) => {
   return (
     <>
@@ -30,23 +41,29 @@ const HexBoardTile = ({
           R / 2
         } ${-r},${-R / 2}`}
       />
-      {borders.map(({ angle }) => {
+      {(animateBorders ? allBorders : borders).map(({ angle }) => {
+        const active = animateBorders
+          ? borders.find((b) => b.angle === angle)
+          : true;
+
         return (
           <line
             key={angle}
+            className="transition-all duration-300"
             strokeLinecap={'round'}
             x1={-R / 2 + 1.1}
             y1={-r + 0.9}
             x2={R / 2 - 1.1}
             y2={-r + 0.9}
             stroke={stroke}
-            strokeWidth={baseStrokeWidth * 2.5}
+            strokeWidth={active ? baseStrokeWidth * 2.5 : 0}
             transform={`rotate(${angle})`}
           />
         );
       })}
       {homeworld && (
         <polygon
+          className="transition-all duration-300"
           fillOpacity={textDisplayed ? 0.3 : 1}
           fill={stroke}
           points={`0,${-R} ${r},${-R / 2} ${r},${R / 2} 0,${R} ${-r},${

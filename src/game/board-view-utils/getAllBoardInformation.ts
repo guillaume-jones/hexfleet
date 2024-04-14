@@ -50,10 +50,7 @@ export const getAllBoardInformation = ({
     players,
     userId,
   });
-  const newBoardWithBorders = addBordersToBoard(newBoardState, boardSize).sort(
-    // Must sort or empty tiles override player tiles/borders
-    (a, b) => +!!a.playerId - +!!b.playerId,
-  );
+  const newBoardWithBorders = addBordersToBoard(newBoardState, boardSize);
   const projectedInfluenceByPlayer = getPlayersInfluence(newBoardWithBorders);
 
   return {
