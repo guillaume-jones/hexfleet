@@ -20,10 +20,11 @@ const useBoardState = (game?: Partial<Game>, nextTurn?: NextTurn) => {
   const boardWithBorders = useMemo(() => {
     if (!game) return [];
 
-    const boardState =
-      game.pastTurns && turn < game.pastTurns.length
-        ? game.pastTurns[turn].boardState
-        : game.boardState;
+    const isInPast = !!game.pastTurns && turn < game.pastTurns.length;
+
+    const boardState = isInPast
+      ? game.pastTurns?.[turn].boardState
+      : game.boardState;
 
     return addBordersToBoard(
       getProjectedBoard({
@@ -31,7 +32,7 @@ const useBoardState = (game?: Partial<Game>, nextTurn?: NextTurn) => {
         boardSize: game.boardSize,
         players: game.players,
         userId: user?.uid,
-        nextTurn,
+        nextTurn: isInPast ? { pressures: [] } : nextTurn,
       }),
       game.boardSize,
     );

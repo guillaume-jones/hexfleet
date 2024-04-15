@@ -8,16 +8,11 @@ import GameCodeBox from './game-elements/GameCodeBox';
 import HelpBox from './game-elements/HelpBox';
 import PlayersBox from './game-elements/PlayersBox';
 import RematchButton from './game-elements/RematchButton';
+import TurnBox from './game-elements/TurnBox';
 
 const GameDisplay = () => {
-  const {
-    loading,
-    hasStarted,
-    userDead,
-    boardWithBorders,
-    boardSize,
-    winner,
-  } = useContext(GameContext);
+  const { loading, hasStarted, userDead, boardWithBorders, boardSize, winner } =
+    useContext(GameContext);
 
   return (
     <div
@@ -43,7 +38,7 @@ const GameDisplay = () => {
         <PlayersBox />
 
         <div className="flex flex-1 flex-row items-center justify-between gap-4 xl:w-auto xl:flex-col xl:items-start">
-          {hasStarted ? <div className="hidden xl:block" /> : <GameCodeBox />}
+          {hasStarted ? <TurnBox /> : <GameCodeBox />}
           {!userDead && !winner && <ActionsBox />}
           {winner && <RematchButton />}
         </div>

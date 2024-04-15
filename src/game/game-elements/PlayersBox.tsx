@@ -14,21 +14,17 @@ import Tooltip from 'src/components/interactive/Tooltip';
 const PlayersBox = () => {
   const {
     players,
-    pastTurns,
     tilesByPlayer,
     influenceByPlayer,
     influenceByPlayerWithoutDisabled,
     winner,
   } = useContext(GameContext);
 
-  if (!players || !pastTurns) return null;
+  if (!players) return null;
 
   return (
     <div className="flex w-96 flex-col rounded-xl bg-zinc-900 px-4 py-3 text-center">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold">Scores</h2>
-        <p className="text-lg font-semibold">Turn: {pastTurns.length}</p>
-      </div>
+      <h2 className="text-xl font-bold">Scores</h2>
       <div className="flex flex-col items-stretch ">
         <div className="flex gap-2">
           <p className="flex-1 text-left">Player</p>

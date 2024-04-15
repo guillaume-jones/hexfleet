@@ -3,7 +3,14 @@ import { ProjectedTile } from '../board-view-utils/getProjectedBoard';
 import { doc } from 'firebase/firestore';
 import { Dictionary } from 'lodash';
 import { useRouter } from 'next/router';
-import { ReactNode, createContext, useEffect, useMemo } from 'react';
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  createContext,
+  useEffect,
+  useMemo,
+} from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
@@ -29,7 +36,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   players: PlayerWithName[];
   boardWithBorders: TileWithBorders<ProjectedTile<Tile>>[];
   turn: number;
-  setTurn: (turn: number) => void;
+  setTurn: Dispatch<SetStateAction<number>>;
   tilesByPlayer: Dictionary<number>;
   influenceByPlayer: Dictionary<number>;
   influenceByPlayerWithoutDisabled: Dictionary<number>;
