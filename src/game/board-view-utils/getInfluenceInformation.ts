@@ -31,9 +31,10 @@ export const getInfluenceInformation = ({
   const tilesByPlayer = countBy(currentBoard, 'playerId');
 
   // Get projections of influence and tile information
-  const influenceRemaining = userId
-    ? influenceByPlayer[userId] - getInfluenceSpent(nextTurn)
-    : 0;
+  const userInfluence = userId ? influenceByPlayer[userId] : 0;
+  const influenceRemaining = isNaN(userInfluence)
+    ? 0
+    : userInfluence - getInfluenceSpent(nextTurn);
 
   // Project new board for display
   const projectedInfluenceByPlayer = getPlayersInfluence(projectedBoard);
