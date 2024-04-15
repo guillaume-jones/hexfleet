@@ -11,8 +11,14 @@ import RematchButton from './game-elements/RematchButton';
 import TurnBox from './game-elements/TurnBox';
 
 const GameDisplay = () => {
-  const { loading, hasStarted, userDead, boardWithBorders, boardSize, winner } =
-    useContext(GameContext);
+  const {
+    loading,
+    hasStarted,
+    userDead,
+    projectedBoard,
+    boardSize,
+    winner,
+  } = useContext(GameContext);
 
   return (
     <div
@@ -45,7 +51,7 @@ const GameDisplay = () => {
       </div>
       <div className="min-h-0 self-stretch xl:-mx-12">
         {!hasStarted || userDead || winner ? (
-          <SimpleHexBoard board={boardWithBorders} boardSize={boardSize} />
+          <SimpleHexBoard board={projectedBoard} boardSize={boardSize} />
         ) : (
           <HexagonalBoard />
         )}

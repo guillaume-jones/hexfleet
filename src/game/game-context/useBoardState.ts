@@ -2,8 +2,9 @@ import { getProjectedBoard } from '../board-view-utils/getProjectedBoard';
 import { useEffect, useMemo, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
-import { Game, NextTurn } from 'functions/src/document-types/Games';
+import { BoardState, Game, NextTurn } from 'functions/src/document-types/Games';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
+import { calculateNewBoardState } from 'functions/src/game-logic/calculateNewBoardState';
 
 import { auth } from 'src/firebase/firebaseApp';
 
@@ -11,13 +12,24 @@ const useBoardState = (game?: Partial<Game>, nextTurn?: NextTurn) => {
   const [user] = useAuthState(auth);
 
   const [turn, setTurn] = useState(game?.pastTurns?.length ?? 0);
+  const [localBoardState, setLocalBoardState] = useState<BoardState>();
 
   // Reset turn counter if new turn added / game loaded
   useEffect(() => {
     setTurn(game?.pastTurns?.length ?? 0);
   }, [game?.pastTurns?.length]);
 
-  const boardWithBorders = useMemo(() => {
+  const { currentBoard, currentBoardWithoutDisabled } = useMemo(() => {
+    return {
+      currentBoard: addBordersToBoard(localBoardState ?? [], game?.boardSize),
+      currentBoardWithoutDisabled: addBordersToBoard(
+        calculateNewBoardState(localBoardState ?? [], [], []),
+        game?.boardSize,
+      ),
+    };
+  }, [game?.boardSize, localBoardState]);
+
+  const projectedBoard = useMemo(() => {
     if (!game) return [];
 
     const isInPast = !!game.pastTurns && turn < game.pastTurns.length;
@@ -39,8 +51,14 @@ const useBoardState = (game?: Partial<Game>, nextTurn?: NextTurn) => {
   }, [game, nextTurn, turn, user?.uid]);
 
   return useMemo(
-    () => ({ turn, setTurn, boardWithBorders }),
-    [turn, boardWithBorders],
+    () => ({
+      turn,
+      setTurn,
+      projectedBoard,
+      currentBoard,
+      currentBoardWithoutDisabled,
+    }),
+    [turn, projectedBoard, currentBoard, currentBoardWithoutDisabled],
   );
 };
 

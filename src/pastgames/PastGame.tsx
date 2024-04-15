@@ -30,7 +30,7 @@ export default function PastGame({ index }: PastGameProps) {
   const {
     gameId,
     boardSize,
-    boardWithBorders,
+    projectedBoard,
     createdAt,
     endedAt,
     hasStarted,
@@ -87,7 +87,7 @@ export default function PastGame({ index }: PastGameProps) {
         </Button>
       </div>
       <div className="flex h-80 flex-col items-center justify-around gap-4 sm:h-44 sm:flex-row">
-        <SimpleHexBoard board={boardWithBorders} boardSize={boardSize} />
+        <SimpleHexBoard board={projectedBoard} boardSize={boardSize} />
         <div className="flex w-44 flex-col items-center gap-1">
           <h3 className="self-center pb-2 text-xl font-medium">Players</h3>
           {players.map(({ id, name, dead }) => (

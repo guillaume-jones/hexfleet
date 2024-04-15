@@ -34,7 +34,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   userId: string;
   loading: boolean;
   players: PlayerWithName[];
-  boardWithBorders: TileWithBorders<ProjectedTile<Tile>>[];
+  projectedBoard: TileWithBorders<ProjectedTile<Tile>>[];
   turn: number;
   setTurn: Dispatch<SetStateAction<number>>;
   tilesByPlayer: Dictionary<number>;
@@ -76,19 +76,11 @@ const useGameProvider = (gameId: string): GameContextType => {
   // Board processing for display
   const influenceInformation = useMemo(() => {
     return getInfluenceInformation({
-      newBoardWithBorders: boardParams.boardWithBorders,
-      oldBoard: game?.boardState,
-      boardSize: game?.boardSize,
+      ...boardParams,
       nextTurn: nextTurnParams.nextTurn,
       userId: user?.uid,
     });
-  }, [
-    boardParams.boardWithBorders,
-    game?.boardState,
-    game?.boardSize,
-    nextTurnParams.nextTurn,
-    user?.uid,
-  ]);
+  }, [boardParams, nextTurnParams.nextTurn, user?.uid]);
 
   return {
     ...game,

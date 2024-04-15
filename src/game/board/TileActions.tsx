@@ -18,11 +18,11 @@ export type TileActionsProps = {
 };
 
 const TileActions = ({ clientX, clientY, x, y, show }: TileActionsProps) => {
-  const { boardWithBorders, updateNextTurn } = useContext(GameContext);
+  const { projectedBoard, updateNextTurn } = useContext(GameContext);
 
   const tile = useMemo(
-    () => boardWithBorders?.find((t) => t.x === x && t.y === y),
-    [boardWithBorders, x, y],
+    () => projectedBoard?.find((t) => t.x === x && t.y === y),
+    [projectedBoard, x, y],
   );
 
   return (

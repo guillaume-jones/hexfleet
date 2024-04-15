@@ -1,42 +1,34 @@
 import countBy from 'lodash/countBy';
 
 import {
-  BoardState,
   NextTurn,
   Tile,
   TileWithBorders,
 } from 'functions/src/document-types/Games';
-import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
-import { calculateNewBoardState } from 'functions/src/game-logic/calculateNewBoardState';
 import {
   getInfluenceSpent,
   getPlayersInfluence,
 } from 'functions/src/game-logic/influenceUtils';
 
 export const getInfluenceInformation = ({
-  oldBoard,
-  newBoardWithBorders,
+  currentBoard = [],
+  currentBoardWithoutDisabled = [],
+  projectedBoard = [],
   nextTurn,
-  boardSize,
   userId,
 }: {
-  oldBoard?: BoardState;
-  newBoardWithBorders?: TileWithBorders<Tile>[];
+  currentBoard?: TileWithBorders<Tile>[];
+  currentBoardWithoutDisabled?: TileWithBorders<Tile>[];
+  projectedBoard?: TileWithBorders<Tile>[];
   nextTurn?: NextTurn;
-  boardSize?: number;
   userId?: string;
 }) => {
   // Get "current" influence and tile information
-  const influenceByPlayer = getPlayersInfluence(
-    addBordersToBoard(oldBoard ?? [], boardSize),
-  );
+  const influenceByPlayer = getPlayersInfluence(currentBoard);
   const influenceByPlayerWithoutDisabled = getPlayersInfluence(
-    addBordersToBoard(
-      calculateNewBoardState(oldBoard ?? [], [], []),
-      boardSize,
-    ),
+    currentBoardWithoutDisabled,
   );
-  const tilesByPlayer = countBy(oldBoard, 'playerId');
+  const tilesByPlayer = countBy(currentBoard, 'playerId');
 
   // Get projections of influence and tile information
   const influenceRemaining = userId
@@ -44,9 +36,7 @@ export const getInfluenceInformation = ({
     : 0;
 
   // Project new board for display
-  const projectedInfluenceByPlayer = getPlayersInfluence(
-    newBoardWithBorders ?? [],
-  );
+  const projectedInfluenceByPlayer = getPlayersInfluence(projectedBoard);
 
   return {
     tilesByPlayer,
