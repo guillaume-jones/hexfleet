@@ -8,7 +8,7 @@ import { maxInfluenceReach } from 'functions/src/game-logic/GameConstants';
 import { calculateNewBoardState } from 'functions/src/game-logic/calculateNewBoardState';
 import { findClosestTileWithId } from 'functions/src/game-logic/findClosestTileWithId';
 
-export type ProjectedTile<T extends Tile> = TileWithPressure<T> & {
+export type ProjectedTile = TileWithPressure<Tile> & {
   previousPlayerId?: string;
 };
 
@@ -30,12 +30,8 @@ export const getProjectedBoard = ({
   nextTurn?: NextTurn;
   players?: Player[];
   userId?: string;
-}): ProjectedTile<Tile>[] => {
-  if (!boardState || !boardSize) return [];
-
-  if (!nextTurn || !userId) {
-    return boardState.map((tile) => ({ ...tile, ...defaultTileWithPressure }));
-  }
+}): ProjectedTile[] => {
+  if (!boardState || !boardSize || !nextTurn || !userId) return [];
 
   const newBoardState = calculateNewBoardState(
     boardState,

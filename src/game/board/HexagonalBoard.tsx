@@ -19,12 +19,8 @@ import {
 } from 'src/game/board-view-utils/boardColors';
 
 const HexagonalBoard = () => {
-  const {
-    projectedBoard,
-    boardSize,
-    userId,
-    updateNextTurn,
-  } = useContext(GameContext);
+  const { projectedBoard, boardSize, userId, updateNextTurn } =
+    useContext(GameContext);
 
   if (!projectedBoard || !boardSize) {
     return null;

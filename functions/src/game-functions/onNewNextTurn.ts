@@ -24,13 +24,16 @@ const onNewNextTurn = functions
     const nextTurnsDocs = nextTurnsSnapshot.docs.filter(({ id }) =>
       activePlayers.includes(id),
     );
-    await gameRef.update({
-      players: game.players.map((player) =>
-        player.id === playerId ? { ...player, sent: true } : player,
-      ),
-    });
+
     // Not all players have submitted their next turn
-    if (nextTurnsDocs.length < activePlayers.length) return;
+    if (nextTurnsDocs.length < activePlayers.length) {
+      await gameRef.update({
+        players: game.players.map((player) =>
+          player.id === playerId ? { ...player, sent: true } : player,
+        ),
+      });
+      return;
+    }
 
     // Ensure same order of players as nextTurns
     nextTurnsDocs.sort(

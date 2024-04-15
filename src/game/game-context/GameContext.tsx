@@ -20,7 +20,6 @@ import usePlayers from './usePlayers';
 import {
   Game,
   NextTurn,
-  Tile,
   TileCoords,
   TileWithBorders,
   TileWithPressure,
@@ -34,7 +33,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   userId: string;
   loading: boolean;
   players: PlayerWithName[];
-  projectedBoard: TileWithBorders<ProjectedTile<Tile>>[];
+  projectedBoard: TileWithBorders<ProjectedTile>[];
   turn: number;
   setTurn: Dispatch<SetStateAction<number>>;
   tilesByPlayer: Dictionary<number>;
