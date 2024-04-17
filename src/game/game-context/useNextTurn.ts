@@ -1,5 +1,5 @@
 import { doc, setDoc } from 'firebase/firestore';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
@@ -11,15 +11,18 @@ import {
 
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
-const nextTurnKey = 'next-turn';
-
 const useNextTurn = (gameId: string) => {
   const [user] = useAuthState(auth);
 
-  const nextTurnRef =
-    user && gameId
+  const nextTurnRef = useMemo(() => {
+    return user && gameId
       ? doc(firestore, 'games', gameId, 'nextTurns', user.uid)
       : undefined;
+  }, [gameId, user]);
+
+  const nextTurnKey = useMemo(() => {
+    return `next-turn-${gameId}`;
+  }, [gameId]);
 
   const [sentNextTurn, sentNextTurnLoading] =
     useDocumentData<Partial<NextTurn>>(nextTurnRef);
@@ -44,7 +47,7 @@ const useNextTurn = (gameId: string) => {
 
     // Resets next turn if server just updated and cleared my turn
     setNextTurn(undefined);
-  }, [sentNextTurn, sentNextTurnLoading]);
+  }, [nextTurnKey, sentNextTurn, sentNextTurnLoading]);
 
   const sendNextTurn = useCallback(async () => {
     if (!nextTurnRef) return;
@@ -55,29 +58,33 @@ const useNextTurn = (gameId: string) => {
     } catch (e) {
       console.error(e);
     }
-  }, [nextTurnRef, nextTurn]);
+  }, [nextTurnRef, nextTurn, nextTurnKey]);
 
-  const updateNextTurn = useCallback((tile: TileWithPressure<TileCoords>) => {
-    setNextTurn((prev) => {
-      const newPressures = (prev?.pressures ?? []).filter(
-        ({ x, y }) => !(x === tile.x && y === tile.y),
-      );
+  const updateNextTurn = useCallback(
+    (tile: TileWithPressure<TileCoords>) => {
+      setNextTurn((prev) => {
+        const newPressures = (prev?.pressures ?? []).filter(
+          ({ x, y }) => !(x === tile.x && y === tile.y),
+        );
+        if (tile.pressure || tile.clear) newPressures.push(tile);
 
-      if (tile.pressure || tile.clear) newPressures.push(tile);
+        if (newPressures.length === 0) {
+          localStorage.removeItem(nextTurnKey);
+          return undefined;
+        }
 
-      if (newPressures.length === 0) return undefined;
-
-      const newNextTurn = { pressures: newPressures };
-
-      localStorage.setItem(nextTurnKey, JSON.stringify(newNextTurn));
-      return newNextTurn;
-    });
-  }, []);
+        const newNextTurn = { pressures: newPressures };
+        localStorage.setItem(nextTurnKey, JSON.stringify(newNextTurn));
+        return newNextTurn;
+      });
+    },
+    [nextTurnKey],
+  );
 
   const resetNextTurn = useCallback(() => {
     setNextTurn(sentNextTurn as NextTurn | undefined);
     localStorage.removeItem(nextTurnKey);
-  }, [sentNextTurn]);
+  }, [nextTurnKey, sentNextTurn]);
 
   return {
     nextTurn,

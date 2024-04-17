@@ -25,7 +25,9 @@ export default function PrivacyBox() {
             key={0}
             checked={!!isScorePublic}
             setChecked={() => updateSettings({ isScorePublic: !isScorePublic })}
-            label={'Show my wins & Elo on the public leaderboard'}
+            label={
+              'Show my wins & Elo on the public leaderboard (coming soon!)'
+            }
           />,
         ]}
       </AlignedBox>
