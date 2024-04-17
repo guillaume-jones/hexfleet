@@ -27,8 +27,8 @@ export default function ProfileBox() {
   return (
     <Transition
       enter="transition ease-out duration-500"
-      enterFrom="opacity-0 scale-0"
-      enterTo="opacity-100 scale-100"
+      enterFrom="opacity-0"
+      enterTo="opacity-100"
       show={!loading}>
       <h2 className={'mb-2 text-xl font-semibold text-zinc-50'}>Profile</h2>
       <AlignedBox>

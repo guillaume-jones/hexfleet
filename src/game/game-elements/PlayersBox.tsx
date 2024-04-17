@@ -18,6 +18,7 @@ const PlayersBox = () => {
     influenceByPlayer,
     influenceByPlayerWithoutDisabled,
     winner,
+    hasStarted,
   } = useContext(GameContext);
 
   if (!players) return null;
@@ -52,7 +53,7 @@ const PlayersBox = () => {
               </div>
               {sent ? (
                 <CheckCircleIcon className="h-5 w-12 text-green-500" />
-              ) : dead || winner ? (
+              ) : dead || winner || !hasStarted ? (
                 <MinusCircleIcon className="h-5 w-12 text-zinc-600" />
               ) : (
                 <EllipsisHorizontalCircleIcon className="h-5 w-12 text-red-500" />

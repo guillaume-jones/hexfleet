@@ -91,7 +91,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
           <Button
             light={nextTurn && nextTurnEqualsSent}
             loading={sendLoading}
-            disabled={influenceRemaining < 0}
+            disabled={!nextTurn || influenceRemaining < 0}
             onClick={() => {
               setSendLoading(true);
               sendNextTurn()

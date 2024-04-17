@@ -5,20 +5,15 @@ import SimpleHexBoard from './board/SimpleHexBoard';
 import { GameContext } from './game-context/GameContext';
 import ActionsBox from './game-elements/ActionsBox';
 import GameCodeBox from './game-elements/GameCodeBox';
+import GameEndModal from './game-elements/GameEndModal';
 import HelpBox from './game-elements/HelpBox';
 import PlayersBox from './game-elements/PlayersBox';
 import RematchButton from './game-elements/RematchButton';
 import TurnBox from './game-elements/TurnBox';
 
 const GameDisplay = () => {
-  const {
-    loading,
-    hasStarted,
-    userDead,
-    projectedBoard,
-    boardSize,
-    winner,
-  } = useContext(GameContext);
+  const { loading, hasStarted, userDead, projectedBoard, boardSize, winner } =
+    useContext(GameContext);
 
   return (
     <div
@@ -39,15 +34,12 @@ const GameDisplay = () => {
       } 
      `}>
       <div
-        className="flex flex-col items-center gap-4 md:flex-row xl:flex-col xl:items-start
+        className="flex flex-col items-center gap-4 lg:flex-row xl:flex-col xl:items-start
       ">
         <PlayersBox />
-
-        <div className="flex flex-1 flex-row items-center justify-between gap-4 xl:w-auto xl:flex-col xl:items-start">
-          {hasStarted ? <TurnBox /> : <GameCodeBox />}
-          {!userDead && !winner && <ActionsBox />}
-          {winner && <RematchButton />}
-        </div>
+        {hasStarted ? <TurnBox /> : <GameCodeBox />}
+        <div className="hidden flex-1 xl:block" />
+        {userDead || winner ? <RematchButton /> : <ActionsBox />}
       </div>
       <div className="min-h-0 self-stretch xl:-mx-12">
         {!hasStarted || userDead || winner ? (
@@ -57,6 +49,7 @@ const GameDisplay = () => {
         )}
       </div>
       <HelpBox className="sm:absolute sm:bottom-16 sm:right-4" />
+      <GameEndModal />
     </div>
   );
 };

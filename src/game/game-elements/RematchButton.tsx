@@ -9,7 +9,7 @@ const RematchButton = () => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Start a Rematch</Button>
+      <Button onClick={() => setOpen(true)}>Start a new game</Button>
       <Modal open={open} setOpen={setOpen} className="flex flex-col gap-2">
         <CreateNewGame onCancel={() => setOpen(false)} />
       </Modal>

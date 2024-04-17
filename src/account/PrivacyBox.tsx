@@ -12,11 +12,11 @@ export default function PrivacyBox() {
   return (
     <Transition
       enter="transition ease-out duration-500"
-      enterFrom="opacity-0 scale-0"
-      enterTo="opacity-100 scale-100"
+      enterFrom="opacity-0"
+      enterTo="opacity-100"
       leave="transition ease-in duration-500"
-      leaveFrom="opacity-100 scale-100"
-      leaveTo="opacity-0 scale-0"
+      leaveFrom="opacity-100"
+      leaveTo="opacity-0"
       show={!loading}>
       <h2 className={'mb-2 text-xl font-semibold text-zinc-50'}>Privacy</h2>
       <AlignedBox>
