@@ -27,21 +27,27 @@ const GameJoining = ({ className }: GameCreationProps) => {
   );
 
   const joinGameAndRedirect = useCallback(
-    async (id: string) => {
+    (id: string) => {
       if (userLoading) return;
       if (!user) {
-        await router.replace({
+        void router.replace({
           query: { ...router.query, login: true },
         });
         return;
       }
 
-      const result = await joinGame({ shortId: id });
-      if (result && typeof result.data === 'string') {
-        await router.push(`/games/${result.data}`);
-      } else {
-        setErrorShown(true);
-      }
+      joinGame({ shortId: id })
+        .then((result) => {
+          if (result && typeof result.data === 'string') {
+            void router.push(`/games/${result.data}`);
+          } else {
+            setErrorShown(true);
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          setErrorShown(true);
+        });
     },
     [joinGame, router, user, userLoading],
   );
@@ -51,8 +57,20 @@ const GameJoining = ({ className }: GameCreationProps) => {
     if (typeof shortId !== 'string') return;
 
     setShortId(shortId.toUpperCase());
-    void joinGameAndRedirect(shortId.toUpperCase());
+    joinGameAndRedirect(shortId.toUpperCase());
   }, [joinGameAndRedirect, router.query]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (shortId && e.key === 'Enter') {
+        e.preventDefault();
+        joinGameAndRedirect(shortId.toUpperCase());
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [joinGameAndRedirect, shortId]);
 
   return (
     <div className={`flex w-60 flex-col items-center gap-4 ${className}`}>
@@ -71,7 +89,7 @@ const GameJoining = ({ className }: GameCreationProps) => {
         disabled={shortId.length !== shortIdLength}
         fontClassName="text-lg font-semibold"
         loading={loading}
-        onClick={() => void joinGameAndRedirect(shortId)}>
+        onClick={() => joinGameAndRedirect(shortId)}>
         Join Game
       </Button>
       <p
