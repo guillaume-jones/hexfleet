@@ -13,6 +13,11 @@ const useBoardState = (game?: Partial<Game>, nextTurn?: NextTurn) => {
 
   const [turn, setTurn] = useState<number>(-1);
 
+  const isInPast = useMemo(
+    () => !!game?.pastTurns && turn < game.pastTurns.length,
+    [game?.pastTurns, turn],
+  );
+
   // Reset turn counter if new turn added / game loaded
   useEffect(() => {
     setTurn(game?.pastTurns?.length ?? -1);
@@ -31,8 +36,6 @@ const useBoardState = (game?: Partial<Game>, nextTurn?: NextTurn) => {
   const projectedBoard = useMemo(() => {
     if (!game || turn < 0) return [];
 
-    const isInPast = game.pastTurns && turn < game.pastTurns.length;
-
     const boardState = isInPast
       ? game.pastTurns?.[turn].boardState
       : game.boardState;
@@ -43,11 +46,11 @@ const useBoardState = (game?: Partial<Game>, nextTurn?: NextTurn) => {
         boardSize: game.boardSize,
         players: game.players,
         userId: user?.uid,
-        nextTurn: isInPast ? { pressures: [] } : nextTurn,
+        nextTurn: isInPast ? undefined : nextTurn,
       }),
       game.boardSize,
     );
-  }, [turn, game, user?.uid, nextTurn]);
+  }, [turn, game, user?.uid, nextTurn, isInPast]);
 
   return useMemo(
     () => ({
@@ -56,8 +59,17 @@ const useBoardState = (game?: Partial<Game>, nextTurn?: NextTurn) => {
       projectedBoard,
       currentBoard,
       currentBoardWithoutDisabled,
+      isInPast,
+      nextTurn: isInPast ? undefined : nextTurn,
     }),
-    [turn, projectedBoard, currentBoard, currentBoardWithoutDisabled],
+    [
+      turn,
+      projectedBoard,
+      currentBoard,
+      currentBoardWithoutDisabled,
+      isInPast,
+      nextTurn,
+    ],
   );
 };
 

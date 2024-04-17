@@ -22,6 +22,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
   const {
     hasStarted,
     gameId,
+    nextTurn,
     nextTurnSent,
     nextTurnEqualsSent,
     influenceByPlayer,
@@ -57,7 +58,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
       <h2 className="text-xl font-bold">Actions</h2>
       {hasStarted && (
         <div>
-          <div className="flex items-center">
+          <div className="flex items-center ">
             <p>Influence left to spend:</p>
             <p
               className={`ml-2 font-bold ${
@@ -66,22 +67,29 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
               {influenceRemaining}
             </p>
             <p className="font-bold">/{influenceByPlayer[userId]}</p>
-            <RotateCcw
-              className="ml-4 cursor-pointer hover:opacity-80 active:opacity-50"
-              size={20}
-              onClick={() => resetNextTurn()}
-            />
           </div>
-          <div className="flex italic">
+          <div
+            className={`flex italic transition-opacity duration-200 ${
+              nextTurn ? 'opacity-100' : 'opacity-0'
+            }`}>
             <p>Projected future influence:</p>
             <p className={'ml-2'}>{projectedInfluenceByPlayer[userId]}</p>
+            <RotateCcw
+              className={`ml-4 transition-opacity duration-200 ${
+                !nextTurnEqualsSent
+                  ? 'cursor-pointer  hover:opacity-80 active:opacity-50'
+                  : 'opacity-0'
+              }`}
+              size={20}
+              onClick={nextTurnEqualsSent ? undefined : () => resetNextTurn()}
+            />
           </div>
         </div>
       )}
       <div className="flex flex-row justify-between gap-3">
         {hasStarted && (
           <Button
-            light={nextTurnEqualsSent}
+            light={nextTurn && nextTurnEqualsSent}
             loading={sendLoading}
             disabled={influenceRemaining < 0}
             onClick={() => {

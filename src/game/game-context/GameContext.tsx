@@ -36,12 +36,13 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   projectedBoard: TileWithBorders<ProjectedTile>[];
   turn: number;
   setTurn: Dispatch<SetStateAction<number>>;
+  isInPast: boolean;
   tilesByPlayer: Dictionary<number>;
   influenceByPlayer: Dictionary<number>;
   influenceByPlayerWithoutDisabled: Dictionary<number>;
   projectedInfluenceByPlayer: Dictionary<number>;
   influenceRemaining: number;
-  nextTurn: NextTurn;
+  nextTurn: NextTurn | undefined;
   nextTurnSent: boolean;
   nextTurnEqualsSent: boolean;
   userDead: boolean | undefined;
@@ -83,9 +84,9 @@ const useGameProvider = (gameId: string): GameContextType => {
 
   return {
     ...game,
+    ...nextTurnParams,
     ...boardParams,
     ...influenceInformation,
-    ...nextTurnParams,
     loading,
     players,
     gameId,

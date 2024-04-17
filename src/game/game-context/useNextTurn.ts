@@ -24,7 +24,7 @@ const useNextTurn = (gameId: string) => {
   const [sentNextTurn, sentNextTurnLoading] =
     useDocumentData<Partial<NextTurn>>(nextTurnRef);
 
-  const [nextTurn, setNextTurn] = useState<NextTurn>({ pressures: [] });
+  const [nextTurn, setNextTurn] = useState<NextTurn>();
 
   useEffect(() => {
     if (sentNextTurnLoading) return;
@@ -43,7 +43,7 @@ const useNextTurn = (gameId: string) => {
     }
 
     // Resets next turn if server just updated and cleared my turn
-    setNextTurn({ pressures: [] });
+    setNextTurn(undefined);
   }, [sentNextTurn, sentNextTurnLoading]);
 
   const sendNextTurn = useCallback(async () => {
@@ -59,15 +59,15 @@ const useNextTurn = (gameId: string) => {
 
   const updateNextTurn = useCallback((tile: TileWithPressure<TileCoords>) => {
     setNextTurn((prev) => {
-      const filteredPressures = prev.pressures.filter(
+      const newPressures = (prev?.pressures ?? []).filter(
         ({ x, y }) => !(x === tile.x && y === tile.y),
       );
-      const newNextTurn = {
-        pressures: [
-          ...filteredPressures,
-          ...(tile.clear || tile.pressure ? [tile] : []),
-        ],
-      };
+
+      if (tile.pressure || tile.clear) newPressures.push(tile);
+
+      if (newPressures.length === 0) return undefined;
+
+      const newNextTurn = { pressures: newPressures };
 
       localStorage.setItem(nextTurnKey, JSON.stringify(newNextTurn));
       return newNextTurn;
@@ -75,7 +75,7 @@ const useNextTurn = (gameId: string) => {
   }, []);
 
   const resetNextTurn = useCallback(() => {
-    setNextTurn((sentNextTurn as NextTurn) ?? { pressures: [] });
+    setNextTurn(sentNextTurn as NextTurn | undefined);
     localStorage.removeItem(nextTurnKey);
   }, [sentNextTurn]);
 

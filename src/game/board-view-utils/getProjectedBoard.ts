@@ -31,12 +31,12 @@ export const getProjectedBoard = ({
   players?: Player[];
   userId?: string;
 }): ProjectedTile[] => {
-  if (!boardState || !boardSize || !nextTurn || !userId) return [];
+  if (!boardState || !boardSize || !userId) return [];
 
   const newBoardState = calculateNewBoardState(
     boardState,
-    [nextTurn],
-    [userId],
+    nextTurn ? [nextTurn] : [],
+    nextTurn ? [userId] : [],
     true,
   );
   const deadPlayers = (players ?? [])
@@ -45,7 +45,7 @@ export const getProjectedBoard = ({
 
   return newBoardState?.map((tile, i) => {
     const tilePressure =
-      nextTurn.pressures.find(
+      nextTurn?.pressures.find(
         (pressure) => pressure.x === tile.x && pressure.y === tile.y,
       ) ?? defaultTileWithPressure;
     const closestOwnTile = findClosestTileWithId({
