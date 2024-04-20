@@ -92,7 +92,8 @@ const HexagonalBoard = () => {
                 y * R * 1.5 + R
               }) scale(0.99)`}
               // Touchscreen handling
-              onTouchStart={() =>
+              onTouchStart={() => {
+                if (!isClickable || !isTouchScreen) return;
                 setLongPressTimer(
                   setTimeout(() => {
                     setLongPressTimer(undefined);
@@ -102,8 +103,8 @@ const HexagonalBoard = () => {
                       clear: false,
                     });
                   }, 400),
-                )
-              }
+                );
+              }}
               onTouchEnd={() => {
                 if (!isClickable || !isTouchScreen) return;
 

@@ -57,36 +57,38 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
 
   return (
     <div
-      className={`flex w-auto flex-col gap-3 rounded-xl bg-zinc-900 px-4
+      className={`flex w-auto select-none flex-col gap-3 rounded-xl bg-zinc-900 px-4
       py-3 transition-all ${className}
       `}>
       <h2 className="text-xl font-bold">Actions</h2>
       {hasStarted && (
-        <div>
-          <div className="flex items-center ">
-            <p>Influence left to spend:</p>
-            <p
-              className={`ml-2 font-bold ${
-                influenceRemaining < 0 ? 'text-red-500' : ''
+        <div className="flex items-center gap-3">
+          <div>
+            <div className="flex items-center ">
+              <p>Influence left to spend:</p>
+              <p
+                className={`ml-2 font-bold ${
+                  influenceRemaining < 0 ? 'text-red-500' : ''
+                }`}>
+                {influenceRemaining}
+              </p>
+              <p className="font-bold">/{influenceByPlayer[userId]}</p>
+            </div>
+            <div
+              className={`flex items-center transition-opacity ${
+                nextTurn ? 'opacity-75' : 'opacity-0'
               }`}>
-              {influenceRemaining}
-            </p>
-            <p className="font-bold">/{influenceByPlayer[userId]}</p>
+              <p>Projected future influence:</p>
+              <p className={'ml-2'}>{projectedInfluenceByPlayer[userId]}</p>
+            </div>
           </div>
-          <div
-            className={`flex select-none items-center italic transition-opacity ${
-              nextTurn ? 'opacity-100' : 'opacity-0'
-            }`}>
-            <p>Projected future influence:</p>
-            <p className={'ml-2'}>{projectedInfluenceByPlayer[userId]}</p>
-            <RotateCcw
-              className={`ml-4 transition-opacity hover:opacity-80 active:opacity-50 ${
-                !nextTurnEqualsSent ? 'cursor-pointer' : ''
-              }`}
-              size={20}
-              onClick={resetNextTurn}
-            />
-          </div>
+          <RotateCcw
+            className={`ml-4 transition-opacity hover:opacity-80 active:opacity-50 ${
+              !nextTurnEqualsSent ? 'cursor-pointer' : ''
+            }`}
+            size={30}
+            onClick={resetNextTurn}
+          />
         </div>
       )}
       <div className="flex flex-row justify-between gap-3">
@@ -104,7 +106,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
                 })
                 .catch(console.error);
             }}>
-            <div className="flex w-40 flex-row items-center justify-around gap-2 font-medium">
+            <div className="flex h-8 w-44 flex-row items-center justify-around gap-2 font-medium sm:h-auto">
               {nextTurnSent ? 'Re-send next turn' : 'Send next turn'}
               {nextTurnSent ? (
                 <RefreshCw size={20} />

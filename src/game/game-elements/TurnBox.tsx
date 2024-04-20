@@ -15,7 +15,7 @@ const TurnBox = ({ className }: TurnBoxProps) => {
 
   return (
     <div
-      className={`flex flex-col gap-2 rounded-xl bg-zinc-900 px-4 py-3
+      className={`flex select-none flex-col gap-2 rounded-xl bg-zinc-900 px-4 py-3
   transition-all ${className}
   `}>
       <h2 className="text-xl font-bold">Turns</h2>
