@@ -37,7 +37,7 @@ const HexBoardTile = ({
   return (
     <>
       <polygon
-        className="transition-all duration-150"
+        className="transition-all duration-200"
         fill={fill}
         strokeWidth={baseStrokeWidth}
         stroke={stroke}
@@ -68,7 +68,7 @@ const HexBoardTile = ({
       })}
       {homeworld && (
         <polygon
-          className="transition-opacity duration-300"
+          className="transition-opacity duration-200"
           fillOpacity={textDisplayed ? 0.3 : 1}
           fill={stroke}
           points={`0,${-R} ${r},${-R / 2} ${r},${R / 2} 0,${R} ${-r},${

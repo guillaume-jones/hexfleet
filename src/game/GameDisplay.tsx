@@ -12,8 +12,15 @@ import RematchButton from './game-elements/RematchButton';
 import TurnBox from './game-elements/TurnBox';
 
 const GameDisplay = () => {
-  const { loading, hasStarted, userDead, projectedBoard, boardSize, winner } =
-    useContext(GameContext);
+  const {
+    loading,
+    hasStarted,
+    userDead,
+    projectedBoard,
+    boardSize,
+    winner,
+    setSelectedTile,
+  } = useContext(GameContext);
 
   return (
     <div
@@ -32,6 +39,7 @@ const GameDisplay = () => {
       } 
      `}>
       <div
+        onClick={() => setSelectedTile(undefined)}
         className="flex flex-col items-center gap-4 lg:flex-row xl:flex-col xl:items-start
       ">
         <PlayersBox />
@@ -39,7 +47,7 @@ const GameDisplay = () => {
         <div className="hidden flex-1 xl:block" />
         {userDead || winner ? <RematchButton /> : <ActionsBox />}
       </div>
-      <div className="flex min-h-0 min-w-80 flex-col items-center self-stretch xl:-mx-10">
+      <div className="flex min-h-0 min-w-80 flex-col items-center self-stretch xl:-mx-16">
         {!hasStarted || userDead || winner ? (
           <SimpleHexBoard board={projectedBoard} boardSize={boardSize} />
         ) : (

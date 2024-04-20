@@ -38,47 +38,13 @@ const TileActions = () => {
   };
   const canClearTile = useMemo(() => {
     if (!tile) return false;
-    return canClear({
-      homeworld: tile.homeworld,
-      playerId: tile.playerId ?? tile.previousPlayerId,
-      clear: tile.clear,
-    });
-  }, [tile]);
+    return canClear(tile, userId);
+  }, [tile, userId]);
 
   return (
     <div
-      className={`mt-4 flex select-none gap-6 rounded-xl bg-zinc-900 px-4
+      className={`mt-4 flex select-none gap-3 rounded-xl bg-zinc-900 px-4
       py-3 transition-all duration-500 ${tile ? 'scale-100' : 'scale-0'}`}>
-      <div className=" flex items-center gap-2">
-        <p
-          className={`w-10 text-center text-2xl ${
-            tile?.pressure ? 'font-semibold' : 'opacity-70'
-          }`}>
-          {tile?.pressure ?? ''}
-        </p>
-        {[
-          {
-            value: -minPressureInterval,
-            label: <Minus strokeWidth={4} size={20} />,
-          },
-          {
-            value: minPressureInterval,
-            label: <Plus strokeWidth={4} size={20} />,
-          },
-          {
-            value: -(tile?.pressure ?? 0),
-            label: <RotateCcw strokeWidth={3} size={20} />,
-          },
-        ].map(({ value, label }) => (
-          <Button
-            key={label.key}
-            className="flex h-12 w-12"
-            fontClassName="text-5xl font-bold"
-            onClick={() => changePressure(value)}>
-            {label}
-          </Button>
-        ))}
-      </div>
       <Button
         light
         className={`w-20 transition-all duration-300 ${
@@ -96,6 +62,36 @@ const TileActions = () => {
         }}>
         {tile?.clear ? 'Unclear' : 'Clear'}
       </Button>
+      <div className=" flex items-center gap-2">
+        <p
+          className={`w-10 text-center text-2xl ${
+            tile?.pressure ? 'font-semibold' : 'opacity-70'
+          }`}>
+          {tile?.pressure ?? ''}
+        </p>
+        {[
+          {
+            value: -(tile?.pressure ?? 0),
+            label: <RotateCcw strokeWidth={3} size={20} />,
+          },
+          {
+            value: -minPressureInterval,
+            label: <Minus strokeWidth={4} size={20} />,
+          },
+          {
+            value: minPressureInterval,
+            label: <Plus strokeWidth={4} size={20} />,
+          },
+        ].map(({ value, label }) => (
+          <Button
+            key={label.key}
+            className="flex h-12 w-12"
+            fontClassName="text-5xl font-bold"
+            onClick={() => changePressure(value)}>
+            {label}
+          </Button>
+        ))}
+      </div>
     </div>
   );
 };

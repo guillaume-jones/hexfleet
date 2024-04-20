@@ -31,7 +31,7 @@ const SimpleHexBoard = ({ board, boardSize }: HexagonalBoardProps) => {
         const fill = getFillColor(stroke, true);
         return (
           <g
-            className="select-none duration-100"
+            className="duration-100"
             fillOpacity={tile.disabled ? 0.8 : 1}
             key={`${x},${y}`}
             transform={`translate(${halfBoardSize * r + x * d - r * y},${

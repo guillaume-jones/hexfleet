@@ -2,7 +2,7 @@ import randomColor from 'randomcolor';
 import tinycolor from 'tinycolor2';
 
 const defaultColor = '#52525b';
-const defaultClickableFill = '#222225';
+const defaultClickableFill = '#26262b';
 const defaultFill = '#151518';
 
 const colorCache: Record<string, string> = {};

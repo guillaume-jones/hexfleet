@@ -83,8 +83,10 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
             </div>
           </div>
           <RotateCcw
-            className={`ml-4 transition-opacity hover:opacity-80 active:opacity-50 ${
-              !nextTurnEqualsSent ? 'cursor-pointer' : ''
+            className={`ml-4 transition-opacity ${
+              !nextTurnEqualsSent
+                ? 'cursor-pointer hover:opacity-80 active:opacity-50'
+                : 'opacity-0'
             }`}
             size={30}
             onClick={resetNextTurn}
@@ -100,10 +102,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
             onClick={() => {
               setSendLoading(true);
               sendNextTurn()
-                .then(() => {
-                  setSendLoading(false);
-                  setSelectedTile(undefined);
-                })
+                .then(() => setSendLoading(false))
                 .catch(console.error);
             }}>
             <div className="flex h-8 w-44 flex-row items-center justify-around gap-2 font-medium sm:h-auto">

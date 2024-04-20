@@ -15,12 +15,12 @@ export const touchControls = [
   {
     Icon: ChevronUpIcon,
     actionName: 'Tap',
-    result: 'Select a tile. Use controls below.',
+    result: 'Select a tile, use controls below',
   },
   {
     Icon: ChevronDoubleUpIcon,
     actionName: 'Double tap',
-    result: `Add ${pressureToConquer} influence on a tile`,
+    result: `Add ${pressureToConquer} influence to a tile`,
   },
   {
     Icon: ArrowDownIcon,

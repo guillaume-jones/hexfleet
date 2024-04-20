@@ -42,8 +42,8 @@ const HelpBox = ({ className }: HelpBoxProps) => {
           <b>at the same time</b>.
         </p>
         <p>
-          During each turn, you can spend influence on tiles, competing with
-          others to conquer, protect or disable them:
+          During each turn, you can <b>spend influence</b>, competing with
+          others to conquer, protect or disable tiles:
         </p>
         <ul className="grid list-disc gap-1 pl-6">
           <li>
@@ -54,10 +54,13 @@ const HelpBox = ({ className }: HelpBoxProps) => {
             Spending {pressureToDisable} more influence than any other player
             will <b>disable</b> a tile
           </li>
-          <li>Spending further away from your tiles is more expensive</li>
           <li>
-            You cannot reach a tile more than {maxInfluenceReach} tiles away
-            from your tiles
+            You <b>cannot reach</b> a tile more than {maxInfluenceReach} tiles
+            away from your tiles
+          </li>
+          <li>
+            Spending is <b>twice</b> as expensive if a tile does not touch your
+            tiles
           </li>
           <li>Influence can be spent on your own tiles, to protect them</li>
         </ul>
@@ -70,8 +73,8 @@ const HelpBox = ({ className }: HelpBoxProps) => {
         <h3 className="text-xl font-semibold">Game controls</h3>
         {(isTouchScreen ? touchControls : mouseControls).map(
           ({ Icon, actionName, result }) => (
-            <div key={actionName} className="flex items-center gap-3">
-              <Icon className="h-8 w-8" />
+            <div key={actionName} className="flex items-center gap-2">
+              <Icon className="h-6 w-6" />
               <p className="text-nowrap font-semibold">{actionName}:</p>
               <p className="flex-1">{result}</p>
             </div>
