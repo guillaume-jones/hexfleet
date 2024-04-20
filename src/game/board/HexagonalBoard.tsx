@@ -5,7 +5,6 @@ import HexBoardTile from './HexBoardTile';
 import TileActions from './TileActions';
 import { getBoardParameters } from './getBoardParameters';
 import {
-  maxInfluenceReach,
   minPressureInterval,
   pressureToConquer,
 } from 'functions/src/game-logic/GameConstants';
@@ -57,7 +56,7 @@ const HexagonalBoard = () => {
           } = tile;
 
           const playerChanged = playerId !== previousPlayerId;
-          const isClickable = distance <= maxInfluenceReach;
+          const isClickable = distance < Infinity;
           const baseNewTilePressure = { x, y, distance, clear, pressure };
           const stroke = getColorForPlayer(clear ? previousPlayerId : playerId);
           const fill = getFillColor(stroke, isClickable);

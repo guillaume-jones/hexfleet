@@ -8,6 +8,7 @@ import {
 import { maxInfluenceReach } from 'functions/src/game-logic/GameConstants';
 import { calculateNewBoardState } from 'functions/src/game-logic/calculateNewBoardState';
 import { findClosestTileWithId } from 'functions/src/game-logic/findClosestTileWithId';
+import { getTileModifier } from 'functions/src/game-logic/getTileModifier';
 
 export type ProjectedTile = TileWithPressure<Tile> & {
   previousPlayerId?: string;
@@ -58,6 +59,7 @@ export const getProjectedBoard = ({
       boardSize,
       id: userId,
       maxDistance: maxInfluenceReach,
+      modifier: getTileModifier({ tile, playerId: userId }),
     });
 
     return {

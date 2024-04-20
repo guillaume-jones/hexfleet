@@ -3,6 +3,7 @@ import { HelpCircle } from 'react-feather';
 
 import { mouseControls, touchControls } from './Controls';
 import {
+  homeworldDistanceModifier,
   maxInfluenceReach,
   pressureToClear,
   pressureToConquer,
@@ -51,16 +52,20 @@ const HelpBox = ({ className }: HelpBoxProps) => {
             will <b>conquer</b> a tile
           </li>
           <li>
-            Spending {pressureToDisable} more influence than any other player
-            will <b>disable</b> a tile
+            Spending {pressureToDisable} more influence than the tile owner will{' '}
+            <b>disable</b> their tile
+          </li>
+          <li>
+            Spending is <b>2x more expensive</b> if a tile does not touch your
+            tiles
+          </li>
+          <li>
+            Homeworlds are <b>{homeworldDistanceModifier}x more expensive</b> to
+            influence
           </li>
           <li>
             You <b>cannot reach</b> a tile more than {maxInfluenceReach} tiles
             away from your tiles
-          </li>
-          <li>
-            Spending is <b>twice</b> as expensive if a tile does not touch your
-            tiles
           </li>
           <li>Influence can be spent on your own tiles, to protect them</li>
         </ul>

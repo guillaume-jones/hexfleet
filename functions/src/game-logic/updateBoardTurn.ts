@@ -4,7 +4,7 @@ import { addBordersToBoard } from './addBordersToBoard';
 import { calculateNewBoardState } from './calculateNewBoardState';
 import { getInfluenceSpent, getPlayersInfluence } from './influenceUtils';
 import { updatePlayerStatus } from './updatePlayerStatus';
-import { validateTilePressure } from './validationUtils';
+import { validateTileWithPressure } from './validationUtils';
 
 export const updateBoardTurn = ({
   game,
@@ -25,15 +25,15 @@ export const updateBoardTurn = ({
   // Validates all nextTurns
   const validNextTurns = nextTurns
     .map((nextTurn, i): NextTurn | false => {
-      const validPressures = nextTurn.pressures.filter((tile) => {
-        // Verifies that the pressure or clear action is valid
-        return validateTilePressure({
-          tile,
+      // Verifies that the pressure or clear actions are valid
+      const validPressures = nextTurn.pressures.filter((tile) =>
+        validateTileWithPressure({
+          tileCoords: tile,
           boardState,
           boardSize,
           id: players[i],
-        });
-      });
+        }),
+      );
 
       // Verifies that player did not overspend their influence
       const influenceToSpend = playerInfluences[players[i]];

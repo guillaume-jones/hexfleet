@@ -6,28 +6,34 @@ import {
 
 import { maxInfluenceReach } from './GameConstants';
 import { findClosestTileWithId } from './findClosestTileWithId';
+import { getTileModifier } from './getTileModifier';
 import { canApplyPressure } from './tileActionTests';
 
-export const validateTilePressure = ({
-  tile,
+export const validateTileWithPressure = ({
+  tileCoords,
   boardState,
   boardSize,
   id,
 }: {
-  tile: TileWithPressure<TileCoords>;
+  tileCoords: TileWithPressure<TileCoords>;
   boardState: BoardState;
   boardSize: number;
   id: string;
 }): boolean => {
-  if (!tile.pressure) return true;
+  if (!tileCoords.pressure) return true;
+
+  const tile = boardState.find(
+    (t) => t.x === tileCoords.x && t.y === tileCoords.y,
+  );
 
   const { distance } = findClosestTileWithId({
-    coords: tile,
+    coords: tileCoords,
     boardState,
     boardSize,
     id,
     maxDistance: maxInfluenceReach,
+    modifier: getTileModifier({ tile, playerId: id }),
   });
 
-  return tile.distance === distance && canApplyPressure(tile);
+  return tileCoords.distance === distance && canApplyPressure(tileCoords);
 };
