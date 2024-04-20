@@ -18,10 +18,12 @@ import {
   getColorForPlayer,
   getFillColor,
 } from 'src/game/board-view-utils/boardColors';
+import useIsTouchscreen from 'src/utilityHooks/useIsTouchscreen';
 
 const HexagonalBoard = () => {
   const { projectedBoard, boardSize, userId, updateNextTurn, setSelectedTile } =
     useContext(GameContext);
+  const isTouchScreen = useIsTouchscreen();
 
   const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timer>();
 
@@ -29,8 +31,6 @@ const HexagonalBoard = () => {
     return null;
   }
 
-  const isTouchScreen =
-    'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const { d, r, R, halfBoardSize, viewBoxW, viewBoxH, baseStrokeWidth } =
     getBoardParameters(boardSize);
   const userColor = getColorForPlayer(userId);

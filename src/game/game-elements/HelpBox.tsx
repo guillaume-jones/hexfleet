@@ -1,13 +1,7 @@
-import {
-  ArrowUpIcon,
-  ArrowUpLeftIcon,
-  ArrowUpRightIcon,
-  ArrowsUpDownIcon,
-  ChevronDoubleDownIcon,
-} from '@heroicons/react/20/solid';
 import { useState } from 'react';
 import { HelpCircle } from 'react-feather';
 
+import { mouseControls, touchControls } from './Controls';
 import {
   maxInfluenceReach,
   pressureToClear,
@@ -17,6 +11,7 @@ import {
 
 import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
+import useIsTouchscreen from 'src/utilityHooks/useIsTouchscreen';
 
 type HelpBoxProps = {
   className?: string;
@@ -24,6 +19,8 @@ type HelpBoxProps = {
 
 const HelpBox = ({ className }: HelpBoxProps) => {
   const [helpModalOpen, setHelpModalOpen] = useState(false);
+
+  const isTouchScreen = useIsTouchscreen();
 
   return (
     <div className={className}>
@@ -71,39 +68,15 @@ const HelpBox = ({ className }: HelpBoxProps) => {
           potentially creating new borders to generate more influence.
         </p>
         <h3 className="text-xl font-semibold">Game controls</h3>
-        {[
-          {
-            Icon: ArrowsUpDownIcon,
-            actionName: 'Scroll',
-            result: 'Change influence applied to a tile',
-          },
-          {
-            Icon: ArrowUpLeftIcon,
-            actionName: 'Left Click',
-            result: `Add ${pressureToConquer} influence on a tile`,
-          },
-          {
-            Icon: ArrowUpRightIcon,
-            actionName: 'Right Click',
-            result: `Remove ${pressureToConquer} influence on a tile`,
-          },
-          {
-            Icon: ArrowUpIcon,
-            actionName: 'Middle Click',
-            result: 'Clear one of your tiles',
-          },
-          {
-            Icon: ChevronDoubleDownIcon,
-            actionName: 'Spacebar',
-            result: 'Send or re-send your turn',
-          },
-        ].map(({ Icon, actionName, result }) => (
-          <div key={actionName} className="flex items-center gap-3">
-            <Icon className="h-8 w-8" />
-            <p className="text-nowrap font-semibold">{actionName}:</p>
-            <p className="flex-1">{result}</p>
-          </div>
-        ))}
+        {(isTouchScreen ? touchControls : mouseControls).map(
+          ({ Icon, actionName, result }) => (
+            <div key={actionName} className="flex items-center gap-3">
+              <Icon className="h-8 w-8" />
+              <p className="text-nowrap font-semibold">{actionName}:</p>
+              <p className="flex-1">{result}</p>
+            </div>
+          ),
+        )}
       </Modal>
     </div>
   );

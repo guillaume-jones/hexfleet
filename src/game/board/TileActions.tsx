@@ -50,7 +50,12 @@ const TileActions = () => {
       className={`mt-4 flex select-none gap-6 rounded-xl bg-zinc-900 px-4
       py-3 transition-all duration-500 ${tile ? 'scale-100' : 'scale-0'}`}>
       <div className=" flex items-center gap-2">
-        <p className="w-10 text-center text-2xl">{tile?.pressure ?? ''}</p>
+        <p
+          className={`w-10 text-center text-2xl ${
+            tile?.pressure ? 'font-semibold' : 'opacity-70'
+          }`}>
+          {tile?.pressure ?? ''}
+        </p>
         {[
           {
             value: -minPressureInterval,
