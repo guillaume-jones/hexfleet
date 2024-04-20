@@ -22,7 +22,7 @@ class CustomDocument extends Document {
           <meta charSet="utf-8" />
           <meta
             name="description"
-            content="HexFleet is a simple, balanced, online game for 2 to 6 players. Send out your fleet to conquer a galaxy of hexagonal tiles.."
+            content="HexFleet is a simple, balanced, online game for 2 to 6 players. Send out your fleet to conquer a galaxy of hexagonal tiles!"
           />
           <link rel="icon" href="favicon.ico" />
           <link rel="apple-touch-icon" href="logo/apple-touch-icon.png" />
@@ -31,17 +31,17 @@ class CustomDocument extends Document {
           <meta name="og:title" content="HexFleet - Hex-based tile conquest." />
           <meta
             name="og:description"
-            content="HexFleet is a simple, balanced, online game for 2 to 6 players. Send out your fleet to conquer a galaxy of hexagonal tiles."
+            content="HexFleet is a simple, balanced, online game for 2 to 6 players. Send out your fleet to conquer a galaxy of hexagonal tiles!"
           />
           <meta name="og:url" content="www.hexfleet.com" />
           <meta name="og:type" content="website" />
-          <meta
+          {/* <meta
             name="og:image"
             content="https://www.hexfleet.com/sharing/og-image.png"
           />
           <meta name="og:image:type" content="image/png" />
           <meta name="og:image:width" content="1200" />
-          <meta name="og:image:height" content="630" />
+          <meta name="og:image:height" content="630" /> */}
 
           {/* Twitter */}
           <meta name="twitter:card" content="summary_large_image" />
@@ -54,10 +54,10 @@ class CustomDocument extends Document {
             name="twitter:description"
             content="HexFleet is a simple, balanced, online game for 2 to 6 players. Send out your fleet to conquer a galaxy of hexagonal tiles."
           />
-          <meta
+          {/* <meta
             name="twitter:image"
             content="https://www.hexfleet.com/sharing/og-image.png"
-          />
+          /> */}
         </Head>
         <body>
           <Main />
