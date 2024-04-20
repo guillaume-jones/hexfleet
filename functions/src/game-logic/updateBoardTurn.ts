@@ -31,7 +31,7 @@ export const updateBoardTurn = ({
           tileCoords: tile,
           boardState,
           boardSize,
-          id: players[i],
+          playerId: players[i],
         }),
       );
 

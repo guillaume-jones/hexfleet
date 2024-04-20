@@ -1,15 +1,19 @@
-import { Tile } from '../document-types/Games';
+import { BoardState, TileCoords } from '../document-types/Games';
 
 import { homeworldDistanceModifier } from './GameConstants';
 
 export const getTileModifier = ({
-  tile,
-  playerId,
+  boardState,
+  coords,
+  id,
 }: {
-  tile?: Tile;
-  playerId?: string;
+  boardState: BoardState;
+  coords?: TileCoords;
+  id?: string;
 }) => {
-  if (tile?.homeworld && tile?.playerId !== playerId)
+  const tile = boardState.find((t) => t.x === coords?.x && t.y === coords?.y);
+
+  if (tile?.homeworld && tile?.playerId !== id)
     return homeworldDistanceModifier;
 
   return 1;

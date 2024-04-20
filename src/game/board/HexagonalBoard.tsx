@@ -57,6 +57,7 @@ const HexagonalBoard = () => {
 
           const playerChanged = playerId !== previousPlayerId;
           const isClickable = distance < Infinity;
+          const distanceShown = distance > 1 && isClickable;
           const baseNewTilePressure = { x, y, distance, clear, pressure };
           const stroke = getColorForPlayer(clear ? previousPlayerId : playerId);
           const fill = getFillColor(stroke, isClickable);
@@ -157,7 +158,6 @@ const HexagonalBoard = () => {
                 baseStrokeWidth={baseStrokeWidth}
                 R={R}
                 r={r}
-                textDisplayed={pressure > 0}
                 animateBorders
                 polygonProps={
                   selected
@@ -169,6 +169,13 @@ const HexagonalBoard = () => {
                       }
                     : {}
                 }
+                homeworldProps={{
+                  className: `transition-opacity duration-200 ${
+                    pressure > 0 || (distanceShown && selected)
+                      ? 'opacity-30'
+                      : ''
+                  }  ${distanceShown ? 'group-hover:opacity-30' : ''}`,
+                }}
               />
               {isClickable && (
                 <>
@@ -177,8 +184,8 @@ const HexagonalBoard = () => {
                       clear ? 'opacity-100' : 'opacity-0'
                     }`}
                     style={{
-                      transform: `translate(${distance > 1 ? -R / 3.5 : 0}px,${
-                        distance > 1 ? R / 3 : pressure > 0 ? R / 2.4 : 0
+                      transform: `translate(${distanceShown ? -R / 3.5 : 0}px,${
+                        distanceShown ? R / 2.8 : pressure > 0 ? R / 2.4 : 0
                       }px)`,
                     }}>
                     <circle
@@ -205,7 +212,7 @@ const HexagonalBoard = () => {
                     }`}
                     style={{
                       transform: `translate(0px, -${
-                        distance > 1 || clear ? R / 4 : 0
+                        distanceShown || clear ? R / 5 : 0
                       }px)`,
                     }}
                     textAnchor={'middle'}
@@ -215,7 +222,7 @@ const HexagonalBoard = () => {
                     fill={userColor}>
                     {pressure || ''}
                   </text>
-                  {distance > 1 && (
+                  {distanceShown && (
                     <text
                       className={`transition-all duration-200 sm:group-hover:opacity-100 ${
                         pressure > 0 || selected ? 'opacity-100' : 'opacity-0'

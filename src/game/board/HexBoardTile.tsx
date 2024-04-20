@@ -8,9 +8,9 @@ type HexBoardTileProps = TileWithBorders<Tile> & {
   baseStrokeWidth: number;
   R: number;
   r: number;
-  textDisplayed?: boolean;
   animateBorders?: boolean;
   polygonProps?: SVGProps<SVGPolygonElement>;
+  homeworldProps?: SVGProps<SVGPolygonElement>;
 };
 
 const allBorders = [
@@ -28,11 +28,11 @@ const HexBoardTile = ({
   baseStrokeWidth,
   R,
   r,
-  textDisplayed,
   homeworld,
   borders,
   animateBorders,
   polygonProps,
+  homeworldProps,
 }: HexBoardTileProps) => {
   return (
     <>
@@ -68,13 +68,12 @@ const HexBoardTile = ({
       })}
       {homeworld && (
         <polygon
-          className="transition-opacity duration-200"
-          fillOpacity={textDisplayed ? 0.3 : 1}
           fill={stroke}
           points={`0,${-R} ${r},${-R / 2} ${r},${R / 2} 0,${R} ${-r},${
             R / 2
           } ${-r},${-R / 2}`}
           transform={'scale(0.4)'}
+          {...homeworldProps}
         />
       )}
     </>
