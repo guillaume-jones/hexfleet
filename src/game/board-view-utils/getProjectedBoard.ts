@@ -2,6 +2,7 @@ import {
   NextTurn,
   Player,
   Tile,
+  TileCoords,
   TileWithPressure,
 } from 'functions/src/document-types/Games';
 import { maxInfluenceReach } from 'functions/src/game-logic/GameConstants';
@@ -10,6 +11,7 @@ import { findClosestTileWithId } from 'functions/src/game-logic/findClosestTileW
 
 export type ProjectedTile = TileWithPressure<Tile> & {
   previousPlayerId?: string;
+  selected: boolean;
 };
 
 const defaultTileWithPressure = {
@@ -24,12 +26,14 @@ export const getProjectedBoard = ({
   nextTurn,
   players,
   userId,
+  selectedTile,
 }: {
   boardState?: Tile[];
   boardSize?: number;
   nextTurn?: NextTurn;
   players?: Player[];
   userId?: string;
+  selectedTile?: TileCoords;
 }): ProjectedTile[] => {
   if (!boardState || !boardSize || !userId) return [];
 
@@ -62,6 +66,7 @@ export const getProjectedBoard = ({
       previousPlayerId: boardState[i].playerId,
       distance: closestOwnTile.distance,
       disabled: tile.disabled || deadPlayers.includes(tile.playerId ?? ''),
+      selected: selectedTile?.x === tile.x && selectedTile?.y === tile.y,
     };
   });
 };

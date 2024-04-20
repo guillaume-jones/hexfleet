@@ -2,7 +2,7 @@ import { getProjectedBoard } from '../board-view-utils/getProjectedBoard';
 import { useEffect, useMemo, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
-import { Game, NextTurn } from 'functions/src/document-types/Games';
+import { Game, NextTurn, TileCoords } from 'functions/src/document-types/Games';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
 import { calculateNewBoardState } from 'functions/src/game-logic/calculateNewBoardState';
 
@@ -12,6 +12,7 @@ const useBoardState = (game?: Partial<Game>, nextTurn?: NextTurn) => {
   const [user] = useAuthState(auth);
 
   const [turn, setTurn] = useState<number>(-1);
+  const [selectedTile, setSelectedTile] = useState<TileCoords>();
 
   const isInPast = useMemo(
     () => !!game?.pastTurns && turn < game.pastTurns.length,
@@ -47,15 +48,17 @@ const useBoardState = (game?: Partial<Game>, nextTurn?: NextTurn) => {
         players: game.players,
         userId: user?.uid,
         nextTurn: isInPast ? undefined : nextTurn,
+        selectedTile,
       }),
       game.boardSize,
     );
-  }, [turn, game, user?.uid, nextTurn, isInPast]);
+  }, [game, turn, isInPast, user?.uid, nextTurn, selectedTile]);
 
   return useMemo(
     () => ({
       turn,
       setTurn,
+      setSelectedTile,
       projectedBoard,
       currentBoard,
       currentBoardWithoutDisabled,

@@ -36,6 +36,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   projectedBoard: TileWithBorders<ProjectedTile>[];
   turn: number;
   setTurn: Dispatch<SetStateAction<number>>;
+  setSelectedTile: Dispatch<SetStateAction<TileCoords | undefined>>;
   isInPast: boolean;
   tilesByPlayer: Dictionary<number>;
   influenceByPlayer: Dictionary<number>;

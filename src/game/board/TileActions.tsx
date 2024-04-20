@@ -1,66 +1,96 @@
 import { GameContext } from '../game-context/GameContext';
 import { useContext, useMemo } from 'react';
+import { Minus, Plus, RotateCcw } from 'react-feather';
 
+import {
+  minPressureInterval,
+  pressureToConquer,
+} from 'functions/src/game-logic/GameConstants';
 import {
   canApplyPressure,
   canClear,
 } from 'functions/src/game-logic/tileActionTests';
 
 import Button from 'src/components/interactive/Button';
-import Input from 'src/components/interactive/Input';
 
-export type TileActionsProps = {
-  clientX: number;
-  clientY: number;
-  x?: number;
-  y?: number;
-  show?: boolean;
-};
+const TileActions = () => {
+  const { updateNextTurn, projectedBoard, userId } = useContext(GameContext);
 
-const TileActions = ({ clientX, clientY, x, y, show }: TileActionsProps) => {
-  const { projectedBoard, updateNextTurn } = useContext(GameContext);
+  const tile = projectedBoard?.find((tile) => tile.selected);
 
-  const tile = useMemo(
-    () => projectedBoard?.find((t) => t.x === x && t.y === y),
-    [projectedBoard, x, y],
-  );
+  const changePressure = (delta: number) => {
+    if (!tile) return;
+    const newPressure = tile.pressure + delta;
+    const newTilePressure = {
+      x: tile.x,
+      y: tile.y,
+      distance: tile.distance,
+      pressure: newPressure,
+      clear:
+        tile.previousPlayerId !== userId && newPressure < pressureToConquer
+          ? false
+          : tile.clear,
+    };
+
+    if (canApplyPressure(newTilePressure)) {
+      updateNextTurn?.(newTilePressure);
+    }
+  };
+  const canClearTile = useMemo(() => {
+    if (!tile) return false;
+    return canClear({
+      homeworld: tile.homeworld,
+      playerId: tile.playerId ?? tile.previousPlayerId,
+      clear: tile.clear,
+    });
+  }, [tile]);
 
   return (
     <div
-      style={{
-        transform: `scale(1) translate(${clientX}px, ${clientY}px) translate(-50%)`,
-        opacity: show ? 1 : 0,
-      }}
-      className="absolute -top-6 left-0 z-10 flex items-center gap-3 rounded-xl bg-zinc-900 p-4 transition-all duration-200">
-      <p>Influence</p>
-      {tile && (
-        <Input
-          value={String(tile?.pressure ?? 0)}
-          setValue={(value) => {
-            const pressure = Number(value);
-            if (canApplyPressure({ distance: tile.distance, pressure })) {
-              updateNextTurn({ ...tile, pressure });
-            }
-          }}
-          className="w-16"
-          placeholder={'0'}
-          inputProps={{ type: 'number', min: 0 }}
-        />
-      )}
-      {tile &&
-        canClear({
-          homeworld: tile.homeworld,
-          playerId: tile.playerId ?? tile.previousPlayerId,
-          clear: tile.clear,
-        }) && (
+      className={`mt-4 flex select-none gap-6 rounded-xl bg-zinc-900 px-4
+      py-3 transition-all duration-500 ${tile ? 'scale-100' : 'scale-0'}`}>
+      <div className=" flex items-center gap-2">
+        <p className="w-10 text-center text-2xl">{tile?.pressure ?? ''}</p>
+        {[
+          {
+            value: -minPressureInterval,
+            label: <Minus strokeWidth={4} size={20} />,
+          },
+          {
+            value: minPressureInterval,
+            label: <Plus strokeWidth={4} size={20} />,
+          },
+          {
+            value: -(tile?.pressure ?? 0),
+            label: <RotateCcw strokeWidth={3} size={20} />,
+          },
+        ].map(({ value, label }) => (
           <Button
-            disabled={!tile}
-            onClick={() => {
-              updateNextTurn({ ...tile, clear: !tile.clear });
-            }}>
-            {tile.clear ? 'Undo Clear' : 'Clear'}
+            key={label.key}
+            className="flex h-12 w-12"
+            fontClassName="text-5xl font-bold"
+            onClick={() => changePressure(value)}>
+            {label}
           </Button>
-        )}
+        ))}
+      </div>
+      <Button
+        light
+        className={`w-20 transition-all duration-300 ${
+          canClearTile ? 'opacity-100' : 'opacity-0'
+        }`}
+        onClick={() => {
+          if (!tile) return;
+          updateNextTurn?.({
+            x: tile.x,
+            y: tile.y,
+            distance: tile.distance,
+            pressure: tile.pressure,
+            clear: !tile.clear,
+          });
+        }}>
+        {tile?.clear ? 'Unclear' : 'Clear'}
+      </Button>
     </div>
   );
 };

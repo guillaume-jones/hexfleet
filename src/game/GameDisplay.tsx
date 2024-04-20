@@ -39,7 +39,7 @@ const GameDisplay = () => {
         <div className="hidden flex-1 xl:block" />
         {userDead || winner ? <RematchButton /> : <ActionsBox />}
       </div>
-      <div className="flex min-h-0 min-w-80 self-stretch xl:-mx-10">
+      <div className="flex min-h-0 min-w-80 flex-col items-center self-stretch xl:-mx-10">
         {!hasStarted || userDead || winner ? (
           <SimpleHexBoard board={projectedBoard} boardSize={boardSize} />
         ) : (

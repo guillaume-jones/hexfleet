@@ -30,7 +30,7 @@ function Button({
   danger?: boolean;
   fontClassName?: string;
 }) {
-  const styling = `rounded-xl px-4 py-2 text-center transition-all flex items-center justify-center relative
+  const styling = `select-none rounded-xl px-4 py-2 text-center transition-all flex items-center justify-center relative
   ${
     light
       ? 'text-zinc-900 disabled:text-zinc-600'

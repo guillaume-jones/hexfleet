@@ -1,3 +1,5 @@
+import { SVGProps } from 'react';
+
 import { Tile, TileWithBorders } from 'functions/src/document-types/Games';
 
 type HexBoardTileProps = TileWithBorders<Tile> & {
@@ -8,6 +10,7 @@ type HexBoardTileProps = TileWithBorders<Tile> & {
   r: number;
   textDisplayed?: boolean;
   animateBorders?: boolean;
+  polygonProps?: SVGProps<SVGPolygonElement>;
 };
 
 const allBorders = [
@@ -29,17 +32,19 @@ const HexBoardTile = ({
   homeworld,
   borders,
   animateBorders,
+  polygonProps,
 }: HexBoardTileProps) => {
   return (
     <>
       <polygon
-        className="transition-colors duration-150"
+        className="transition-all duration-150"
         fill={fill}
         strokeWidth={baseStrokeWidth}
         stroke={stroke}
         points={`0,${-R} ${r},${-R / 2} ${r},${R / 2} 0,${R} ${-r},${
           R / 2
         } ${-r},${-R / 2}`}
+        {...polygonProps}
       />
       {(animateBorders ? allBorders : borders).map(({ angle }) => {
         const active = animateBorders

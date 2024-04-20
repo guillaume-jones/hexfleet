@@ -31,6 +31,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
     sendNextTurn,
     resetNextTurn,
     userId,
+    setSelectedTile,
   } = useContext(GameContext);
 
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -42,13 +43,17 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === ' ') {
         e.preventDefault();
-        sendNextTurn().catch(console.error);
+        sendNextTurn()
+          .then(() => {
+            setSelectedTile(undefined);
+          })
+          .catch(console.error);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [hasStarted, sendNextTurn]);
+  }, [hasStarted, setSelectedTile, sendNextTurn]);
 
   return (
     <div
@@ -95,6 +100,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
               sendNextTurn()
                 .then(() => {
                   setSendLoading(false);
+                  setSelectedTile(undefined);
                 })
                 .catch(console.error);
             }}>

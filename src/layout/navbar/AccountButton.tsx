@@ -27,7 +27,7 @@ function AccountButton() {
       <Button
         href={loggedIn ? '/account' : undefined}
         onClick={loggedIn ? undefined : () => replaceUrl(true)}
-        className="ml-2 whitespace-nowrap rounded-full px-4 py-2"
+        className="mb-1 ml-2 whitespace-nowrap rounded-full px-4 py-2"
         fontClassName="font-bold"
         loading={userLoading}>
         {loggedIn ? 'Account' : 'Sign up or log in'}
