@@ -55,11 +55,23 @@ const joinGame = functions
           // Multiple players have resigned at the same time
           if (alivePlayers.length === 0) return;
 
-          await gameRef.update({
-            players: newPlayers,
-            winner: alivePlayers.length === 1 ? alivePlayers[0].id : null,
-            endedAt: alivePlayers.length === 1 ? Timestamp.now() : null,
-          });
+          // Game is over
+          if (alivePlayers.length === 1) {
+            await gameRef.update({
+              players: newPlayers,
+              winner: alivePlayers[0].id,
+              endedAt: Timestamp.now(),
+            });
+            // Delete all documents in next turn collection
+            const nextTurnsSnapshot = await firestore
+              .collection(`games/${gameId}/nextTurns`)
+              .get();
+            await Promise.all(
+              nextTurnsSnapshot.docs.map((doc) => doc.ref.delete()),
+            );
+          } else {
+            await gameRef.update({ players: newPlayers });
+          }
         }
         break;
     }
