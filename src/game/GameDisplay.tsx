@@ -27,10 +27,8 @@ const GameDisplay = () => {
         'flex flex-1 flex-col items-center gap-4 p-4 xl:flex-row xl:items-stretch'
       }
       ${
-        // Ensures board fits into window height if window is large
-        window.innerHeight > 500
-          ? 'h-auto sm:-mb-10 sm:h-full sm:flex-none sm:pb-14'
-          : ''
+        // Ensures board fits into window height
+        'h-auto sm:-mb-10 sm:h-full sm:flex-none sm:pb-14'
       } 
      `}>
       <div
@@ -41,7 +39,7 @@ const GameDisplay = () => {
         <div className="hidden flex-1 xl:block" />
         {userDead || winner ? <RematchButton /> : <ActionsBox />}
       </div>
-      <div className="min-h-0 self-stretch xl:-mx-12">
+      <div className="flex min-h-0 min-w-80 self-stretch xl:-mx-10">
         {!hasStarted || userDead || winner ? (
           <SimpleHexBoard board={projectedBoard} boardSize={boardSize} />
         ) : (

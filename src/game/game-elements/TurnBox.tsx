@@ -15,7 +15,7 @@ const TurnBox = ({ className }: TurnBoxProps) => {
 
   return (
     <div
-      className={`flex w-44 flex-col gap-2 rounded-xl bg-zinc-900 px-4 py-3
+      className={`flex flex-col gap-2 rounded-xl bg-zinc-900 px-4 py-3
   transition-all ${className}
   `}>
       <h2 className="text-xl font-bold">Turns</h2>
@@ -30,6 +30,7 @@ const TurnBox = ({ className }: TurnBoxProps) => {
             max={pastTurns.length}
             value={turn}
             setValue={setTurn}
+            className="w-44"
           />
           <RotateCcw
             className={`ml-2 transition-opacity  ${

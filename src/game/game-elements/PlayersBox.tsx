@@ -24,12 +24,12 @@ const PlayersBox = () => {
   if (!players) return null;
 
   return (
-    <div className="flex w-96 flex-col rounded-xl bg-zinc-900 px-4 py-3 text-center">
+    <div className="flex w-[370px] flex-col rounded-xl bg-zinc-900 px-4 py-3 text-center">
       <h2 className="text-xl font-bold">Scores</h2>
       <div className="flex flex-col items-stretch ">
         <div className="flex gap-2">
           <p className="flex-1 text-left">Player</p>
-          <p className="w-12">Sent</p>
+          <p className="w-10">Sent</p>
           <p className="w-12">Tiles</p>
           <p className="w-16">Influence</p>
         </div>
@@ -52,11 +52,11 @@ const PlayersBox = () => {
                 {id === winner && <WinnerChip />}
               </div>
               {sent ? (
-                <CheckCircleIcon className="h-5 w-12 text-green-500" />
+                <CheckCircleIcon className="h-5 w-10 text-green-500" />
               ) : dead || winner || !hasStarted ? (
-                <MinusCircleIcon className="h-5 w-12 text-zinc-600" />
+                <MinusCircleIcon className="h-5 w-10 text-zinc-600" />
               ) : (
-                <EllipsisHorizontalCircleIcon className="h-5 w-12 text-red-500" />
+                <EllipsisHorizontalCircleIcon className="h-5 w-10 text-red-500" />
               )}
               <p className="w-12">{tilesByPlayer[id] ?? 0}</p>
               <div className="group relative flex w-16 items-center justify-center">

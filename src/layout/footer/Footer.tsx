@@ -7,14 +7,17 @@ export default function Footer() {
         <StyledLink
           light
           newTab
-          href="https://instant-header.github.io/privacy-policy/">
+          // TODO: Update the href attribute
+          // href="https://instant-header.github.io/privacy-policy/"
+        >
           Our privacy policy
         </StyledLink>
         <p className="hidden sm:block">and</p>
         <StyledLink
           light
           newTab
-          href="https://instant-header.github.io/terms-of-service/"
+          // TODO: Update the href attribute
+          // href="https://instant-header.github.io/terms-of-service/"
           className="flex">
           <p className="block sm:hidden">Our&nbsp;</p>
           <p className="text-nowrap">terms of service</p>
