@@ -68,11 +68,6 @@ const useNextTurn = (gameId: string) => {
         );
         if (tile.pressure || tile.clear) newPressures.push(tile);
 
-        if (newPressures.length === 0) {
-          localStorage.removeItem(nextTurnKey);
-          return undefined;
-        }
-
         const newNextTurn = { pressures: newPressures };
         localStorage.setItem(nextTurnKey, JSON.stringify(newNextTurn));
         return newNextTurn;

@@ -75,7 +75,7 @@ const HelpBox = ({ className }: HelpBoxProps) => {
           {
             Icon: ArrowsUpDownIcon,
             actionName: 'Scroll',
-            result: 'Increase or decrease influence on a tile',
+            result: 'Change influence applied to a tile',
           },
           {
             Icon: ArrowUpLeftIcon,
@@ -90,12 +90,12 @@ const HelpBox = ({ className }: HelpBoxProps) => {
           {
             Icon: ArrowUpIcon,
             actionName: 'Middle Click',
-            result: 'Clear a conquered or owned tile',
+            result: 'Clear one of your tiles',
           },
           {
             Icon: ChevronDoubleDownIcon,
             actionName: 'Spacebar',
-            result: 'Send or re-send your turn.',
+            result: 'Send or re-send your turn',
           },
         ].map(({ Icon, actionName, result }) => (
           <div key={actionName} className="flex items-center gap-3">

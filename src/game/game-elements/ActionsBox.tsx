@@ -52,8 +52,8 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
 
   return (
     <div
-      className={`flex w-auto flex-col gap-2 rounded-xl bg-zinc-900 px-4 py-3
-      transition-all ${className}
+      className={`flex w-auto flex-col gap-3 rounded-xl bg-zinc-900 px-4
+      py-3 transition-all ${className}
       `}>
       <h2 className="text-xl font-bold">Actions</h2>
       {hasStarted && (
@@ -69,19 +69,17 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
             <p className="font-bold">/{influenceByPlayer[userId]}</p>
           </div>
           <div
-            className={`flex italic transition-opacity duration-200 ${
+            className={`flex select-none items-center italic transition-opacity ${
               nextTurn ? 'opacity-100' : 'opacity-0'
             }`}>
             <p>Projected future influence:</p>
             <p className={'ml-2'}>{projectedInfluenceByPlayer[userId]}</p>
             <RotateCcw
-              className={`ml-4 transition-opacity duration-200 ${
-                !nextTurnEqualsSent
-                  ? 'cursor-pointer  hover:opacity-80 active:opacity-50'
-                  : 'opacity-0'
+              className={`ml-4 transition-opacity hover:opacity-80 active:opacity-50 ${
+                !nextTurnEqualsSent ? 'cursor-pointer' : ''
               }`}
               size={20}
-              onClick={nextTurnEqualsSent ? undefined : () => resetNextTurn()}
+              onClick={resetNextTurn}
             />
           </div>
         </div>
