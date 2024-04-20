@@ -9,6 +9,8 @@ import { useContext } from 'react';
 
 import WinnerChip from './WinnerChip';
 
+import Tooltip from 'src/components/interactive/Tooltip';
+
 const PlayersBox = () => {
   const {
     players,
@@ -63,9 +65,10 @@ const PlayersBox = () => {
                 ) : (
                   <>
                     <p>{influenceByPlayer[id] ?? 0}</p>
-                    <p className=" ml-0.5 text-xs">
+                    <p className="ml-0.5 text-xs">
                       /{influenceByPlayerWithoutDisabled[id] ?? 0}
                     </p>
+                    <Tooltip>Active / active + disabled</Tooltip>
                   </>
                 )}
               </div>

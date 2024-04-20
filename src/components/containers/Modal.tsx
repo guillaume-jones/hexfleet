@@ -43,12 +43,12 @@ export default function Modal({
         appear>
         <Dialog
           onClose={closeModal}
-          className="fixed inset-0 flex h-full w-full items-center justify-center">
+          className=" fixed inset-0 flex h-full w-full select-none items-center justify-center">
           <Dialog.Panel
             className={`relative max-h-[80vh] overflow-auto rounded-2xl bg-zinc-900 p-6 shadow-lg ${
               className ?? ''
             }`}>
-            <div className="absolute right-4 top-4">
+            <div className="absolute right-2 top-2">
               <CloseButton onClick={closeModal} />
             </div>
             {title && (
