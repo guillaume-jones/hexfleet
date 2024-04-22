@@ -25,6 +25,7 @@ const HexagonalBoard = () => {
   const isTouchScreen = useIsTouchscreen();
 
   const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timer>();
+  const [lastScroll, setLastScroll] = useState<number>(0);
 
   if (!projectedBoard || !boardSize) {
     return null;
@@ -63,7 +64,7 @@ const HexagonalBoard = () => {
           const fill = getFillColor(stroke, isClickable);
 
           const changePressure = (delta: number) => {
-            const newPressure = pressure + delta;
+            const newPressure = Math.max(pressure + delta, 0);
             const newTilePressure = {
               ...baseNewTilePressure,
               pressure: newPressure,
@@ -147,7 +148,15 @@ const HexagonalBoard = () => {
                 }
               }}
               onWheel={(e) => {
-                if (!isClickable || isTouchScreen) return;
+                if (
+                  !isClickable ||
+                  isTouchScreen ||
+                  e.timeStamp - lastScroll < 150 ||
+                  Math.abs(e.deltaY) < 2
+                )
+                  return;
+
+                setLastScroll(e.timeStamp);
                 changePressure(-Math.sign(e.deltaY) * minPressureInterval);
               }}
               onContextMenu={(e) => e.preventDefault()}>

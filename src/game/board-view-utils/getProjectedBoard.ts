@@ -27,6 +27,7 @@ export const getProjectedBoard = ({
   players,
   userId,
   selectedTile,
+  isInPast,
 }: {
   boardState?: Tile[];
   boardSize?: number;
@@ -34,8 +35,11 @@ export const getProjectedBoard = ({
   players?: Player[];
   userId?: string;
   selectedTile?: TileCoords;
+  isInPast?: boolean;
 }): ProjectedTile[] => {
   if (!boardState || !boardSize || !userId) return [];
+
+  if (isInPast) nextTurn = undefined;
 
   const newBoardState = calculateNewBoardState(
     boardState,
@@ -65,7 +69,9 @@ export const getProjectedBoard = ({
       ...tilePressure,
       previousPlayerId: boardState[i].playerId,
       distance: closestOwnTile.distance,
-      disabled: tile.disabled || deadPlayers.includes(tile.playerId ?? ''),
+      disabled:
+        tile.disabled ||
+        (!isInPast && deadPlayers.includes(tile.playerId ?? '')),
       selected: selectedTile?.x === tile.x && selectedTile?.y === tile.y,
     };
   });
