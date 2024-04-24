@@ -39,7 +39,7 @@ export default function Range({
         step={step}
         id={id}
         style={{}}
-        className={`w-28 rounded-md accent-zinc-50 hover:cursor-grab active:cursor-grabbing
+        className={`w-28 rounded-lg hover:cursor-grab active:cursor-grabbing
           ${className ?? ''}`}
       />
       {endText && <p className="ml-2">{endText}</p>}
