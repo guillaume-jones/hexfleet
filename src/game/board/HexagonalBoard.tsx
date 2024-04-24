@@ -25,7 +25,7 @@ const HexagonalBoard = () => {
   const isTouchScreen = useIsTouchscreen();
 
   const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timer>();
-  const [lastScroll, setLastScroll] = useState<number>(0);
+  const [scrollAmount, setScrollAmount] = useState<number>(0);
 
   if (!projectedBoard || !boardSize) {
     return null;
@@ -148,16 +148,18 @@ const HexagonalBoard = () => {
                 }
               }}
               onWheel={(e) => {
-                if (
-                  !isClickable ||
-                  isTouchScreen ||
-                  e.timeStamp - lastScroll < 150 ||
-                  Math.abs(e.deltaY) < 2
-                )
-                  return;
+                if (!isClickable || isTouchScreen) return;
 
-                setLastScroll(e.timeStamp);
-                changePressure(-Math.sign(e.deltaY) * minPressureInterval);
+                const newScrollAmount = scrollAmount - e.deltaY / 30;
+
+                if (Math.abs(newScrollAmount) > 1) {
+                  changePressure(
+                    Math.sign(newScrollAmount) * minPressureInterval,
+                  );
+                  setScrollAmount(0);
+                } else {
+                  setScrollAmount(newScrollAmount);
+                }
               }}
               onContextMenu={(e) => e.preventDefault()}>
               <HexBoardTile
