@@ -60,7 +60,7 @@ const TileActions = () => {
             clear: !tile.clear,
           });
         }}>
-        {tile?.clear ? 'Unclear' : 'Clear'}
+        {tile?.clear ? 'Return' : 'Leave'}
       </Button>
       <div className=" flex items-center gap-2">
         <p

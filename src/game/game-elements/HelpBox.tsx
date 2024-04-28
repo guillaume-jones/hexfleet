@@ -5,7 +5,6 @@ import { mouseControls, touchControls } from './Controls';
 import {
   homeworldDistanceModifier,
   maxInfluenceReach,
-  pressureToClear,
   pressureToConquer,
   pressureToDisable,
 } from 'functions/src/game-logic/GameConstants';
@@ -56,11 +55,11 @@ const HelpBox = ({ className }: HelpBoxProps) => {
             <b>disable</b> their tile
           </li>
           <li>
-            Spending is <b>2x more expensive</b> if a tile does not touch your
+            Spending is <b>2× more expensive</b> if a tile does not touch your
             tiles
           </li>
           <li>
-            Homeworlds are <b>{homeworldDistanceModifier}x more expensive</b> to
+            Homeworlds are <b>{homeworldDistanceModifier}× more expensive</b> to
             influence
           </li>
           <li>
@@ -72,8 +71,8 @@ const HelpBox = ({ className }: HelpBoxProps) => {
         <p>
           Your influence to spend is determined by the{' '}
           <b>number of borders you have with unconquered tiles</b>. You can
-          spend {pressureToClear} influence to clear a conquered tile,
-          potentially creating new borders to generate more influence.
+          leave a tile you control to create new borders and potentially
+          generate more influence.
         </p>
         <h3 className="text-xl font-semibold">Game controls</h3>
         {(isTouchScreen ? touchControls : mouseControls).map(

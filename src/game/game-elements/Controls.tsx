@@ -48,7 +48,7 @@ export const mouseControls = [
   {
     Icon: ArrowUpIcon,
     actionName: 'Middle Click',
-    result: 'Clear one of your tiles',
+    result: 'Leave one of your tiles',
   },
   {
     Icon: ChevronDoubleDownIcon,
