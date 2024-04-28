@@ -26,6 +26,7 @@ const HexagonalBoard = () => {
 
   const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timer>();
   const [scrollAmount, setScrollAmount] = useState<number>(0);
+  const [touchStarted, setTouchStarted] = useState(false);
 
   if (!projectedBoard || !boardSize) {
     return null;
@@ -94,7 +95,9 @@ const HexagonalBoard = () => {
               }) scale(0.99)`}
               // Touchscreen handling
               onTouchStart={() => {
-                if (!isClickable || !isTouchScreen) return;
+                if (!isClickable) return;
+
+                setTouchStarted(true);
                 setLongPressTimer(
                   setTimeout(() => {
                     setLongPressTimer(undefined);
@@ -108,12 +111,16 @@ const HexagonalBoard = () => {
                 );
               }}
               onTouchEnd={() => {
-                if (!isClickable || !isTouchScreen) return;
-
+                if (!isClickable) return;
                 // Long press already fired, skip action
                 if (longPressTimer === undefined) return;
+
+                // Cancel long press
                 clearTimeout(longPressTimer);
                 setLongPressTimer(undefined);
+
+                // End touch event
+                setTouchStarted(false);
 
                 // One tap
                 if (!selected) {
@@ -126,7 +133,7 @@ const HexagonalBoard = () => {
               }}
               // Desktop handling
               onMouseUp={(e) => {
-                if (!isClickable || isTouchScreen) return;
+                if (!isClickable || touchStarted) return;
 
                 const button = e.button;
                 // Left click
@@ -148,7 +155,7 @@ const HexagonalBoard = () => {
                 }
               }}
               onWheel={(e) => {
-                if (!isClickable || isTouchScreen) return;
+                if (!isClickable || touchStarted) return;
 
                 const newScrollAmount = scrollAmount - e.deltaY / 30;
 

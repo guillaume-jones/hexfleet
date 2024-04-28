@@ -38,7 +38,7 @@ const CreateNewGame = ({ onCancel }: CreateNewGameProps) => {
       boardSize,
       players: range(playersCount).map((i) => ({
         id: String(i * 8618), // Value chosen because colors look good
-        ...defaultPlayer
+        ...defaultPlayer,
       })),
     });
     return addBordersToBoard(board, boardSize);
@@ -55,7 +55,7 @@ const CreateNewGame = ({ onCancel }: CreateNewGameProps) => {
             value={boardSize}
             setValue={setBoardSize}
             min={5}
-            max={25}
+            max={21}
             step={2}
           />
         </div>
