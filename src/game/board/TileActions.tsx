@@ -71,16 +71,16 @@ const TileActions = () => {
         </p>
         {[
           {
-            value: -(tile?.pressure ?? 0),
-            label: <RotateCcw strokeWidth={3} size={20} />,
-          },
-          {
             value: -minPressureInterval,
             label: <Minus strokeWidth={4} size={20} />,
           },
           {
             value: minPressureInterval,
             label: <Plus strokeWidth={4} size={20} />,
+          },
+          {
+            value: -(tile?.pressure ?? 0),
+            label: <RotateCcw strokeWidth={3} size={20} />,
           },
         ].map(({ value, label }) => (
           <Button
