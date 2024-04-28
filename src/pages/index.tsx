@@ -3,6 +3,7 @@ import Image from 'next/image';
 
 import GameCreation from 'src/landing/GameCreation';
 import GameJoining from 'src/landing/GameJoining';
+import RejoinButton from 'src/landing/RejoinButton';
 
 export default function Landing() {
   return (
@@ -36,7 +37,10 @@ export default function Landing() {
             <p className="mb-2 mt-1"> or </p>
             <div className="h-14 w-2 border-r border-r-white" />
           </div>
-          <GameJoining />
+          <div className="flex flex-col items-center">
+            <GameJoining />
+            <RejoinButton />
+          </div>
         </div>
       </div>
     </>

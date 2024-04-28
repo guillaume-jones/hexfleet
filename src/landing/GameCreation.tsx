@@ -12,7 +12,7 @@ const GameCreation = ({ className }: GameCreationProps) => {
   const [show, setShown] = useState(false);
 
   return (
-    <div className={`flex w-64 flex-col items-center gap-4 ${className}`}>
+    <div className={`flex w-60 flex-col items-center gap-4 ${className}`}>
       <Button
         fontClassName="text-lg font-semibold"
         onClick={() => setShown(true)}>

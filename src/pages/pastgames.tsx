@@ -15,9 +15,10 @@ import { useCollection } from 'react-firebase-hooks/firestore';
 import { Game } from 'functions/src/document-types/Games';
 
 import Button from 'src/components/interactive/Button';
-import StyledLink from 'src/components/interactive/StyledLink';
 import { auth, firestore } from 'src/firebase/firebaseApp';
 import { GameProvider } from 'src/game/game-context/GameContext';
+import GameCreation from 'src/landing/GameCreation';
+import GameJoining from 'src/landing/GameJoining';
 import PastGame from 'src/pastgames/PastGame';
 
 const pageSize = 10;
@@ -63,14 +64,19 @@ export default function PastGames() {
       ),
   );
 
-  const showNoGamesText = !userLoading && !loading && pastGames?.size === 0;
-
   return (
     <>
       <Head>
         <title>HexFleet - Past Games</title>
       </Head>
       <div className="flex flex-1 flex-col items-center gap-6 p-8">
+        <div
+          className={
+            'flex flex-col justify-center gap-10 sm:flex-row sm:gap-0'
+          }>
+          <GameCreation />
+          <GameJoining />
+        </div>
         {pastGames?.docs.slice(0, pageSize * pagesToLoad).map((doc, i) => {
           return (
             <GameProvider gameId={doc.id} key={doc.id}>
@@ -86,15 +92,6 @@ export default function PastGames() {
             Load more
           </Button>
         )}
-        <div
-          className={`text-center transition-opacity ${
-            showNoGamesText ? 'opacity-100' : 'opacity-0'
-          }`}>
-          <p>No past games.</p>
-          <StyledLink onClick={() => void push('/')}>
-            Want to create a new game?
-          </StyledLink>
-        </div>
       </div>
     </>
   );

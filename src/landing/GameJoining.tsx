@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
-import RejoinButton from './RejoinButton';
 import { JoinGameData } from 'functions/src/document-types/Games';
 import { shortIdLength } from 'functions/src/game-logic/GameConstants';
 
@@ -92,13 +91,12 @@ const GameJoining = ({ className }: GameCreationProps) => {
         onClick={() => joinGameAndRedirect(shortId)}>
         Join Game
       </Button>
-      <p
-        className={`text-red-500 transition-all ${
-          errorShown ? 'opacity-100' : 'opacity-0'
+      <div
+        className={`transition-all ${
+          errorShown ? 'h-10 opacity-100' : 'h-0 opacity-0'
         }`}>
-        No open game with this code.
-      </p>
-      <RejoinButton />
+        <p className="text-red-500">No open game with this code.</p>
+      </div>
     </div>
   );
 };
