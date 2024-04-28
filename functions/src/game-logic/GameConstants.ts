@@ -5,6 +5,7 @@ export const minPressureInterval = 2;
 export const pressureToConquer = minPressureInterval * 2;
 export const pressureToDisable = minPressureInterval * 1;
 export const pressureToClear = 0;
+export const maxPressure = 8;
 export const maxInfluenceReach = 2;
 export const homeworldDistanceModifier = 3;
 

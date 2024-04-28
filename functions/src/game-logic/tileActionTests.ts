@@ -1,5 +1,7 @@
 import { Tile, TileCoords, TileWithPressure } from '../document-types/Games';
 
+import { maxPressure } from './GameConstants';
+
 export const canClear = (
   tile: Pick<TileWithPressure<Tile>, 'homeworld' | 'playerId' | 'clear'>,
   userId?: string,
@@ -7,4 +9,7 @@ export const canClear = (
 
 export const canApplyPressure = (
   tile: Pick<TileWithPressure<TileCoords>, 'distance' | 'pressure'>,
-) => tile.distance < Infinity && tile.pressure >= 0;
+) =>
+  tile.distance < Infinity &&
+  tile.pressure >= 0 &&
+  tile.pressure <= maxPressure;

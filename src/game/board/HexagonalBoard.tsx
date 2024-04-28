@@ -1,10 +1,12 @@
 import { GameContext } from '../game-context/GameContext';
+import clamp from 'lodash/clamp';
 import React, { useContext, useState } from 'react';
 
 import HexBoardTile from './HexBoardTile';
 import TileActions from './TileActions';
 import { getBoardParameters } from './getBoardParameters';
 import {
+  maxPressure,
   minPressureInterval,
   pressureToConquer,
 } from 'functions/src/game-logic/GameConstants';
@@ -65,7 +67,7 @@ const HexagonalBoard = () => {
           const fill = getFillColor(stroke, isClickable);
 
           const changePressure = (delta: number) => {
-            const newPressure = Math.max(pressure + delta, 0);
+            const newPressure = clamp(pressure + delta, 0, maxPressure);
             const newTilePressure = {
               ...baseNewTilePressure,
               pressure: newPressure,

@@ -63,6 +63,9 @@ const HelpBox = ({ className }: HelpBoxProps) => {
             influence
           </li>
           <li>
+            You can apply <b>up to 8</b> influence on a tile
+          </li>
+          <li>
             You <b>cannot reach</b> a tile more than {maxInfluenceReach} tiles
             away from your tiles
           </li>
