@@ -11,6 +11,8 @@ import PlayersBox from './game-elements/PlayersBox';
 import RematchButton from './game-elements/RematchButton';
 import TurnBox from './game-elements/TurnBox';
 
+import AnonymousGameWarning from 'src/login/AnonymousGameWarning';
+
 const GameDisplay = () => {
   const {
     loading,
@@ -55,7 +57,9 @@ const GameDisplay = () => {
         ) : (
           <HexagonalBoard />
         )}
+        <AnonymousGameWarning className="mt-3" />
       </div>
+
       <HelpBox className="sm:absolute sm:bottom-16 sm:right-4" />
       <GameEndModal />
     </div>

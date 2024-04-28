@@ -1,19 +1,18 @@
 import Head from 'next/head';
 import { useEffect } from 'react';
-import { useAuthState, useSignInWithGoogle } from 'react-firebase-hooks/auth';
+import { useIdToken } from 'react-firebase-hooks/auth';
+
+import GoogleLogin from './GoogleLogin';
 
 import { auth } from 'src/firebase/firebaseApp';
-import ProviderButton from 'src/login/ProviderButton';
 import EmailLogin from 'src/login/email/EmailLogin';
 
 export default function Login({ onSuccess }: { onSuccess: () => void }) {
-  const [signInWithGoogle, , googleLoading] = useSignInWithGoogle(auth);
-
-  const [authUser] = useAuthState(auth);
+  const [user] = useIdToken(auth);
 
   useEffect(() => {
-    if (authUser) onSuccess();
-  }, [authUser, onSuccess]);
+    if (user && !user.isAnonymous) onSuccess();
+  }, [user, onSuccess]);
 
   return (
     <>
@@ -24,11 +23,7 @@ export default function Login({ onSuccess }: { onSuccess: () => void }) {
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
           <div>
             <h2 className="mb-4 text-center text-xl">Use a provider</h2>
-            <ProviderButton
-              loginFunction={signInWithGoogle}
-              provider="Google"
-              loading={googleLoading}
-            />
+            <GoogleLogin />
           </div>
           <div className=" hidden w-0.5 flex-1 self-stretch rounded-sm bg-zinc-50 sm:flex" />
           <div>

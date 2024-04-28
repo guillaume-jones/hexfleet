@@ -1,6 +1,6 @@
 import { doc, setDoc } from 'firebase/firestore';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useIdToken } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
 import {
@@ -12,7 +12,7 @@ import {
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
 const useNextTurn = (gameId: string) => {
-  const [user] = useAuthState(auth);
+  const [user] = useIdToken(auth);
 
   const nextTurnRef = useMemo(() => {
     return user && gameId

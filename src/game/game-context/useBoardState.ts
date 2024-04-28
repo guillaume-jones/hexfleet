@@ -1,6 +1,6 @@
 import { getProjectedBoard } from '../board-view-utils/getProjectedBoard';
 import { useEffect, useMemo, useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useIdToken } from 'react-firebase-hooks/auth';
 
 import { Game, NextTurn, TileCoords } from 'functions/src/document-types/Games';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
@@ -9,7 +9,7 @@ import { calculateNewBoardState } from 'functions/src/game-logic/calculateNewBoa
 import { auth } from 'src/firebase/firebaseApp';
 
 const useBoardState = (game?: Partial<Game>, nextTurn?: NextTurn) => {
-  const [user] = useAuthState(auth);
+  const [user] = useIdToken(auth);
 
   const [turn, setTurn] = useState<number>(-1);
   const [selectedTile, setSelectedTile] = useState<TileCoords>();

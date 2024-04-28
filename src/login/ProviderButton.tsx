@@ -1,4 +1,3 @@
-import { UserCredential } from 'firebase/auth';
 import Image from 'next/image';
 import { useCallback } from 'react';
 
@@ -10,7 +9,7 @@ export default function ProviderButton({
   loading,
 }: {
   provider: string;
-  loginFunction: () => Promise<UserCredential | undefined>;
+  loginFunction: () => Promise<unknown>;
   loading: boolean;
 }) {
   const onClick = useCallback(() => {

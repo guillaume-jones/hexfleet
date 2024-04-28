@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useIdToken } from 'react-firebase-hooks/auth';
 
 import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
@@ -8,10 +8,11 @@ import Login from 'src/login/login';
 
 function AccountButton() {
   const router = useRouter();
-  const [user, userLoading] = useAuthState(auth);
 
-  const loggedIn = !!user;
+  const [user, userLoading] = useIdToken(auth);
+
   const isModalOpen = !!router.query?.login;
+  const isFullUser = !!user && !user.isAnonymous;
 
   const replaceUrl = (open: boolean) => {
     const { login, ...newQuery } = router.query;
@@ -25,12 +26,12 @@ function AccountButton() {
   return (
     <>
       <Button
-        href={loggedIn ? '/account' : undefined}
-        onClick={loggedIn ? undefined : () => replaceUrl(true)}
+        href={isFullUser ? '/account' : undefined}
+        onClick={isFullUser ? undefined : () => replaceUrl(true)}
         className="mb-1 ml-2 whitespace-nowrap rounded-full px-4 py-2"
         fontClassName="font-bold"
         loading={userLoading}>
-        {loggedIn ? 'Account' : 'Sign up or log in'}
+        {isFullUser ? 'Account' : 'Sign up or log in'}
       </Button>
       <Modal
         className="overflow-visible"

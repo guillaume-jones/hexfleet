@@ -18,6 +18,7 @@ const firebaseConfig: FirebaseOptions = {
 const firebaseApp = initializeApp(firebaseConfig);
 
 export const auth = getAuth(firebaseApp);
+auth.useDeviceLanguage();
 export const firestore = getFirestore(firebaseApp);
 export const functions = getFunctions(firebaseApp);
 export const storage = getStorage(firebaseApp);

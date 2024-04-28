@@ -1,5 +1,5 @@
 import { Transition } from '@headlessui/react';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useIdToken } from 'react-firebase-hooks/auth';
 
 import AlignedBox from 'src/account/AlignedBox';
 import DeleteAccountLink from 'src/account/DeleteAccountLink';
@@ -9,7 +9,7 @@ import StyledLink from 'src/components/interactive/StyledLink';
 import { auth } from 'src/firebase/firebaseApp';
 
 export default function SecurityBox() {
-  const [user, userLoading] = useAuthState(auth);
+  const [user, userLoading] = useIdToken(auth);
 
   return (
     <Transition

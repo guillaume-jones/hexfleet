@@ -1,6 +1,7 @@
+import { signInAnonymously } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useIdToken } from 'react-firebase-hooks/auth';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
 import { JoinGameData } from 'functions/src/document-types/Games';
@@ -15,7 +16,7 @@ type GameCreationProps = {
 };
 
 const GameJoining = ({ className }: GameCreationProps) => {
-  const [user, userLoading] = useAuthState(auth);
+  const [user, userLoading] = useIdToken(auth);
   const router = useRouter();
 
   const [shortId, setShortId] = useState('');
@@ -28,25 +29,21 @@ const GameJoining = ({ className }: GameCreationProps) => {
   const joinGameAndRedirect = useCallback(
     (id: string) => {
       if (userLoading) return;
-      if (!user) {
-        void router.replace({
-          query: { ...router.query, login: true },
-        });
-        return;
-      }
 
-      joinGame({ shortId: id })
-        .then((result) => {
-          if (result && typeof result.data === 'string') {
-            void router.push(`/games/${result.data}`);
-          } else {
-            setErrorShown(true);
-          }
-        })
-        .catch((e) => {
-          console.error(e);
-          setErrorShown(true);
-        });
+      const asyncFunction = async () => {
+        if (!user) await signInAnonymously(auth);
+        const result = await joinGame({ shortId: id });
+        if (result && typeof result.data === 'string') {
+          void router.push(`/games/${result.data}`);
+        } else {
+          throw new Error('Did not receive a game id.');
+        }
+      };
+
+      asyncFunction().catch((e) => {
+        console.error(e);
+        setErrorShown(true);
+      });
     },
     [joinGame, router, user, userLoading],
   );

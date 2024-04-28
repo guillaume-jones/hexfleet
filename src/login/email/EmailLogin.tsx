@@ -1,6 +1,8 @@
 import { FirebaseError } from 'firebase/app';
 import {
+  EmailAuthProvider,
   createUserWithEmailAndPassword,
+  linkWithCredential,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { useCallback, useMemo, useState } from 'react';
@@ -20,12 +22,25 @@ export default function EmailLogin() {
     [email, password],
   );
 
-  // Try to sign in with the email and password.
-  // 1. If the user doesn't exist, try to create a new user
-  // 2. On any other error, show an error message.
   const onSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
+
+      const user = auth.currentUser;
+      const credential = EmailAuthProvider.credential(email, password);
+
+      if (user && user.isAnonymous) {
+        linkWithCredential(user, credential).catch((e: FirebaseError) => {
+          if (e.code === 'auth/email-already-in-use') {
+            signInWithEmailAndPassword(auth, email, password).catch(() => {
+              setShowError(true);
+            });
+            return;
+          }
+          setShowError(true);
+        });
+      }
+
       signInWithEmailAndPassword(auth, email, password).catch(
         (e: FirebaseError) => {
           if (e.code === 'auth/user-not-found') {

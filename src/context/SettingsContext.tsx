@@ -1,7 +1,7 @@
 import { FirestoreError, doc, setDoc } from 'firebase/firestore';
 import isMatch from 'lodash/isMatch';
 import { ReactNode, createContext, useCallback } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useIdToken } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
 import { Profile } from 'functions/src/document-types/Profile';
@@ -20,7 +20,7 @@ export type SettingsContextType = Partial<Settings> &
 export const SettingsContext = createContext<SettingsContextType>(undefined!);
 
 const useSettingsProvider = (): SettingsContextType => {
-  const [user, userLoading] = useAuthState(auth);
+  const [user, userLoading] = useIdToken(auth);
 
   const settingsRef = user && doc(firestore, 'settings', user.uid);
   const profileRef = user && doc(firestore, 'profiles', user.uid);

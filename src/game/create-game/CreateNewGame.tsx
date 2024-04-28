@@ -1,7 +1,8 @@
+import { signInAnonymously } from 'firebase/auth';
 import range from 'lodash/range';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useIdToken } from 'react-firebase-hooks/auth';
 
 import {
   defaultPlayer,
@@ -26,11 +27,12 @@ type CreateNewGameProps = {
 };
 
 const CreateNewGame = ({ onCancel }: CreateNewGameProps) => {
-  const [user] = useAuthState(auth);
+  const [user, userLoading] = useIdToken(auth);
   const router = useRouter();
 
   const [boardSize, setBoardSize] = useState(defaultBoardOptions.boardSize);
   const [playersCount, setPlayersCount] = useState(2);
+  const [loading, setLoading] = useState(false);
 
   const boardPreview = useMemo(() => {
     const board = addPlayersToBoard({
@@ -79,20 +81,23 @@ const CreateNewGame = ({ onCancel }: CreateNewGameProps) => {
           Cancel
         </Button>
         <Button
+          loading={userLoading || loading}
           onClick={() => {
             const asyncFunction = async () => {
-              if (!user) {
-                await router.replace({
-                  query: { ...router.query, login: true },
-                });
-                return;
-              }
+              if (userLoading) return;
+
+              setLoading(true);
+
+              if (!user) await signInAnonymously(auth);
+
               const id = await createGame({ boardSize });
               if (id) {
                 await router.push(`/games/${id}`);
               } else {
                 console.error('Failed to create game.');
               }
+
+              setLoading(false);
             };
             void asyncFunction();
           }}>

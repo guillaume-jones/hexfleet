@@ -11,7 +11,7 @@ import {
   useEffect,
   useMemo,
 } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useIdToken } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
 import useBoardState from './useBoardState';
@@ -56,7 +56,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
 export const GameContext = createContext<GameContextType>(undefined!);
 
 const useGameProvider = (gameId: string): GameContextType => {
-  const [user] = useAuthState(auth);
+  const [user] = useIdToken(auth);
   const router = useRouter();
 
   const [game, loading, error] = useDocumentData<Partial<Game>>(

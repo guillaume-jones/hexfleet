@@ -7,7 +7,7 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useIdToken } from 'react-firebase-hooks/auth';
 import { useCollectionOnce } from 'react-firebase-hooks/firestore';
 
 import Button from 'src/components/interactive/Button';
@@ -18,7 +18,7 @@ type GameCreationProps = {
 };
 
 const RejoinButton = ({ className }: GameCreationProps) => {
-  const [user] = useAuthState(auth);
+  const [user] = useIdToken(auth);
 
   const [pastGames, loading] = useCollectionOnce(
     user &&
