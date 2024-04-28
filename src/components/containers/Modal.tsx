@@ -4,11 +4,13 @@ import { Fragment, useCallback } from 'react';
 
 export default function Modal({
   open,
+  showX = true,
   setOpen,
   children,
   title,
   className,
 }: {
+  showX?: boolean;
   open: boolean;
   setOpen: (arg0: boolean) => void;
   children?: React.ReactNode;
@@ -48,9 +50,11 @@ export default function Modal({
             className={`relative max-h-[80vh] overflow-auto rounded-2xl bg-zinc-900 p-6 shadow-lg ${
               className ?? ''
             }`}>
-            <div className="absolute right-2 top-2">
-              <CloseButton onClick={closeModal} />
-            </div>
+            {showX && (
+              <div className="absolute right-2 top-2">
+                <CloseButton onClick={closeModal} />
+              </div>
+            )}
             {title && (
               <Dialog.Title
                 as="h1"

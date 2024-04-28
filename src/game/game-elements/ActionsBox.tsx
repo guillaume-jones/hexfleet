@@ -119,7 +119,10 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
           {hasStarted ? 'Resign' : 'Leave Game'}
         </Button>
       </div>
-      <Modal open={confirmModalOpen} setOpen={setConfirmModalOpen}>
+      <Modal
+        open={confirmModalOpen}
+        setOpen={setConfirmModalOpen}
+        showX={false}>
         <p className="mr-8">
           Are you sure you want to {hasStarted ? 'resign' : 'leave'}?
         </p>

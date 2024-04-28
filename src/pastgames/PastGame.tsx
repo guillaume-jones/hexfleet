@@ -1,6 +1,8 @@
 import { Transition } from '@headlessui/react';
 import { useContext } from 'react';
 
+import DeleteGame from './DeleteGame';
+
 import Button from 'src/components/interactive/Button';
 import { getColorForPlayer } from 'src/game/board-view-utils/boardColors';
 import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
@@ -54,12 +56,11 @@ export default function PastGame({ index }: PastGameProps) {
       appear
       className={`${delays[index]} flex w-full max-w-2xl flex-col justify-between gap-4 rounded-2xl bg-zinc-900 p-4 transition duration-300 sm:flex-row-reverse`}>
       <div className="flex flex-1 flex-row items-center justify-around gap-4 sm:flex-col">
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col sm:items-center">
           <p className="text-lg">
             {createdAt?.toDate().toLocaleDateString(undefined, {
               day: 'numeric',
               month: 'short',
-              year: 'numeric',
             })}
             {', '}
             {createdAt?.toDate().toLocaleTimeString(undefined, {
@@ -70,21 +71,25 @@ export default function PastGame({ index }: PastGameProps) {
           </p>
           {gameDuration ? (
             <p className="text-lg">
-              Game lasted {gameDurationHours ? `${gameDurationHours} h ` : ''}
+              Lasted {gameDurationHours ? `${gameDurationHours} h ` : ''}
               {gameDurationMinutes} min
             </p>
           ) : hasStarted ? (
-            <p className="text-lg text-violet-600">Game in progress</p>
+            <p className="text-lg text-violet-600">In progress</p>
           ) : (
-            <p className="text-lg text-violet-300">Not yet started</p>
+            <p className="text-lg text-violet-300">Not started</p>
           )}
         </div>
-        <Button
-          className="max-w-32 flex-1 sm:flex-none"
-          light={winner != null}
-          href={`/games/${gameId}`}>
-          {winner ? 'View game' : 'Rejoin Game'}
-        </Button>
+
+        <div className="flex items-center gap-2">
+          <Button
+            className="max-w-32 flex-1 sm:flex-none"
+            light={winner != null}
+            href={`/games/${gameId}`}>
+            {winner ? 'View game' : 'Rejoin Game'}
+          </Button>
+          {hasStarted === false && <DeleteGame gameId={gameId} />}
+        </div>
       </div>
       <div className="flex h-80 flex-col items-center justify-around gap-4 sm:h-44 sm:flex-row">
         <SimpleHexBoard board={projectedBoard} boardSize={boardSize} />
