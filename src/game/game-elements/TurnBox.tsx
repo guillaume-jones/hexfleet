@@ -9,9 +9,8 @@ type TurnBoxProps = {
 };
 
 const TurnBox = ({ className }: TurnBoxProps) => {
-  const { pastTurns, setTurn, turn, winner } = useContext(GameContext);
-
-  const isInPast = turn < (pastTurns?.length ?? 0);
+  const { pastTurns, setTurn, turn, winner, isInPast } =
+    useContext(GameContext);
 
   return (
     <div
@@ -19,29 +18,31 @@ const TurnBox = ({ className }: TurnBoxProps) => {
   transition-all ${className}
   `}>
       <h2 className="text-xl font-bold">Turns</h2>
-      <p>
-        {isInPast || winner ? 'Showing turn: ' : 'Current turn: '}
-        {turn}
-      </p>
+      <div className="flex h-8 items-center justify-between">
+        <p>
+          {isInPast || winner ? 'Showing turn: ' : 'Current turn: '}
+          {turn}
+        </p>
+        <RotateCcw
+          className={`ml-2 transition-opacity  ${
+            isInPast
+              ? 'cursor-pointer hover:opacity-80 active:opacity-50'
+              : 'opacity-0 hover:opacity-0'
+          }`}
+          size={20}
+          onClick={() => setTurn(pastTurns?.length ?? 0)}
+        />
+      </div>
       {pastTurns && pastTurns.length > 0 && (
-        <div className="flex h-6 items-center">
-          <Range
-            min={0}
-            max={pastTurns.length}
-            value={turn}
-            setValue={setTurn}
-            className="w-44"
-          />
-          <RotateCcw
-            className={`ml-2 transition-opacity  ${
-              isInPast
-                ? 'cursor-pointer hover:opacity-80 active:opacity-50'
-                : 'opacity-0 hover:opacity-0'
-            }`}
-            size={20}
-            onClick={() => setTurn(pastTurns.length)}
-          />
-        </div>
+        <Range
+          min={0}
+          max={pastTurns.length}
+          value={turn}
+          setValue={setTurn}
+          className={`mb-2 w-44 ${
+            isInPast ? 'cursor-pointer' : 'cursor-not-allowed'
+          }`}
+        />
       )}
     </div>
   );

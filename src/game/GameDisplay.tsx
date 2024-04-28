@@ -42,12 +42,14 @@ const GameDisplay = () => {
         onClick={() => setSelectedTile(undefined)}
         className="flex flex-col items-center gap-4 lg:flex-row xl:flex-col xl:items-start
       ">
-        <PlayersBox />
-        {hasStarted ? <TurnBox /> : <GameCodeBox />}
+        <div className="flex flex-col items-center gap-4 sm:flex-row xl:flex-col xl:items-start">
+          <PlayersBox />
+          {hasStarted ? <TurnBox /> : <GameCodeBox />}
+        </div>
         <div className="hidden flex-1 xl:block" />
         {userDead || winner ? <RematchButton /> : <ActionsBox />}
       </div>
-      <div className="flex min-h-0 min-w-80 flex-col items-center self-stretch xl:-mx-16">
+      <div className="flex min-h-0 min-w-80 flex-col items-center self-stretch xl:-mx-12">
         {!hasStarted || userDead || winner ? (
           <SimpleHexBoard board={projectedBoard} boardSize={boardSize} />
         ) : (
