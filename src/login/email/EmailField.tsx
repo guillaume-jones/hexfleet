@@ -30,8 +30,8 @@ export default function EmailField({
         />
       </div>
       <p
-        className={`mx-1 mt-1 text-xs text-red-800 transition-all ${
-          showWarning ? 'h-4 opacity-100' : 'h-0 opacity-0'
+        className={`mx-1 mt-1 text-sm text-red-600 transition-all ${
+          showWarning ? 'h-6 opacity-100' : 'h-0 opacity-0'
         }`}>
         Please enter a valid email address.
       </p>

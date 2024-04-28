@@ -3,6 +3,8 @@ import { useCallback, useMemo, useState } from 'react';
 
 import Input from 'src/components/interactive/Input';
 
+const minLength = 8;
+
 export default function PasswordField({
   password,
   setPassword,
@@ -19,7 +21,7 @@ export default function PasswordField({
   );
 
   const showWarning = useMemo(
-    () => password.length < 10 && hasBeenFocused,
+    () => password.length < minLength && hasBeenFocused,
     [hasBeenFocused, password.length],
   );
 
@@ -48,10 +50,10 @@ export default function PasswordField({
         </button>
       </div>
       <p
-        className={`mx-1 mt-1 text-xs transition-all ${
-          showWarning ? 'h-4 opacity-100' : 'h-0 opacity-0'
+        className={`mx-1 mt-1 text-sm text-red-600 transition-all ${
+          showWarning ? 'h-6 opacity-100' : 'h-0 opacity-0'
         }`}>
-        Must be at least 10 characters long.
+        Must be at least {minLength} characters long.
       </p>
     </div>
   );

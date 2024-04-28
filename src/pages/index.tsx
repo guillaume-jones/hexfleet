@@ -37,7 +37,7 @@ export default function Landing() {
             <p className="mb-2 mt-1"> or </p>
             <div className="h-14 w-2 border-r border-r-white" />
           </div>
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center gap-4">
             <GameJoining />
             <RejoinButton />
           </div>
