@@ -1,5 +1,7 @@
 import {
+  QueryDocumentSnapshot,
   collection,
+  getDocs,
   limit,
   or,
   orderBy,
@@ -7,9 +9,8 @@ import {
   where,
 } from 'firebase/firestore';
 import Head from 'next/head';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
-import { useCollection } from 'react-firebase-hooks/firestore';
 
 import { Game } from 'functions/src/document-types/Games';
 
@@ -27,36 +28,47 @@ export default function PastGames() {
   const [user] = useIdToken(auth);
 
   const [pagesToLoad, setPagesToLoad] = useState(1);
-  const [pastGames, loading] = useCollection<Partial<Game>>(
-    user &&
-      query(
-        collection(firestore, 'games'),
-        or(
-          where('players', 'array-contains', {
-            id: user.uid,
-            dead: false,
-            sent: false,
-          }),
-          where('players', 'array-contains', {
-            id: user.uid,
-            dead: false,
-            sent: true,
-          }),
-          where('players', 'array-contains', {
-            id: user.uid,
-            dead: true,
-            sent: false,
-          }),
-          where('players', 'array-contains', {
-            id: user.uid,
-            dead: true,
-            sent: true,
-          }),
-        ),
-        orderBy('createdAt', 'desc'),
-        limit(pageSize * pagesToLoad + 1),
+  const [pastGames, setPastGames] =
+    useState<QueryDocumentSnapshot<Partial<Game>, Partial<Game>>[]>();
+
+  useEffect(() => {
+    if (!user) return;
+
+    // Get collection using limit and query
+    const q = query<Partial<Game>, Partial<Game>>(
+      collection(firestore, 'games'),
+      or(
+        where('players', 'array-contains', {
+          id: user.uid,
+          dead: false,
+          sent: false,
+        }),
+        where('players', 'array-contains', {
+          id: user.uid,
+          dead: false,
+          sent: true,
+        }),
+        where('players', 'array-contains', {
+          id: user.uid,
+          dead: true,
+          sent: false,
+        }),
+        where('players', 'array-contains', {
+          id: user.uid,
+          dead: true,
+          sent: true,
+        }),
       ),
-  );
+      orderBy('createdAt', 'desc'),
+      limit(pageSize * pagesToLoad + 1),
+    );
+
+    getDocs(q)
+      .then((snapshot) => {
+        setPastGames(snapshot.docs);
+      })
+      .catch(console.error);
+  }, [pagesToLoad, user]);
 
   return (
     <>
@@ -73,24 +85,21 @@ export default function PastGames() {
           <GameJoining />
         </div>
 
-        {pastGames?.docs.slice(0, pageSize * pagesToLoad).map((doc, i) => {
+        {pastGames?.slice(0, pageSize * pagesToLoad).map((doc, i) => {
           return (
             <GameProvider gameId={doc.id} key={doc.id}>
               <PastGame index={i} />
             </GameProvider>
           );
         })}
-        {pastGames && pastGames.size > pageSize * pagesToLoad && (
+        {pastGames && pastGames.length > pageSize * pagesToLoad && (
           <Button
             className="mt-8"
-            loading={loading}
             onClick={() => setPagesToLoad(pagesToLoad + 1)}>
             Load more
           </Button>
         )}
-        {!loading && pastGames?.docs.length === 0 && (
-          <p>No past games to display.</p>
-        )}
+        {pastGames?.length === 0 && <p>No past games to display.</p>}
       </div>
     </>
   );
