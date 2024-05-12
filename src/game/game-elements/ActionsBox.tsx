@@ -1,6 +1,6 @@
 import { GameContext } from '../game-context/GameContext';
 import { useContext, useEffect, useState } from 'react';
-import { ArrowRightCircle, RefreshCw, RotateCcw } from 'react-feather';
+import { ArrowRightCircle, RotateCcw } from 'react-feather';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
 import { EditGamePlayerData } from 'functions/src/document-types/Games';
@@ -62,7 +62,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
       `}>
       <h2 className="text-xl font-bold">Actions</h2>
       {hasStarted && (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between gap-3">
           <div>
             <div className="flex items-center ">
               <p>Influence left to spend:</p>
@@ -83,7 +83,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
             </div>
           </div>
           <RotateCcw
-            className={`ml-4 transition-opacity ${
+            className={`mr-4 transition-opacity ${
               !nextTurnEqualsSent
                 ? 'cursor-pointer hover:opacity-80 active:opacity-50'
                 : 'opacity-0'
@@ -98,7 +98,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
           <Button
             light={nextTurn && nextTurnEqualsSent}
             loading={sendLoading}
-            disabled={!nextTurn || influenceRemaining < 0}
+            disabled={!nextTurn || influenceRemaining < 0 || nextTurnSent}
             onClick={() => {
               setSendLoading(true);
               sendNextTurn()
@@ -106,12 +106,8 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
                 .catch(console.error);
             }}>
             <div className="flex h-8 w-44 flex-row items-center justify-around gap-2 font-medium sm:h-auto">
-              {nextTurnSent ? 'Re-send next turn' : 'Send next turn'}
-              {nextTurnSent ? (
-                <RefreshCw size={20} />
-              ) : (
-                <ArrowRightCircle size={20} />
-              )}
+              {nextTurnSent ? 'Next turn sent' : 'Send next turn'}
+              {!nextTurnSent && <ArrowRightCircle size={20} />}
             </div>
           </Button>
         )}
