@@ -1,6 +1,9 @@
+import { FirebaseError } from 'firebase/app';
 import {
   GoogleAuthProvider,
+  OAuthProvider,
   linkWithPopup,
+  signInWithCredential,
   signInWithPopup,
 } from 'firebase/auth';
 import { useCallback, useState } from 'react';
@@ -20,7 +23,22 @@ const GoogleLogin = () => {
     setLoading(true);
 
     if (user && user.isAnonymous) {
-      await linkWithPopup(user, provider);
+      try {
+        await linkWithPopup(user, provider);
+      } catch (error) {
+        if (!(error instanceof FirebaseError)) {
+          console.error(error);
+          return;
+        }
+
+        const credential = OAuthProvider.credentialFromError(error);
+        if (!credential) {
+          console.error('Failed to create credential');
+          return;
+        }
+
+        await signInWithCredential(auth, credential);
+      }
     } else {
       await signInWithPopup(auth, provider);
     }
