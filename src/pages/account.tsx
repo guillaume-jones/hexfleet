@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
 
-import PrivacyBox from 'src/account/PrivacyBox';
 import ProfileBox from 'src/account/ProfileBox';
 import SecurityBox from 'src/account/SecurityBox';
 import { SettingsProvider } from 'src/context/SettingsContext';
@@ -28,7 +27,6 @@ export default function Account() {
           <h1 className={'text-3xl font-semibold text-zinc-50'}>Account</h1>
           <SecurityBox />
           <ProfileBox />
-          <PrivacyBox />
         </div>
       </SettingsProvider>
     </>
