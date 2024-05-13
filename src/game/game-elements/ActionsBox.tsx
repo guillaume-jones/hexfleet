@@ -96,7 +96,6 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
       <div className="flex flex-row justify-between gap-3">
         {hasStarted && (
           <Button
-            light={nextTurn && nextTurnEqualsSent}
             loading={sendLoading}
             disabled={!nextTurn || influenceRemaining < 0 || nextTurnSent}
             onClick={() => {
@@ -106,7 +105,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
                 .catch(console.error);
             }}>
             <div className="flex h-8 w-44 flex-row items-center justify-around gap-2 font-medium sm:h-auto">
-              {nextTurnSent ? 'Next turn sent' : 'Send next turn'}
+              {nextTurnSent ? 'Next turn sent!' : 'Send next turn'}
               {!nextTurnSent && <ArrowRightCircle size={20} />}
             </div>
           </Button>
