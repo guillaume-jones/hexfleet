@@ -1,5 +1,6 @@
 import { Game, NextTurn } from '../document-types/Games';
 import { updateBoardTurn } from '../game-logic/updateBoardTurn';
+import { updateScoreDocuments } from '../score-functions/updateScoreDocuments';
 import * as admin from 'firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import * as functions from 'firebase-functions';
@@ -60,6 +61,9 @@ const onNewNextTurn = functions
 
     // Delete all documents in next turn collection
     await Promise.all(nextTurnsSnapshot.docs.map((doc) => doc.ref.delete()));
+
+    // Update scores
+    await updateScoreDocuments(gameId);
 
     return null;
   });

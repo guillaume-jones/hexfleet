@@ -1,4 +1,5 @@
 import { EditGamePlayerData, Game } from '../document-types/Games';
+import { updateScoreDocuments } from '../score-functions/updateScoreDocuments';
 import * as admin from 'firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import * as functions from 'firebase-functions';
@@ -69,6 +70,8 @@ const joinGame = functions
             await Promise.all(
               nextTurnsSnapshot.docs.map((doc) => doc.ref.delete()),
             );
+            // Update scores
+            await updateScoreDocuments(gameId);
           } else {
             await gameRef.update({ players: newPlayers });
           }
