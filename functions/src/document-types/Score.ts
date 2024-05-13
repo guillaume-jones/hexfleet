@@ -6,7 +6,8 @@ export type GameOutcomes = {
 };
 
 export type Score = GameOutcomes & {
-  elo?: number;
+  elo1v1?: number;
+  eloFFA?: number;
   versus: {
     [key: string]: GameOutcomes;
   };
