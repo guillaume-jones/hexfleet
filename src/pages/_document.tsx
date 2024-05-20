@@ -33,7 +33,7 @@ class CustomDocument extends Document {
             name="og:description"
             content="HexFleet is a simple, balanced, online game for 2 to 6 players. Send out your fleet to conquer a galaxy of hexagonal tiles!"
           />
-          <meta name="og:url" content="www.hexfleet.com" />
+          <meta name="og:url" content="https://www.hexfleet.com/" />
           <meta name="og:type" content="website" />
           {/* <meta
             name="og:image"
@@ -49,7 +49,6 @@ class CustomDocument extends Document {
             name="twitter:title"
             content="HexFleet - Hex-based tile conquest."
           />
-          <meta name="twitter:site" content="@instantheader" />
           <meta
             name="twitter:description"
             content="HexFleet is a simple, balanced, online game for 2 to 6 players. Send out your fleet to conquer a galaxy of hexagonal tiles."
