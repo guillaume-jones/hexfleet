@@ -15,7 +15,7 @@ const calculateEloUpdate = ({
   const expectedOutcome =
     1 / (1 + 10 ** ((opponentElo - playerElo) / denominator));
 
-  return playerElo + K * (outcome - expectedOutcome);
+  return K * (outcome - expectedOutcome);
 };
 
 export const get1v1EloUpdate = ({

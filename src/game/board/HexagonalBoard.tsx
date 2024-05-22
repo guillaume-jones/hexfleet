@@ -117,7 +117,7 @@ const HexagonalBoard = () => {
 
                 // End touch event
                 // Delay required because otherwise onMouseUp fires 100ms later
-                setTimeout(() => setTouchStarted(false), 110);
+                setTimeout(() => setTouchStarted(false), 130);
 
                 // Long press already fired, skip action
                 if (longPressTimer === undefined) return;

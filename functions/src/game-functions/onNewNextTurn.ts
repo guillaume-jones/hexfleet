@@ -49,6 +49,11 @@ const onNewNextTurn = functions
       players: activePlayers,
     });
 
+    // Delete all documents in next turn collection
+    await Promise.all(nextTurnsSnapshot.docs.map((doc) => doc.ref.delete()));
+
+    // Placed here to hopefully avoid a race condition where "sent: true"
+    // is accidentally set on players who just sent a turn
     await gameRef.update({
       boardState: newBoardState,
       players: newPlayers,
@@ -59,13 +64,10 @@ const onNewNextTurn = functions
       endedAt: winner ? Timestamp.now() : null,
     });
 
-    // Delete all documents in next turn collection
-    await Promise.all(nextTurnsSnapshot.docs.map((doc) => doc.ref.delete()));
-
     // Update scores
     await updateScoreDocuments(gameId);
 
-    return null;
+    return;
   });
 
 export default onNewNextTurn;
