@@ -2,7 +2,7 @@ import { Game } from '../document-types/Games';
 import { Score } from '../document-types/Score';
 import * as admin from 'firebase-admin';
 
-import { get1v1EloUpdate } from './getEloUpdate';
+import { get1v1EloUpdate, getFFAEloUpdate } from './getEloUpdate';
 import { get1v1WinLossUpdate, getFFAWinLossUpdate } from './getWinLossUpdate';
 
 const firestore = admin.firestore();
@@ -28,11 +28,26 @@ export const updateScoreDocuments = async (gameId: string) => {
   const scoreUpdates = gameData.players.map((p) => {
     const scoreRef = firestore.doc(`scores/${p.id}`);
 
+    const eloParameters = {
+      scores,
+      playerId: p.id,
+      playerIds,
+      winner,
+    };
+    const winLossParameters = {
+      playerId: p.id,
+      playerIds,
+      winner,
+    };
+
     const scoreUpdate = isFFA
-      ? getFFAWinLossUpdate({ playerId: p.id, playerIds, winner })
+      ? {
+          ...getFFAWinLossUpdate(winLossParameters),
+          ...getFFAEloUpdate(eloParameters),
+        }
       : {
-          ...get1v1WinLossUpdate({ playerId: p.id, playerIds, winner }),
-          ...get1v1EloUpdate({ scores, playerId: p.id, playerIds, winner }),
+          ...get1v1WinLossUpdate(winLossParameters),
+          ...get1v1EloUpdate(eloParameters),
         };
 
     return scoreRef.update(scoreUpdate);
