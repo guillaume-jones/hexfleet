@@ -28,27 +28,16 @@ export const updateScoreDocuments = async (gameId: string) => {
   const scoreUpdates = gameData.players.map((p) => {
     const scoreRef = firestore.doc(`scores/${p.id}`);
 
-    const eloParameters = {
+    const parameters = {
       scores,
-      playerId: p.id,
-      playerIds,
-      winner,
-    };
-    const winLossParameters = {
       playerId: p.id,
       playerIds,
       winner,
     };
 
     const scoreUpdate = isFFA
-      ? {
-          ...getFFAWinLossUpdate(winLossParameters),
-          ...getFFAEloUpdate(eloParameters),
-        }
-      : {
-          ...get1v1WinLossUpdate(winLossParameters),
-          ...get1v1EloUpdate(eloParameters),
-        };
+      ? { ...getFFAWinLossUpdate(parameters), ...getFFAEloUpdate(parameters) }
+      : { ...get1v1WinLossUpdate(parameters), ...get1v1EloUpdate(parameters) };
 
     return scoreRef.update(scoreUpdate);
   });
