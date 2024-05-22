@@ -7,14 +7,9 @@ import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
 
 const GameEndModal = () => {
-  const { winner, userId, nextTurn, gameId } = useContext(GameContext);
+  const { winner, userId, wasPlaying, gameId } = useContext(GameContext);
 
-  const [wasPlaying, setWasPlaying] = useState(false);
   const [open, setOpen] = useState<boolean | undefined>();
-
-  useEffect(() => {
-    if (nextTurn) setWasPlaying(true);
-  }, [nextTurn]);
 
   useEffect(() => {
     if (wasPlaying && !!winner) {

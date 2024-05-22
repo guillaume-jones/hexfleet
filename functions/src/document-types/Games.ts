@@ -48,6 +48,7 @@ export type Game = {
   players: Player[];
   shortId: string;
   winner: string | null;
+  rematchId: string | null;
 };
 
 export type JoinGameData = {
@@ -61,4 +62,9 @@ export type StartGameData = {
 export type EditGamePlayerData = {
   gameId: string;
   action: 'leave' | 'resign';
+};
+
+export type RematchData = {
+  gameId: string;
+  newGameId: string;
 };

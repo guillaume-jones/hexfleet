@@ -28,6 +28,7 @@ const useNextTurn = (gameId: string) => {
     useDocumentData<Partial<NextTurn>>(nextTurnRef);
 
   const [nextTurn, setNextTurn] = useState<NextTurn>();
+  const [wasPlaying, setWasPlaying] = useState(false);
 
   useEffect(() => {
     if (sentNextTurnLoading) return;
@@ -62,6 +63,7 @@ const useNextTurn = (gameId: string) => {
 
   const updateNextTurn = useCallback(
     (tile: TileWithPressure<TileCoords>) => {
+      setWasPlaying(true);
       setNextTurn((prev) => {
         const newPressures = (prev?.pressures ?? []).filter(
           ({ x, y }) => !(x === tile.x && y === tile.y),
@@ -89,6 +91,7 @@ const useNextTurn = (gameId: string) => {
     nextTurnSent: !!sentNextTurn,
     nextTurnEqualsSent:
       JSON.stringify(nextTurn) === JSON.stringify(sentNextTurn),
+    wasPlaying,
   };
 };
 

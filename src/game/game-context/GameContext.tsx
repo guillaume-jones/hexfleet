@@ -46,6 +46,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   nextTurn: NextTurn | undefined;
   nextTurnSent: boolean;
   nextTurnEqualsSent: boolean;
+  wasPlaying: boolean;
   userDead: boolean | undefined;
   updateNextTurn: (tile: TileWithPressure<TileCoords>) => void;
   resetNextTurn: () => void;

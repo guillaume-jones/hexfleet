@@ -3,7 +3,9 @@ import range from 'lodash/range';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
+import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
+import { RematchData } from 'functions/src/document-types/Games';
 import {
   defaultPlayer,
   maximumPlayers,
@@ -14,7 +16,7 @@ import { addPlayersToBoard } from 'functions/src/game-logic/addPlayersToBoard';
 
 import Button from 'src/components/interactive/Button';
 import Range from 'src/components/interactive/Range';
-import { auth } from 'src/firebase/firebaseApp';
+import { auth, functions } from 'src/firebase/firebaseApp';
 import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
 import {
   defaultBoardOptions,
@@ -25,11 +27,17 @@ import { createGame } from 'src/game/create-game/createGame';
 type CreateNewGameProps = {
   onCancel: () => void;
   playerIds?: string[];
+  previousGameId?: string;
 };
 
-const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
+const CreateNewGame = ({
+  onCancel,
+  playerIds,
+  previousGameId,
+}: CreateNewGameProps) => {
   const [user, userLoading] = useIdToken(auth);
   const router = useRouter();
+  const [addRematch] = useHttpsCallable<RematchData>(functions, 'addRematch');
 
   const [boardSize, setBoardSize] = useState(defaultBoardOptions.boardSize);
   const [playersCount, setPlayersCount] = useState(
@@ -87,18 +95,25 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
           loading={userLoading || loading}
           onClick={() => {
             const asyncFunction = async () => {
-              if (userLoading) return;
-
               setLoading(true);
 
               if (!user) await signInAnonymously(auth);
 
               const id = await createGame({ boardSize });
-              if (id) {
-                await router.push(`/games/${id}`);
-              } else {
+
+              if (!id) {
                 console.error('Failed to create game.');
+                return;
               }
+
+              if (previousGameId) {
+                await addRematch({ gameId: previousGameId, newGameId: id });
+              }
+
+              // 100ms delay to allow Firestore to update
+              await new Promise((resolve) => setTimeout(resolve, 100));
+
+              await router.push(`/games/${id}`);
 
               setLoading(false);
             };
