@@ -7,7 +7,7 @@ import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
 
 const GameEndModal = () => {
-  const { winner, userId, nextTurn } = useContext(GameContext);
+  const { winner, userId, nextTurn, gameId } = useContext(GameContext);
 
   const [wasPlaying, setWasPlaying] = useState(false);
   const [open, setOpen] = useState<boolean | undefined>();
@@ -22,6 +22,11 @@ const GameEndModal = () => {
       setOpen((prev) => (prev === false ? false : true));
     }
   }, [wasPlaying, winner]);
+
+  useEffect(() => {
+    // Closes popup if game id changes
+    setOpen(undefined);
+  }, [gameId]);
 
   const isWinner = winner === userId;
 
