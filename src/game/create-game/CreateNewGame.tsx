@@ -24,27 +24,28 @@ import { createGame } from 'src/game/create-game/createGame';
 
 type CreateNewGameProps = {
   onCancel: () => void;
+  playerIds?: string[];
 };
 
-const CreateNewGame = ({ onCancel }: CreateNewGameProps) => {
+const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
   const [user, userLoading] = useIdToken(auth);
   const router = useRouter();
 
   const [boardSize, setBoardSize] = useState(defaultBoardOptions.boardSize);
-  const [playersCount, setPlayersCount] = useState(2);
+  const [playersCount, setPlayersCount] = useState(
+    playerIds?.length ?? defaultBoardOptions.playerCount,
+  );
   const [loading, setLoading] = useState(false);
 
   const boardPreview = useMemo(() => {
-    const board = addPlayersToBoard({
-      boardState: generateBoard({ boardSize }),
-      boardSize,
-      players: range(playersCount).map((i) => ({
-        id: String(i * 8618), // Value chosen because colors look good
-        ...defaultPlayer,
-      })),
-    });
+    const players = (playerIds ?? range(0, 8618 * playersCount, 8618))?.map(
+      (id) => ({ id: `${id}`, ...defaultPlayer }),
+    );
+
+    const boardState = generateBoard({ boardSize });
+    const board = addPlayersToBoard({ boardState, boardSize, players });
     return addBordersToBoard(board, boardSize);
-  }, [boardSize, playersCount]);
+  }, [boardSize, playerIds, playersCount]);
 
   return (
     <>
@@ -62,18 +63,20 @@ const CreateNewGame = ({ onCancel }: CreateNewGameProps) => {
           />
         </div>
       </div>
-      <div className="flex flex-row justify-between">
-        <p>Players:</p>
-        <div className="flex gap-2">
-          <p className="font-bold">{playersCount}</p>
-          <Range
-            value={playersCount}
-            setValue={setPlayersCount}
-            min={minimumPlayers}
-            max={maximumPlayers}
-          />
+      {!playerIds && (
+        <div className="flex flex-row justify-between">
+          <p>Players:</p>
+          <div className="flex gap-2">
+            <p className="font-bold">{playersCount}</p>
+            <Range
+              value={playersCount}
+              setValue={setPlayersCount}
+              min={minimumPlayers}
+              max={maximumPlayers}
+            />
+          </div>
         </div>
-      </div>
+      )}
       <h3 className="text-center text-lg font-semibold">Preview</h3>
       <SimpleHexBoard board={boardPreview} boardSize={boardSize} />
       <div className="mt-2 flex justify-between">
