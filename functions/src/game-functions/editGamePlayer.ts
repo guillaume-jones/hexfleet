@@ -1,8 +1,10 @@
-import { EditGamePlayerData, Game } from '../document-types/Games';
+import { Game } from '../document-types/Games';
 import { updateScoreDocuments } from '../score-functions/updateScoreDocuments';
 import * as admin from 'firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import * as functions from 'firebase-functions';
+
+import { EditGamePlayerData } from './functionInputs';
 
 const firestore = admin.firestore();
 

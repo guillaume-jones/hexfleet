@@ -1,4 +1,4 @@
-import { Game, JoinGameData, Player } from '../document-types/Games';
+import { Game, Player } from '../document-types/Games';
 import {
   defaultPlayer,
   maximumPlayers,
@@ -6,6 +6,8 @@ import {
 } from '../game-logic/GameConstants';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+
+import { JoinGameData } from './functionInputs';
 
 const firestore = admin.firestore();
 

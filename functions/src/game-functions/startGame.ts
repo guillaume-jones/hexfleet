@@ -1,9 +1,11 @@
-import { Game, StartGameData } from '../document-types/Games';
+import { Game } from '../document-types/Games';
 import { minimumPlayers } from '../game-logic/GameConstants';
 import { addPlayersToBoard } from '../game-logic/addPlayersToBoard';
 import * as admin from 'firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import * as functions from 'firebase-functions';
+
+import { StartGameData } from './functionInputs';
 
 const firestore = admin.firestore();
 

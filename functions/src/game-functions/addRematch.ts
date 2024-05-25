@@ -1,6 +1,8 @@
-import { Game, RematchData } from '../document-types/Games';
+import { Game } from '../document-types/Games';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+
+import { RematchData } from './functionInputs';
 
 const firestore = admin.firestore();
 

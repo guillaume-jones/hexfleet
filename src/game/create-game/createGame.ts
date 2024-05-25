@@ -40,5 +40,5 @@ export const createGame = async (boardOptions: BoardOptions) => {
 
   const docRef = await addDoc(collection(firestore, 'games'), newGame);
 
-  return docRef.id;
+  return { id: docRef.id, shortId: newGame.shortId };
 };

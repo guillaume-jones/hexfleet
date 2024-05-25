@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { ArrowRightCircle, RotateCcw } from 'react-feather';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
-import { EditGamePlayerData } from 'functions/src/document-types/Games';
+import { EditGamePlayerData } from 'functions/src/game-functions/functionInputs';
 
 import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';

@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
-import { RematchData } from 'functions/src/document-types/Games';
+import { GameInviteData } from 'functions/src/game-functions/functionInputs';
 import {
   defaultPlayer,
   maximumPlayers,
@@ -27,17 +27,15 @@ import { createGame } from 'src/game/create-game/createGame';
 type CreateNewGameProps = {
   onCancel: () => void;
   playerIds?: string[];
-  previousGameId?: string;
 };
 
-const CreateNewGame = ({
-  onCancel,
-  playerIds,
-  previousGameId,
-}: CreateNewGameProps) => {
+const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
   const [user, userLoading] = useIdToken(auth);
   const router = useRouter();
-  const [addRematch] = useHttpsCallable<RematchData>(functions, 'addRematch');
+  const [sendGameInvite] = useHttpsCallable<GameInviteData>(
+    functions,
+    'sendGameInvites',
+  );
 
   const [boardSize, setBoardSize] = useState(defaultBoardOptions.boardSize);
   const [playersCount, setPlayersCount] = useState(
@@ -97,23 +95,28 @@ const CreateNewGame = ({
             const asyncFunction = async () => {
               setLoading(true);
 
-              if (!user) await signInAnonymously(auth);
+              let userId = user?.uid;
+              if (!userId) userId = (await signInAnonymously(auth)).user.uid;
 
-              const id = await createGame({ boardSize });
+              const returned = await createGame({ boardSize });
 
-              if (!id) {
+              if (!returned) {
                 console.error('Failed to create game.');
                 return;
               }
 
-              if (previousGameId) {
-                await addRematch({ gameId: previousGameId, newGameId: id });
+              if (playerIds) {
+                await sendGameInvite({
+                  shortId: returned.shortId,
+                  fromPlayerId: userId,
+                  toPlayerIds: playerIds,
+                });
               }
 
               // 100ms delay to allow Firestore to update
               await new Promise((resolve) => setTimeout(resolve, 100));
 
-              await router.push(`/games/${id}`);
+              await router.push(`/games/${returned.id}`);
 
               setLoading(false);
             };

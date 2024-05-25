@@ -4,7 +4,7 @@ import { useContext, useState } from 'react';
 import { Copy } from 'react-feather';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
-import { StartGameData } from 'functions/src/document-types/Games';
+import { StartGameData } from 'functions/src/game-functions/functionInputs';
 
 import Button from 'src/components/interactive/Button';
 import { functions } from 'src/firebase/firebaseApp';

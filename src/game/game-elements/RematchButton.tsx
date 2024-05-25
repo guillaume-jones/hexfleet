@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
-import { JoinGameData } from 'functions/src/document-types/Games';
+import { JoinGameData } from 'functions/src/game-functions/functionInputs';
 
 import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
@@ -12,7 +12,7 @@ import { functions } from 'src/firebase/firebaseApp';
 
 const RematchButton = () => {
   const router = useRouter();
-  const { players, rematchId, gameId, wasPlaying } = useContext(GameContext);
+  const { players, rematchId, wasPlaying } = useContext(GameContext);
   const [errorShown, setErrorShown] = useState(false);
   const [joinGame, loading] = useHttpsCallable<JoinGameData>(
     functions,
@@ -72,7 +72,6 @@ const RematchButton = () => {
           <CreateNewGame
             onCancel={() => setOpen(false)}
             playerIds={players.map(({ id }) => id)}
-            previousGameId={gameId}
           />
         )}
       </Modal>

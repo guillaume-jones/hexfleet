@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
-import { JoinGameData } from 'functions/src/document-types/Games';
+import { JoinGameData } from 'functions/src/game-functions/functionInputs';
 import { shortIdLength } from 'functions/src/game-logic/GameConstants';
 
 import Button from 'src/components/interactive/Button';
