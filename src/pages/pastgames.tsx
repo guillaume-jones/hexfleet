@@ -1,7 +1,7 @@
 import {
+  DocumentData,
   QueryDocumentSnapshot,
   collection,
-  getDocs,
   limit,
   or,
   orderBy,
@@ -11,6 +11,7 @@ import {
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
+import { useCollection } from 'react-firebase-hooks/firestore';
 
 import { Game } from 'functions/src/document-types/Games';
 
@@ -28,47 +29,48 @@ export default function PastGames() {
   const [user] = useIdToken(auth);
 
   const [pagesToLoad, setPagesToLoad] = useState(1);
-  const [pastGames, setPastGames] =
-    useState<QueryDocumentSnapshot<Partial<Game>, Partial<Game>>[]>();
-
-  useEffect(() => {
-    if (!user) return;
-
-    // Get collection using limit and query
-    const q = query<Partial<Game>, Partial<Game>>(
-      collection(firestore, 'games'),
-      or(
-        where('players', 'array-contains', {
-          id: user.uid,
-          dead: false,
-          sent: false,
-        }),
-        where('players', 'array-contains', {
-          id: user.uid,
-          dead: false,
-          sent: true,
-        }),
-        where('players', 'array-contains', {
-          id: user.uid,
-          dead: true,
-          sent: false,
-        }),
-        where('players', 'array-contains', {
-          id: user.uid,
-          dead: true,
-          sent: true,
-        }),
+  const [pastGamesSnapshot] = useCollection<Partial<Game>>(
+    user &&
+      query<Partial<Game>, Partial<Game>>(
+        collection(firestore, 'games'),
+        or(
+          where('players', 'array-contains', {
+            id: user.uid,
+            dead: false,
+            sent: false,
+          }),
+          where('players', 'array-contains', {
+            id: user.uid,
+            dead: false,
+            sent: true,
+          }),
+          where('players', 'array-contains', {
+            id: user.uid,
+            dead: true,
+            sent: false,
+          }),
+          where('players', 'array-contains', {
+            id: user.uid,
+            dead: true,
+            sent: true,
+          }),
+        ),
+        orderBy('createdAt', 'desc'),
+        limit(pageSize * pagesToLoad + 1),
       ),
-      orderBy('createdAt', 'desc'),
-      limit(pageSize * pagesToLoad + 1),
-    );
+  );
 
-    getDocs(q)
-      .then((snapshot) => {
-        setPastGames(snapshot.docs);
-      })
-      .catch(console.error);
-  }, [pagesToLoad, user]);
+  // Avoid reloading the whole page when pagesToLoad changes
+  const [pastGamesDocs, setPastGamesDocs] = useState<
+    QueryDocumentSnapshot<Partial<Game>, DocumentData>[]
+  >([]);
+  useEffect(() => {
+    if (!pastGamesSnapshot) return;
+    setPastGamesDocs((prev) => {
+      if (!prev) return pastGamesSnapshot.docs;
+      return [...prev, ...pastGamesSnapshot.docs.slice(prev.length)];
+    });
+  }, [pastGamesSnapshot]);
 
   return (
     <>
@@ -77,6 +79,7 @@ export default function PastGames() {
       </Head>
       <div className="flex flex-1 flex-col items-center gap-6 p-8">
         <AnonymousGameWarning />
+
         <div
           className={
             'flex flex-col justify-center gap-10 sm:flex-row sm:gap-0'
@@ -85,21 +88,21 @@ export default function PastGames() {
           <GameJoining />
         </div>
 
-        {pastGames?.slice(0, pageSize * pagesToLoad).map((doc, i) => {
+        {pastGamesDocs.slice(0, pageSize * pagesToLoad).map((doc, i) => {
           return (
             <GameProvider gameId={doc.id} key={doc.id}>
               <PastGame index={i} />
             </GameProvider>
           );
         })}
-        {pastGames && pastGames.length > pageSize * pagesToLoad && (
+        {pastGamesDocs.length > pageSize * pagesToLoad && (
           <Button
             className="mt-8"
             onClick={() => setPagesToLoad(pagesToLoad + 1)}>
             Load more
           </Button>
         )}
-        {pastGames?.length === 0 && <p>No past games to display.</p>}
+        {pastGamesSnapshot?.size === 0 && <p>No past games to display.</p>}
       </div>
     </>
   );
