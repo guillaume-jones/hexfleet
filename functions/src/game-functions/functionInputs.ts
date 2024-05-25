@@ -11,11 +11,6 @@ export type EditGamePlayerData = {
   action: 'leave' | 'resign';
 };
 
-export type RematchData = {
-  gameId: string;
-  newGameId: string;
-};
-
 export type GameInviteData = {
   shortId: string;
   fromPlayerId: string;

@@ -14,7 +14,7 @@ const GameCodeBox = () => {
 
   const [startGame, loading] = useHttpsCallable<StartGameData>(
     functions,
-    'startGame',
+    'httpsCallable',
   );
 
   const [justCopied, setJustCopied] = useState(false);

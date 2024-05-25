@@ -34,7 +34,7 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
   const router = useRouter();
   const [sendGameInvite] = useHttpsCallable<GameInviteData>(
     functions,
-    'sendGameInvites',
+    'httpsCallable',
   );
 
   const [boardSize, setBoardSize] = useState(defaultBoardOptions.boardSize);

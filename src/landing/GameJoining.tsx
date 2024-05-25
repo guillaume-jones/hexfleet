@@ -23,7 +23,7 @@ const GameJoining = ({ className }: GameCreationProps) => {
   const [errorShown, setErrorShown] = useState(false);
   const [joinGame, loading] = useHttpsCallable<JoinGameData>(
     functions,
-    'joinGame',
+    'httpsCallable',
   );
 
   const joinGameAndRedirect = useCallback(

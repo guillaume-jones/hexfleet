@@ -16,7 +16,7 @@ type ActionsBoxProps = {
 const ActionsBox = ({ className }: ActionsBoxProps) => {
   const [editGamePlayer, loading] = useHttpsCallable<EditGamePlayerData>(
     functions,
-    'editGamePlayer',
+    'httpsCallable',
   );
 
   const {
