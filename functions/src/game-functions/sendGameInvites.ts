@@ -37,22 +37,24 @@ const sendGameInvites = async (
     shortId,
   };
 
-  const inviteUpdates = toPlayerIds.map(async (toPlayerId) => {
-    const invitesRef = firestore.doc(`invites/${toPlayerId}`);
-    const invitesDoc = await invitesRef.get();
+  const inviteUpdates = toPlayerIds
+    .filter((playerId) => playerId !== fromPlayerId)
+    .map(async (playerId) => {
+      const invitesRef = firestore.doc(`invites/${playerId}`);
+      const invitesDoc = await invitesRef.get();
 
-    if (!invitesDoc.exists) {
-      return invitesRef.create({ gameInvites: [newInvite] });
-    }
+      if (!invitesDoc.exists) {
+        return invitesRef.create({ gameInvites: [newInvite] });
+      }
 
-    // Filter out expired game invites
-    const inviteData = invitesDoc.data() as Invites;
-    const validInvites = inviteData.gameInvites.filter(
-      (invite) => invite.expiresAt.toMillis() > Date.now(),
-    );
+      // Filter out expired game invites
+      const inviteData = invitesDoc.data() as Invites;
+      const validInvites = inviteData.gameInvites.filter(
+        (invite) => invite.expiresAt.toMillis() > Date.now(),
+      );
 
-    return invitesRef.update({ gameInvites: [...validInvites, newInvite] });
-  });
+      return invitesRef.update({ gameInvites: [...validInvites, newInvite] });
+    });
 
   await Promise.all(inviteUpdates);
 };
