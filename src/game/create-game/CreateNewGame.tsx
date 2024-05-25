@@ -116,7 +116,7 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
               // 100ms delay to allow Firestore to update
               await new Promise((resolve) => setTimeout(resolve, 100));
 
-              await router.push(`/games/${returned.id}`);
+              await router.push(`/game/${returned.id}`);
 
               setLoading(false);
             };

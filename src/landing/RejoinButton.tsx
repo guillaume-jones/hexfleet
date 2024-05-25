@@ -51,7 +51,7 @@ const RejoinButton = ({ className }: GameCreationProps) => {
         pastGames ? 'opacity-100' : 'opacity-0'
       } ${className}`}
       loading={loading}
-      href={`/games/${pastGames.docs[0].id}`}>
+      href={`/game/${pastGames.docs[0].id}`}>
       Rejoin Game
     </Button>
   );
