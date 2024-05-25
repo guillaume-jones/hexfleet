@@ -5,28 +5,31 @@ import { Profile } from 'functions/src/document-types/Profile';
 
 import { firestore } from 'src/firebase/firebaseApp';
 
+export type PlayerWithName = Player & {
+  name: string;
+};
+
 const playerNameCache: Record<string, string> = {};
 
-const addNameToPlayer = async (player: Player) => {
-  let name: string | undefined = playerNameCache[player.id];
+export const getNameForId = async (id: string) => {
+  let name: string | undefined = playerNameCache[id];
 
   if (!name) {
     name = (
       await getDoc<Partial<Profile>, Partial<Profile>>(
-        doc(firestore, 'profiles', player.id),
+        doc(firestore, 'profiles', id),
       )
     ).data()?.name;
   }
 
-  return {
-    ...player,
-    name: name || 'Anonymous',
-  };
+  playerNameCache[id] = name || 'Anonymous';
+  return playerNameCache[id];
 };
 
-export type PlayerWithName = Player & {
-  name: string;
-};
+const addNameToPlayer = async (player: Player) => ({
+  ...player,
+  name: await getNameForId(player.id),
+});
 
 export const addNamesToPlayers = async (
   players: Player[],

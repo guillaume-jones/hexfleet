@@ -1,5 +1,6 @@
 import Head from 'next/head';
 
+import { InvitesSection } from 'src/games/InvitesSection';
 import PastGamesSection from 'src/games/PastGamesSection';
 import GameCreation from 'src/landing/GameCreation';
 import GameJoining from 'src/landing/GameJoining';
@@ -22,8 +23,7 @@ export default function PastGames() {
           <GameJoining />
         </div>
 
-        <h2 className="text-2xl font-semibold">Invites</h2>
-
+        <InvitesSection />
         <PastGamesSection />
       </div>
     </>
