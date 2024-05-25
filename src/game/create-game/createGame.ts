@@ -35,7 +35,6 @@ export const createGame = async (boardOptions: BoardOptions) => {
     players: [{ id, ...defaultPlayer }],
     shortId: nanoid(),
     winner: null,
-    rematchId: null,
   };
 
   const docRef = await addDoc(collection(firestore, 'games'), newGame);

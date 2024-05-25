@@ -48,5 +48,4 @@ export type Game = {
   players: Player[];
   shortId: string;
   winner: string | null;
-  rematchId: string | null;
 };
