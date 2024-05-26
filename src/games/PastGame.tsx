@@ -11,6 +11,7 @@ import WinnerChip from 'src/game/game-elements/WinnerChip';
 
 export type PastGameProps = {
   index: number;
+  removeGame: (gameId: string) => void;
 };
 
 // For Tailwind compilation
@@ -28,7 +29,7 @@ const delays = [
   'delay-[500ms]',
 ];
 
-export default function PastGame({ index }: PastGameProps) {
+export default function PastGame({ index, removeGame }: PastGameProps) {
   const {
     gameId,
     boardSize,
@@ -54,8 +55,8 @@ export default function PastGame({ index }: PastGameProps) {
       enterTo="opacity-100"
       show={players.length > 0}
       appear
-      className={`${delays[index]} flex w-full max-w-2xl flex-col justify-between gap-4 rounded-2xl bg-zinc-900 p-4 transition duration-300 sm:flex-row-reverse`}>
-      <div className="flex flex-1 flex-row items-center justify-around gap-4 sm:flex-col">
+      className={`${delays[index]} flex w-full max-w-3xl flex-col justify-between gap-4 rounded-2xl bg-zinc-900 p-4 transition duration-300 sm:flex-row-reverse`}>
+      <div className="flex flex-1 flex-row items-center justify-around gap-4 sm:w-44 sm:flex-col">
         <div className="flex flex-col sm:items-center">
           <p className="text-lg">
             {createdAt?.toDate().toLocaleDateString(undefined, {
@@ -88,7 +89,14 @@ export default function PastGame({ index }: PastGameProps) {
             href={`/game/${gameId}`}>
             {winner ? 'View game' : 'Rejoin Game'}
           </Button>
-          {hasStarted === false && <DeleteGame gameId={gameId} />}
+          {hasStarted === false && (
+            <DeleteGame
+              gameId={gameId}
+              onDelete={() => {
+                removeGame(gameId);
+              }}
+            />
+          )}
         </div>
       </div>
       <div className="flex h-80 flex-col items-center justify-around gap-4 sm:h-44 sm:flex-row">

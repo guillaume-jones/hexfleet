@@ -78,7 +78,14 @@ const PastGamesSection = () => {
       {pastGamesDocs?.slice(0, pageSize * pagesToLoad).map((doc, i) => {
         return (
           <GameProvider gameId={doc.id} key={doc.id}>
-            <PastGame index={i} />
+            <PastGame
+              index={i}
+              removeGame={(gameId) =>
+                setPastGamesDocs((prevDocs) =>
+                  prevDocs?.filter((doc) => doc.id !== gameId),
+                )
+              }
+            />
           </GameProvider>
         );
       })}

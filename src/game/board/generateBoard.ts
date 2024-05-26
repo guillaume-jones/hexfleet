@@ -1,4 +1,4 @@
-import { clamp } from 'lodash';
+import clamp from 'lodash/clamp';
 
 import { Tile } from 'functions/src/document-types/Games';
 

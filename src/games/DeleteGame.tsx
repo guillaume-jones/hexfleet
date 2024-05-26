@@ -8,9 +8,10 @@ import { firestore } from 'src/firebase/firebaseApp';
 
 type DeleteGameProps = {
   gameId: string;
+  onDelete?: () => void;
 };
 
-const DeleteGame = ({ gameId }: DeleteGameProps) => {
+const DeleteGame = ({ gameId, onDelete }: DeleteGameProps) => {
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   return (
@@ -34,6 +35,7 @@ const DeleteGame = ({ gameId }: DeleteGameProps) => {
             onClick={() => {
               setConfirmModalOpen(false);
               deleteDoc(doc(firestore, 'games', gameId)).catch(console.error);
+              onDelete?.();
             }}>
             Delete
           </Button>

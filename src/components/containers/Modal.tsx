@@ -45,9 +45,9 @@ export default function Modal({
         appear>
         <Dialog
           onClose={closeModal}
-          className=" fixed inset-0 flex h-full w-full select-none items-center justify-center">
+          className=" fixed inset-0 flex h-full w-full select-none items-center justify-center p-4">
           <Dialog.Panel
-            className={`relative max-h-[80vh] overflow-auto rounded-2xl bg-zinc-900 p-6 shadow-lg ${
+            className={`relative max-h-[80vh] overflow-visible rounded-2xl bg-zinc-900 p-6 shadow-lg ${
               className ?? ''
             }`}>
             {showX && (
@@ -58,7 +58,7 @@ export default function Modal({
             {title && (
               <Dialog.Title
                 as="h1"
-                className="pb-6 text-center text-xl font-bold">
+                className="pb-4 text-center text-xl font-bold">
                 {title}
               </Dialog.Title>
             )}

@@ -31,7 +31,7 @@ const HelpBox = ({ className }: HelpBoxProps) => {
         </div>
       </Button>
       <Modal
-        className="m-3 flex max-w-2xl flex-col gap-3"
+        className="m-3 flex max-w-2xl flex-col gap-3 overflow-scroll sm:overflow-auto"
         open={helpModalOpen}
         setOpen={setHelpModalOpen}>
         <h3 className="text-xl font-semibold">Game rules</h3>

@@ -30,6 +30,7 @@ module.exports = {
   rules: {
     'linebreak-style': ['off'],
     indent: 'off',
+    'no-duplicate-imports': 'error',
     'spaced-comment': ['error', 'always'],
     quotes: ['error', 'single', { avoidEscape: true }],
     semi: ['error', 'always'],

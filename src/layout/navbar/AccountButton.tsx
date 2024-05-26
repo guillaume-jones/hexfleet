@@ -34,7 +34,6 @@ function AccountButton() {
         {isFullUser ? 'Account' : 'Sign up or log in'}
       </Button>
       <Modal
-        className="overflow-visible"
         open={isModalOpen}
         setOpen={(open) => replaceUrl(open)}
         title="Sign up or log in">
