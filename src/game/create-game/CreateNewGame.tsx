@@ -113,10 +113,12 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
                 });
               }
 
-              // 100ms delay to allow Firestore to update
-              await new Promise((resolve) => setTimeout(resolve, 100));
+              // 200ms delay to allow Firestore to update
+              await new Promise((resolve) => setTimeout(resolve, 200));
 
-              await router.push(`/game/${returned.id}`);
+              await router.push(
+                `/game/${returned.id}${playerIds ? '?invites=true' : ''}`,
+              );
 
               setLoading(false);
             };

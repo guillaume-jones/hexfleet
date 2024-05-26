@@ -5,13 +5,19 @@ import {
   EllipsisHorizontalCircleIcon,
   MinusCircleIcon,
 } from '@heroicons/react/20/solid';
+import { useRouter } from 'next/router';
 import { useContext } from 'react';
+import { useIdToken } from 'react-firebase-hooks/auth';
 
 import WinnerChip from './WinnerChip';
 
 import Tooltip from 'src/components/interactive/Tooltip';
+import { auth } from 'src/firebase/firebaseApp';
 
 const PlayersBox = () => {
+  const router = useRouter();
+  const [user] = useIdToken(auth);
+
   const {
     players,
     tilesByPlayer,
@@ -45,6 +51,7 @@ const PlayersBox = () => {
                   style={{ color }}
                   className={`
                 ${dead ? 'line-through' : ''}
+                ${id === user?.uid ? 'font-semibold' : ''}
                   max-w-36 overflow-hidden overflow-ellipsis text-nowrap text-left
                 `}>
                   {name}
@@ -75,6 +82,11 @@ const PlayersBox = () => {
             </div>
           );
         })}
+        {players.length === 1 && router.query?.invites && (
+          <p className="mt-2 text-sm font-light italic">
+            Other players have been invited.
+          </p>
+        )}
       </div>
     </div>
   );
