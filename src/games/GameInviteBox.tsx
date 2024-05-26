@@ -12,6 +12,7 @@ import Button from 'src/components/interactive/Button';
 import { auth, firestore, functions } from 'src/firebase/firebaseApp';
 import { getNameForId } from 'src/game/board-view-utils/addNamesToPlayers';
 import { getColorForPlayer } from 'src/game/board-view-utils/boardColors';
+import { isToday, isYesterday } from 'src/utils/dateComparisons';
 
 const GameInviteBox = ({ invite }: { invite: GameInvite }) => {
   const [user] = useIdToken(auth);
@@ -30,7 +31,7 @@ const GameInviteBox = ({ invite }: { invite: GameInvite }) => {
   }, [invite.fromPlayerId]);
 
   const inviteRef = user && doc(firestore, 'invites', user.uid);
-
+  const inviteDate = invite.createdAt.toDate();
   return (
     <Transition
       enter=" ease-out "
@@ -39,28 +40,31 @@ const GameInviteBox = ({ invite }: { invite: GameInvite }) => {
       show={!!name}
       appear
       className={
-        'flex w-full max-w-96 flex-col gap-4 rounded-2xl bg-zinc-900 p-4 transition duration-300'
+        'flex w-60 flex-col overflow-hidden rounded-2xl bg-zinc-900 p-4 transition duration-300'
       }>
-      <div className="flex justify-between gap-4">
-        <div className="flex flex-col">
-          <p>Invite from</p>
-          <p
-            className="font-semibold"
-            style={{ color: getColorForPlayer(invite.fromPlayerId) }}>
-            {name}
-          </p>
-        </div>
-        <div className="flex flex-col">
-          <p className="text-right">Expires at:</p>
-          <p className="text-right">
-            {invite.expiresAt.toDate().toLocaleTimeString(undefined, {
-              hour: 'numeric',
-              minute: 'numeric',
-            })}
-          </p>
-        </div>
+      <div className="flex gap-1">
+        <p>From: </p>
+        <p
+          className="font-semibold"
+          style={{ color: getColorForPlayer(invite.fromPlayerId) }}>
+          {name}
+        </p>
       </div>
-      <div className="flex justify-between">
+      <p>
+        {!isToday(inviteDate)
+          ? 'Today'
+          : isYesterday(inviteDate)
+          ? 'Yesterday'
+          : inviteDate.toLocaleString(undefined, {
+              weekday: 'long',
+            })}
+        ,{' '}
+        {invite.expiresAt.toDate().toLocaleString(undefined, {
+          hour: 'numeric',
+          minute: 'numeric',
+        })}
+      </p>
+      <div className="mt-2 flex justify-between">
         <Button
           light
           loading={isRejectLoading}
@@ -112,11 +116,12 @@ const GameInviteBox = ({ invite }: { invite: GameInvite }) => {
           Accept
         </Button>
       </div>
-      {errorShown && (
-        <p className="text-center text-red-500">
-          Failed to join - game may have already started.
-        </p>
-      )}
+      <p
+        className={`text-center text-red-500 transition-all ${
+          errorShown ? 'mt-2 h-12 opacity-100' : 'h-0 opacity-0'
+        }`}>
+        Failed to join. Game may have already started.
+      </p>
     </Transition>
   );
 };

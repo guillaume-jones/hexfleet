@@ -12,18 +12,23 @@ export default function PastGames() {
       <Head>
         <title>HexFleet - Games</title>
       </Head>
-      <div className="flex flex-1 flex-col items-center gap-6 p-8 pt-4">
+      <div className="flex flex-1 flex-col items-center gap-4 p-8 pt-4">
         <AnonymousGameWarning />
 
-        <div
-          className={
-            'flex flex-col justify-center gap-10 sm:flex-row sm:gap-0'
-          }>
-          <GameCreation />
-          <GameJoining />
+        <div className="flex flex-col gap-8 md:flex-row">
+          <div className="flex flex-col items-center gap-4">
+            <h2 className={'text-2xl font-semibold'}>New Game</h2>
+            <div
+              className={
+                'flex flex-col justify-center gap-10 sm:flex-row sm:gap-0'
+              }>
+              <GameCreation />
+              <GameJoining />
+            </div>
+          </div>
+          <InvitesSection />
         </div>
 
-        <InvitesSection />
         <PastGamesSection />
       </div>
     </>

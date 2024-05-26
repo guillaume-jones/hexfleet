@@ -32,7 +32,8 @@ const sendGameInvites = async (
   }
 
   const newInvite = {
-    expiresAt: admin.firestore.Timestamp.fromMillis(Date.now() + 3600000),
+    createdAt: admin.firestore.Timestamp.fromMillis(Date.now()),
+    expiresAt: admin.firestore.Timestamp.fromMillis(Date.now() + 86400000),
     fromPlayerId,
     shortId,
   };

@@ -14,23 +14,27 @@ export const InvitesSection = () => {
     user && doc(firestore, 'invites', user.uid),
   );
 
+  const gameInvites = invites?.gameInvites;
+
   return (
-    <>
+    <div className="flex w-64 flex-col items-center gap-4">
       <h2
         className={`text-2xl font-semibold ${
-          invites ? 'opacity-100' : 'opacity-0'
+          gameInvites ? 'opacity-100' : 'opacity-0'
         } transition-opacity`}>
         Invites
       </h2>
-      {invites?.gameInvites?.map((invite) => (
-        <GameInviteBox key={invite.shortId} invite={invite} />
-      ))}
+      {gameInvites
+        ?.filter((invite) => invite.expiresAt.toMillis() > Date.now())
+        .map((invite) => (
+          <GameInviteBox key={invite.shortId} invite={invite} />
+        ))}
       <div
         className={`transition-opacity delay-1000 ${
-          invites ? 'opacity-100' : 'opacity-0'
+          gameInvites ? 'opacity-100' : 'opacity-0'
         }`}>
         {invites?.gameInvites?.length === 0 && <p>No invites yet.</p>}
       </div>
-    </>
+    </div>
   );
 };

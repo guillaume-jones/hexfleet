@@ -69,7 +69,7 @@ const GameJoining = ({ className }: GameCreationProps) => {
   }, [joinGameAndRedirect, shortId]);
 
   return (
-    <div className={`flex w-60 flex-col items-center gap-4 ${className}`}>
+    <div className={`flex w-56 flex-col items-center gap-4 ${className}`}>
       <Input
         className="w-40"
         value={shortId}
