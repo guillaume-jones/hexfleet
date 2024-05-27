@@ -42,7 +42,7 @@ const GameInviteContent = ({ invite }: { invite: GameInvite }) => {
         </p>
       </div>
       <p>
-        {!isToday(inviteDate)
+        {isToday(inviteDate)
           ? 'Today'
           : isYesterday(inviteDate)
           ? 'Yesterday'
@@ -87,11 +87,11 @@ const GameInviteContent = ({ invite }: { invite: GameInvite }) => {
               const result = await joinGame({ shortId: invite.shortId });
 
               if (result && typeof result.data === 'string') {
+                await router.push(`/game/${result.data}`);
+
                 await updateDoc(inviteRef, {
                   gameInvites: arrayRemove(invite),
                 });
-
-                void router.push(`/game/${result.data}`);
               } else {
                 throw new Error('Did not receive a game id.');
               }
