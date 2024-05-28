@@ -5,8 +5,11 @@ import PastGamesSection from 'src/games/PastGamesSection';
 import GameCreation from 'src/landing/GameCreation';
 import GameJoining from 'src/landing/GameJoining';
 import AnonymousGameWarning from 'src/login/AnonymousGameWarning';
+import useRedirectIfNotAuth from 'src/utilityHooks/useRedirectIfNotAuth';
 
-export default function PastGames() {
+export default function Games() {
+  useRedirectIfNotAuth();
+
   return (
     <>
       <Head>

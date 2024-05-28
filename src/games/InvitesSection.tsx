@@ -10,7 +10,7 @@ import { auth, firestore } from 'src/firebase/firebaseApp';
 
 export const InvitesSection = () => {
   const [user] = useIdToken(auth);
-  const [invites] = useDocumentData<Partial<Invites>>(
+  const [invites, loading] = useDocumentData<Partial<Invites>>(
     user && doc(firestore, 'invites', user.uid),
   );
 
@@ -18,12 +18,7 @@ export const InvitesSection = () => {
 
   return (
     <div className="flex w-64 flex-col items-center gap-4">
-      <h2
-        className={`text-2xl font-semibold ${
-          gameInvites ? 'opacity-100' : 'opacity-0'
-        } transition-opacity`}>
-        Invites
-      </h2>
+      <h2 className={'text-2xl font-semibold'}>Invites</h2>
       {gameInvites
         ?.filter((invite) => invite.expiresAt.toMillis() > Date.now())
         .map((invite) => (
@@ -40,12 +35,14 @@ export const InvitesSection = () => {
             <GameInviteContent invite={invite} />
           </Transition>
         ))}
-      <div
-        className={`transition-opacity delay-1000 ${
-          gameInvites ? 'opacity-100' : 'opacity-0'
+      <p
+        className={`transition-opacity delay-200 ${
+          !loading && !invites?.gameInvites?.length
+            ? 'opacity-100'
+            : 'opacity-0'
         }`}>
-        {invites?.gameInvites?.length === 0 && <p>No invites yet.</p>}
-      </div>
+        No invites yet.
+      </p>
     </div>
   );
 };

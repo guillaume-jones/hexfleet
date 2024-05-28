@@ -1,21 +1,12 @@
 import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { useIdToken } from 'react-firebase-hooks/auth';
 
 import ProfileBox from 'src/account/ProfileBox';
 import SecurityBox from 'src/account/SecurityBox';
 import { SettingsProvider } from 'src/context/SettingsContext';
-import { auth } from 'src/firebase/firebaseApp';
+import useRedirectIfNotAuth from 'src/utilityHooks/useRedirectIfNotAuth';
 
 export default function Account() {
-  const { push } = useRouter();
-
-  const [user, userLoading] = useIdToken(auth);
-  // If not logged in or is anonymous, redirect to homepage
-  useEffect(() => {
-    if (!userLoading && (!user || user.isAnonymous)) void push('/');
-  }, [push, user, userLoading]);
+  useRedirectIfNotAuth(true);
 
   return (
     <>

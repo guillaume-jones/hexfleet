@@ -25,7 +25,7 @@ const PastGamesSection = () => {
   const [user] = useIdToken(auth);
 
   const [pagesToLoad, setPagesToLoad] = useState(1);
-  const [pastGamesSnapshot] = useCollection<Partial<Game>>(
+  const [pastGamesSnapshot, loading] = useCollection<Partial<Game>>(
     user &&
       query<Partial<Game>, Partial<Game>>(
         collection(firestore, 'games'),
@@ -69,12 +69,7 @@ const PastGamesSection = () => {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <h2
-        className={`text-2xl font-semibold ${
-          pastGamesDocs ? 'opacity-100' : 'opacity-0'
-        } transition-opacity`}>
-        Past Games
-      </h2>
+      <h2 className={'text-2xl font-semibold'}>Past Games</h2>
       {pastGamesDocs?.slice(0, pageSize * pagesToLoad).map((doc, i) => {
         return (
           <GameProvider gameId={doc.id} key={doc.id}>
@@ -89,19 +84,22 @@ const PastGamesSection = () => {
           </GameProvider>
         );
       })}
-      <div
-        className={`transition-opacity delay-1000 ${
-          pastGamesDocs ? 'opacity-100' : 'opacity-0'
-        }`}>
-        {pastGamesDocs && pastGamesDocs.length > pageSize * pagesToLoad && (
+      {pastGamesDocs && pastGamesDocs.length > pageSize * pagesToLoad && (
+        <div
+          className={`transition-opacity delay-1000 ${
+            pastGamesDocs ? 'opacity-100' : 'opacity-0'
+          }`}>
           <Button onClick={() => setPagesToLoad(pagesToLoad + 1)}>
             Load more
           </Button>
-        )}
-        {pastGamesDocs && pastGamesDocs.length === 0 && (
-          <p>No past games to display.</p>
-        )}
-      </div>
+        </div>
+      )}
+      <p
+        className={`transition-opacity delay-200 ${
+          !loading && !pastGamesDocs?.length ? 'opacity-100' : 'opacity-0'
+        }`}>
+        No past games to display.
+      </p>
     </div>
   );
 };
