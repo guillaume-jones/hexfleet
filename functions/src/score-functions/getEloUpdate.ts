@@ -1,7 +1,7 @@
 import { Score } from '../document-types/Score';
 import mean from 'lodash/mean';
 
-import { K, denominator, initialElo } from './eloConstants';
+import { K, denominator } from './eloConstants';
 
 const calculateEloUpdate = ({
   playerElo,
@@ -29,13 +29,13 @@ export const get1v1EloUpdate = ({
   playerIds: string[];
   winner: string;
 }) => {
-  const playerElo = scores[playerId]?.elo1v1 || initialElo;
+  const playerElo = scores[playerId].elo1v1;
 
   const opponent = playerIds.filter((p) => p !== playerId)[0];
 
   const eloUpdate = calculateEloUpdate({
     playerElo,
-    opponentElo: scores[opponent]?.elo1v1 || initialElo,
+    opponentElo: scores[opponent].elo1v1,
     outcome: playerId === winner ? 1 : 0,
   });
 
@@ -55,7 +55,7 @@ export const getFFAEloUpdate = ({
   playerIds: string[];
   winner: string;
 }) => {
-  const playerElo = scores[playerId]?.eloFFA || initialElo;
+  const playerElo = scores[playerId].eloFFA;
 
   const opponents = playerIds.filter((p) => p !== playerId);
 
@@ -65,7 +65,7 @@ export const getFFAEloUpdate = ({
 
     return calculateEloUpdate({
       playerElo,
-      opponentElo: scores[opponent]?.eloFFA || initialElo,
+      opponentElo: scores[opponent].eloFFA,
       outcome: playerId === winner ? 1 : 0,
     });
   });

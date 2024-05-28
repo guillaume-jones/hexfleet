@@ -8,6 +8,7 @@ function StyledLink({
   light,
   danger,
   newTab,
+  active,
 }: {
   children?: React.ReactNode | string;
   href?: string;
@@ -16,6 +17,7 @@ function StyledLink({
   light?: boolean;
   danger?: boolean;
   newTab?: boolean;
+  active?: boolean;
 }) {
   return (
     <>
@@ -25,10 +27,18 @@ function StyledLink({
         ${
           danger
             ? light
-              ? 'text-red-400 hover:text-red-500 active:text-red-600'
+              ? active
+                ? 'text-red-600'
+                : 'text-red-400 hover:text-red-500 active:text-red-600'
+              : active
+              ? 'text-red-700'
               : 'text-red-600 hover:text-red-500 active:text-red-700'
             : light
-            ? 'text-violet-400 hover:text-opacity-70 active:text-opacity-50'
+            ? active
+              ? 'text-violet-600'
+              : 'text-violet-400 hover:text-opacity-70 active:text-opacity-50'
+            : active
+            ? 'text-violet-800'
             : 'text-violet-600 hover:text-violet-500 active:text-violet-800'
         } 
         ${className ?? ''}`}
@@ -43,10 +53,18 @@ function StyledLink({
           ${
             danger
               ? light
-                ? 'text-red-400 hover:text-red-500 active:text-red-600'
+                ? active
+                  ? ''
+                  : 'text-red-400 hover:text-red-500 active:text-red-600'
+                : active
+                ? 'text-red-700'
                 : 'text-red-600 hover:text-red-500 active:text-red-700'
               : light
-              ? 'text-violet-400 hover:text-opacity-70 active:text-opacity-50'
+              ? active
+                ? 'text-violet-600'
+                : 'text-violet-400 hover:text-opacity-70 active:text-opacity-50'
+              : active
+              ? 'text-violet-900'
               : 'text-violet-700 hover:text-violet-600 active:text-violet-900'
           } 
           ${className ?? ''}`}

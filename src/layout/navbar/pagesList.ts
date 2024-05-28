@@ -1,7 +1,7 @@
 type Page = {
   title: string;
   path: string;
-  hideWhenLoggedOut?: boolean;
+  hideWhenLoggedOut: boolean;
 };
 
 export const pagesList: Page[] = [
@@ -9,6 +9,11 @@ export const pagesList: Page[] = [
     title: 'Games',
     path: '/games',
     hideWhenLoggedOut: true,
+  },
+  {
+    title: 'Leaderboard',
+    path: '/leaderboard',
+    hideWhenLoggedOut: false,
   },
 ];
 
