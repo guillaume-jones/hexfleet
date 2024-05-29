@@ -41,12 +41,12 @@ export const ScoreRow = ({
       </div>
       <div className="flex">
         <p className="w-16 pr-4">{elo1v1 ?? ''}</p>
-        <p className="w-16 pr-4">{score.wins1v1}</p>
+        <p className="w-16 pr-4">{score.wins1v1 || ''}</p>
         <p className="w-16 pr-4">{wr1v1 ?? ''}</p>
       </div>
       <div className="flex">
         <p className="w-16 pr-4">{eloFFA ?? ''}</p>
-        <p className="w-16 pr-4">{score.winsFFA}</p>
+        <p className="w-16 pr-4">{score.winsFFA || ''}</p>
         <p className="w-16 pr-4">{wrFFA ?? ''}</p>
       </div>
     </div>
