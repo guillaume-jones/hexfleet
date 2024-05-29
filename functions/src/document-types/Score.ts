@@ -6,8 +6,8 @@ export type GameOutcomes = {
 };
 
 export type Score = GameOutcomes & {
-  elo1v1: number;
-  eloFFA: number;
+  elo1v1?: number;
+  eloFFA?: number;
   versus: {
     [key: string]: GameOutcomes;
   };
@@ -18,7 +18,5 @@ export const initialScore: Score = {
   losses1v1: 0,
   winsFFA: 0,
   lossesFFA: 0,
-  elo1v1: 1000,
-  eloFFA: 1000,
   versus: {},
 };
