@@ -1,22 +1,24 @@
 import { Dispatch, SetStateAction } from 'react';
 
 import SortableTableHeader from './SortableTableHeader';
-import { PossibleOrderField } from './leaderboardTypes';
+import { LeaderboardType, PossibleOrderField } from './leaderboardTypes';
 
 const TableHeaderForType = ({
   type,
   orderField,
   setOrderField,
   className,
+  hideTitle,
 }: {
-  type: '1v1' | 'FFA';
+  type: LeaderboardType;
   orderField: PossibleOrderField;
   setOrderField: Dispatch<SetStateAction<PossibleOrderField>>;
   className?: string;
+  hideTitle?: boolean;
 }) => {
   return (
     <div className={className}>
-      <h2>{type}</h2>
+      {!hideTitle && <h2>{type}</h2>}
       <div className="flex text-lg font-medium">
         <SortableTableHeader
           orderField={orderField}

@@ -1,4 +1,4 @@
-import { ExtendedScore } from './leaderboardTypes';
+import { ExtendedScore, LeaderboardType } from './leaderboardTypes';
 import { calculateWr } from './leaderboardUtils';
 
 import { getColorForPlayer } from 'src/game/board-view-utils/boardColors';
@@ -7,10 +7,12 @@ export const ScoreRow = ({
   score,
   i,
   isUser,
+  onlyShowType,
 }: {
   score: ExtendedScore;
   i?: number;
   isUser: boolean;
+  onlyShowType?: LeaderboardType;
 }) => {
   const wr1v1 = calculateWr(score.wins1v1, score.losses1v1)
     ?.toFixed(3)
@@ -39,16 +41,20 @@ export const ScoreRow = ({
           {score.name}
         </p>
       </div>
-      <div className="flex">
-        <p className="w-16 pr-4">{elo1v1 ?? ''}</p>
-        <p className="w-16 pr-4">{score.wins1v1 || ''}</p>
-        <p className="w-16 pr-4">{wr1v1 ?? ''}</p>
-      </div>
-      <div className="flex">
-        <p className="w-16 pr-4">{eloFFA ?? ''}</p>
-        <p className="w-16 pr-4">{score.winsFFA || ''}</p>
-        <p className="w-16 pr-4">{wrFFA ?? ''}</p>
-      </div>
+      {onlyShowType !== 'FFA' && (
+        <div className="flex">
+          <p className="w-16 pr-4">{elo1v1 ?? ''}</p>
+          <p className="w-16 pr-4">{score.wins1v1 || ''}</p>
+          <p className="w-16 pr-4">{wr1v1 ?? ''}</p>
+        </div>
+      )}
+      {onlyShowType !== '1v1' && (
+        <div className="flex">
+          <p className="w-16 pr-4">{eloFFA ?? ''}</p>
+          <p className="w-16 pr-4">{score.winsFFA || ''}</p>
+          <p className="w-16 pr-4">{wrFFA ?? ''}</p>
+        </div>
+      )}
     </div>
   );
 };
