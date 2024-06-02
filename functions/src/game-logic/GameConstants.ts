@@ -8,6 +8,8 @@ export const pressureToClear = 0;
 export const maxPressure = 8;
 export const maxInfluenceReach = 2;
 export const homeworldDistanceModifier = 3;
+export const tileMaintenance = 1;
+export const startingInfluence = 2;
 
 // Game setup
 export const shortIdLength = 5;

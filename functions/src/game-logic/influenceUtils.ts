@@ -1,7 +1,11 @@
 import { NextTurn, Tile, TileWithBorders } from '../document-types/Games';
-import countBy from 'lodash/countBy';
+import { Dictionary, countBy } from 'lodash';
 
-import { pressureToClear } from './GameConstants';
+import {
+  pressureToClear,
+  startingInfluence,
+  tileMaintenance,
+} from './GameConstants';
 
 export const getInfluenceSpent = (nextTurn?: NextTurn) => {
   if (!nextTurn) return 0;
@@ -15,9 +19,20 @@ export const getInfluenceSpent = (nextTurn?: NextTurn) => {
 export const getPlayersInfluence = <T extends Tile>(
   boardWithBorders: TileWithBorders<T>[],
 ) => {
-  return countBy(
+  const borderCounts = countBy(
     boardWithBorders.flatMap(({ borders, playerId }) =>
       borders.map(() => playerId),
     ),
   );
+  const tileCounts = countBy(boardWithBorders.map(({ playerId }) => playerId));
+  const influenceByPlayer: Dictionary<number> = {};
+
+  for (const playerId in borderCounts) {
+    influenceByPlayer[playerId] =
+      startingInfluence +
+      borderCounts[playerId] -
+      tileCounts[playerId] * tileMaintenance;
+  }
+
+  return influenceByPlayer;
 };
