@@ -51,7 +51,10 @@ const RivalryCard = ({
   }, [versus]);
 
   return (
-    <div className="flex w-80 flex-col gap-3 rounded-xl bg-zinc-900 p-4">
+    <div
+      className={`flex w-80 flex-col gap-3 rounded-xl bg-zinc-900 p-4 ${
+        name ? 'opacity-100' : 'opacity-0'
+      } transition-opacity duration-200`}>
       <div className="flex items-center">
         <h3
           className="flex-1 text-lg font-semibold"

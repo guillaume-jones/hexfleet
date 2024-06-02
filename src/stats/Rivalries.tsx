@@ -23,7 +23,7 @@ const Rivalries = () => {
             <RivalryCard key={playerId} versus={versus} playerId={playerId} />
           ))
         ) : (
-          <LargeSpinner />
+          <LargeSpinner className="flex w-80 justify-center" />
         )}
       </div>
     </div>
