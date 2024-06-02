@@ -1,11 +1,10 @@
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Dispatch, SetStateAction } from 'react';
 
 import { PossibleOrderField } from './leaderboardTypes';
 
 import StyledLink from 'src/components/interactive/StyledLink';
 
-const SortableTableHeader = ({
+const SortableColumnTitle = ({
   orderField,
   setOrderField,
   targetField,
@@ -20,18 +19,13 @@ const SortableTableHeader = ({
     <StyledLink
       light
       active={orderField === targetField}
-      className={`flex w-16 items-center justify-center ${
-        orderField === targetField ? 'font-semibold' : ''
+      className={`flex w-14 items-center justify-center  border-b-2  transition-all ${
+        orderField === targetField ? 'border-violet-600' : 'border-transparent'
       }`}
       onClick={() => setOrderField(targetField)}>
       {text}
-      <ChevronDownIcon
-        className={`${
-          orderField === targetField ? 'opacity-100' : 'opacity-0'
-        } h-5 w-5 rounded-full  stroke-violet-600 stroke-1 transition-opacity`}
-      />
     </StyledLink>
   );
 };
 
-export default SortableTableHeader;
+export default SortableColumnTitle;

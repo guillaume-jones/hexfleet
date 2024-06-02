@@ -84,8 +84,8 @@ export default function Leaderboard() {
         <title>HexFleet - Leaderboard</title>
       </Head>
       <div className="flex flex-1 flex-col items-center gap-4 p-8 pt-4 text-center">
-        <div className="flex max-w-2xl items-center gap-3 rounded-xl bg-zinc-800 p-2 text-xl font-semibold">
-          <h2 className="w-48">Name</h2>
+        <div className="flex max-w-2xl items-center gap-2 rounded-xl bg-zinc-800 p-2 text-xl font-semibold">
+          <h2 className="w-44">Name</h2>
           <div className="flex flex-col items-center gap-2 sm:hidden">
             <Select
               className="w-20"

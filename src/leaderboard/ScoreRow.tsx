@@ -23,10 +23,12 @@ export const ScoreRow = ({
   const elo1v1 = score.elo1v1?.toFixed(0);
   const eloFFA = score.eloFFA?.toFixed(0);
 
+  const cellClassName = 'w-14';
+
   return (
     <div
       key={score.id}
-      className={`flex gap-3 rounded-md py-1.5 ${
+      className={`flex gap-2 rounded-md py-1.5 ${
         isUser ? 'bg-violet-500 bg-opacity-25 font-bold' : ''
       }`}>
       <div className="flex">
@@ -37,22 +39,22 @@ export const ScoreRow = ({
         </p>
         <p
           style={{ color: getColorForPlayer(score.id) }}
-          className="w-40 overflow-clip text-left">
+          className="w-36 overflow-hidden overflow-ellipsis text-nowrap text-left">
           {score.name}
         </p>
       </div>
       {onlyShowType !== 'FFA' && (
-        <div className="flex">
-          <p className="w-16 pr-4">{elo1v1 ?? ''}</p>
-          <p className="w-16 pr-4">{score.wins1v1 || ''}</p>
-          <p className="w-16 pr-4">{wr1v1 ?? ''}</p>
+        <div className="flex gap-1">
+          <p className={cellClassName}>{elo1v1 ?? ''}</p>
+          <p className={cellClassName}>{score.wins1v1 || ''}</p>
+          <p className={cellClassName}>{wr1v1 ?? ''}</p>
         </div>
       )}
       {onlyShowType !== '1v1' && (
-        <div className="flex">
-          <p className="w-16 pr-4">{eloFFA ?? ''}</p>
-          <p className="w-16 pr-4">{score.winsFFA || ''}</p>
-          <p className="w-16 pr-4">{wrFFA ?? ''}</p>
+        <div className="flex gap-1">
+          <p className={cellClassName}>{eloFFA ?? ''}</p>
+          <p className={cellClassName}>{score.winsFFA || ''}</p>
+          <p className={cellClassName}>{wrFFA ?? ''}</p>
         </div>
       )}
     </div>
