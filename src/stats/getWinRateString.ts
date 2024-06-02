@@ -5,5 +5,5 @@ export const getWinRateString = (wins?: number, losses?: number): string => {
     return '';
   }
   const winRate = calculateWr(wins, losses);
-  return winRate ? winRate.toFixed(3).slice(winRate >= 0.9995 ? 0 : 1) : '';
+  return winRate !== undefined ? Math.round(winRate * 100) + '%' : '';
 };

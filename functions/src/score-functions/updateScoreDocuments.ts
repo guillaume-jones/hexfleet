@@ -47,7 +47,10 @@ export const updateScoreDocuments = async (gameId: string) => {
       ? { ...getFFAWinLossUpdate(parameters), ...getFFAEloUpdate(parameters) }
       : { ...get1v1WinLossUpdate(parameters), ...get1v1EloUpdate(parameters) };
 
-    return scoreRef.update(scoreUpdate);
+    return scoreRef.update({
+      ...scoreUpdate,
+      pastGames: admin.firestore.FieldValue.arrayUnion(gameOutcome),
+    });
   });
 
   await Promise.all(scoreUpdates);

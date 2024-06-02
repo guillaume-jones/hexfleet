@@ -80,14 +80,14 @@ const RivalryCard = ({
         </div>
         <div className="flex h-5 w-full overflow-hidden rounded-md">
           <div
-            className="flex items-center bg-green-600 p-2"
+            className="flex items-center bg-green-600"
             style={{ width: `${winPercent}%` }}>
-            <p className="text-sm">{versus.wins1v1}</p>
+            <p className="ml-2 text-sm">{versus.wins1v1}</p>
           </div>
           <div
-            className="flex items-center justify-end bg-zinc-600 p-2"
+            className="flex items-center justify-end bg-zinc-600"
             style={{ width: `${lossPercent}%` }}>
-            <p className="text-sm">{versus.losses1v1}</p>
+            <p className="mr-2 text-sm">{versus.losses1v1}</p>
           </div>
         </div>
       </div>
