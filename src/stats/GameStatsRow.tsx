@@ -34,7 +34,7 @@ const GameStatsRow = ({
 
   return (
     <div className="flex items-center">
-      <p className="flex-1 text-left ">
+      <p className="flex-1">
         {period}: <b>{total}</b>
       </p>
       <div className="flex w-20 items-center justify-between">
