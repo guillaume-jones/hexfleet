@@ -31,52 +31,9 @@ const HelpBox = ({ className }: HelpBoxProps) => {
         </div>
       </Button>
       <Modal
-        className="m-3 flex max-w-2xl flex-col gap-3 overflow-scroll sm:overflow-auto"
+        className="m-3 flex max-w-3xl flex-col gap-3 overflow-scroll sm:overflow-auto"
         open={helpModalOpen}
         setOpen={setHelpModalOpen}>
-        <h3 className="text-xl font-semibold">Game rules</h3>
-        <p>
-          The goal in HexFleet is to advance and conquer board tiles. You win if
-          all other players have <b>resigned</b> or <b>lost their homeworlds</b>
-          . The game is played in turns, with all players submitting their turns{' '}
-          <b>at the same time</b>.
-        </p>
-        <p>
-          During each turn, you can <b>spend influence</b>, competing with
-          others to conquer, protect or disable tiles:
-        </p>
-        <ul className="grid list-disc gap-1 pl-6">
-          <li>
-            Spending {pressureToConquer} more influence than any other player
-            will <b>conquer</b> a tile
-          </li>
-          <li>
-            Spending {pressureToDisable} more influence than the tile owner will{' '}
-            <b>disable</b> their tile
-          </li>
-          <li>
-            Spending is <b>2× more expensive</b> if a tile does not touch your
-            tiles
-          </li>
-          <li>
-            Homeworlds are <b>{homeworldDistanceModifier}× more expensive</b> to
-            influence
-          </li>
-          <li>
-            You can apply <b>up to 8</b> influence on a tile
-          </li>
-          <li>
-            You <b>cannot reach</b> a tile more than {maxInfluenceReach} tiles
-            away from your tiles
-          </li>
-          <li>Influence can be spent on your own tiles, to protect them</li>
-        </ul>
-        <p>
-          Your influence to spend is determined by the{' '}
-          <b>number of borders you have with unconquered tiles</b>. You can
-          leave a tile you control to create new borders and potentially
-          generate more influence.
-        </p>
         <h3 className="text-xl font-semibold">Game controls</h3>
         {(isTouchScreen ? touchControls : mouseControls).map(
           ({ Icon, actionName, result }) => (
@@ -87,6 +44,47 @@ const HelpBox = ({ className }: HelpBoxProps) => {
             </div>
           ),
         )}
+        <h3 className="text-xl font-semibold">Game rules</h3>
+        <p>
+          In HexFleet, the goal is to <b>conquer</b> you enemies&apos;
+          homeworlds, or force them to <b>resign</b> by dominating the board.
+          The game is played in turns, during which all players spend influence
+          to conquer, disable or protect tiles.
+        </p>
+        <ul className="grid list-disc gap-1 pl-6">
+          <li>
+            Spending <b>{pressureToConquer}</b> more influence than any other
+            player will <b>conquer</b> a tile
+          </li>
+          <li>
+            Spending <b>{pressureToDisable}</b> more influence than the tile
+            owner will <b>disable</b> their tile
+          </li>
+          <li>
+            You can apply <b>up to 8</b> influence on a tile
+          </li>
+          <li>
+            Tiles &gt;{maxInfluenceReach} tiles away <b>cannot be influenced</b>
+          </li>
+          <li>
+            Tiles you do not touch are <b>2× more expensive</b> to influence
+          </li>
+          <li>
+            Homeworlds are <b>{homeworldDistanceModifier}× more expensive</b> to
+            influence
+          </li>
+        </ul>
+        <p>
+          Your available influence is determined by the{' '}
+          <b>number of borders you have with empty tiles</b>.
+        </p>
+        <ul className="grid list-disc gap-1 pl-6">
+          <li>
+            Each of your tiles costs <b>1 influence to maintain</b>
+          </li>
+          <li>Disabled tiles generate no influence</li>
+          <li>You can leave a tile you control to create new borders</li>
+        </ul>
       </Modal>
     </div>
   );
