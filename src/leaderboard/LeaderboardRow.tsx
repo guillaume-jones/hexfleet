@@ -3,7 +3,7 @@ import { calculateWr } from './leaderboardUtils';
 
 import { getColorForPlayer } from 'src/game/board-view-utils/boardColors';
 
-export const ScoreRow = ({
+export const LeaderboardRow = ({
   score,
   i,
   isUser,
@@ -23,7 +23,7 @@ export const ScoreRow = ({
   const elo1v1 = score.elo1v1?.toFixed(0);
   const eloFFA = score.eloFFA?.toFixed(0);
 
-  const cellClassName = 'w-14';
+  const cellClassName = 'w-12';
 
   return (
     <div

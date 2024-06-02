@@ -19,7 +19,7 @@ const SortableColumnTitle = ({
     <StyledLink
       light
       active={orderField === targetField}
-      className={`flex w-14 items-center justify-center  border-b-2  transition-all ${
+      className={`flex w-12 items-center justify-center  border-b-2  transition-all ${
         orderField === targetField ? 'border-violet-600' : 'border-transparent'
       }`}
       onClick={() => setOrderField(targetField)}>

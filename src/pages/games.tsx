@@ -23,7 +23,7 @@ export default function Games() {
             <h2 className={'text-2xl font-semibold'}>New Game</h2>
             <div
               className={
-                'flex flex-col justify-center gap-10 sm:flex-row sm:gap-0'
+                'flex flex-col items-center justify-center gap-10 sm:flex-row sm:items-start sm:gap-0'
               }>
               <GameCreation />
               <GameJoining />

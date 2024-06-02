@@ -19,8 +19,8 @@ import Select from 'src/components/interactive/Select';
 import LargeSpinner from 'src/components/other/LargeSpinner';
 import { auth, firestore } from 'src/firebase/firebaseApp';
 import { getNameForId } from 'src/game/board-view-utils/addNamesToPlayers';
+import { LeaderboardRow } from 'src/leaderboard/LeaderboardRow';
 import TableHeaderForType from 'src/leaderboard/LeaderboardTableHeader';
-import { ScoreRow } from 'src/leaderboard/ScoreRow';
 import {
   ExtendedScore,
   LeaderboardType,
@@ -122,7 +122,7 @@ export default function Leaderboard() {
           <>
             <div className="hidden flex-col rounded-xl bg-zinc-900 p-2 sm:flex">
               {scores.slice(0, scoresDocs?.size).map((score, i) => (
-                <ScoreRow
+                <LeaderboardRow
                   i={i}
                   key={score.id}
                   score={score}
@@ -132,13 +132,13 @@ export default function Leaderboard() {
               {extendedUserScore && (
                 <>
                   <EllipsisHorizontalIcon className="h-8 w-8 self-center" />
-                  <ScoreRow score={extendedUserScore} isUser />
+                  <LeaderboardRow score={extendedUserScore} isUser />
                 </>
               )}
             </div>
             <div className="flex flex-col rounded-xl bg-zinc-900 p-2 sm:hidden">
               {scores.slice(0, scoresDocs?.size).map((score, i) => (
-                <ScoreRow
+                <LeaderboardRow
                   i={i}
                   key={score.id}
                   score={score}
@@ -149,7 +149,7 @@ export default function Leaderboard() {
               {extendedUserScore && (
                 <>
                   <EllipsisHorizontalIcon className="h-8 w-8 self-center" />
-                  <ScoreRow
+                  <LeaderboardRow
                     score={extendedUserScore}
                     isUser
                     onlyShowType={typeToShow}
