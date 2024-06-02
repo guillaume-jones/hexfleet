@@ -1,7 +1,8 @@
-import { ExtendedScore, LeaderboardType } from './leaderboardTypes';
-import { calculateWr } from './leaderboardUtils';
+import { ExtendedScore } from './leaderboardTypes';
+import { GameType } from 'functions/src/document-types/Score';
 
 import { getColorForPlayer } from 'src/game/board-view-utils/boardColors';
+import { getWinRateString } from 'src/stats/getWinRateString';
 
 export const LeaderboardRow = ({
   score,
@@ -12,14 +13,10 @@ export const LeaderboardRow = ({
   score: ExtendedScore;
   i?: number;
   isUser: boolean;
-  onlyShowType?: LeaderboardType;
+  onlyShowType?: GameType;
 }) => {
-  const wr1v1 = calculateWr(score.wins1v1, score.losses1v1)
-    ?.toFixed(3)
-    .slice(1);
-  const wrFFA = calculateWr(score.winsFFA, score.lossesFFA)
-    ?.toFixed(3)
-    .slice(1);
+  const wr1v1String = getWinRateString(score.wins1v1, score.losses1v1);
+  const wrFFAString = getWinRateString(score.winsFFA, score.lossesFFA);
   const elo1v1 = score.elo1v1?.toFixed(0);
   const eloFFA = score.eloFFA?.toFixed(0);
 
@@ -46,15 +43,15 @@ export const LeaderboardRow = ({
       {onlyShowType !== 'FFA' && (
         <div className="flex gap-1">
           <p className={cellClassName}>{elo1v1 ?? ''}</p>
-          <p className={cellClassName}>{score.wins1v1 || ''}</p>
-          <p className={cellClassName}>{wr1v1 ?? ''}</p>
+          <p className={cellClassName}>{score.wins1v1}</p>
+          <p className={cellClassName}>{wr1v1String}</p>
         </div>
       )}
       {onlyShowType !== '1v1' && (
         <div className="flex gap-1">
           <p className={cellClassName}>{eloFFA ?? ''}</p>
-          <p className={cellClassName}>{score.winsFFA || ''}</p>
-          <p className={cellClassName}>{wrFFA ?? ''}</p>
+          <p className={cellClassName}>{score.winsFFA}</p>
+          <p className={cellClassName}>{wrFFAString}</p>
         </div>
       )}
     </div>

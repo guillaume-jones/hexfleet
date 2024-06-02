@@ -11,6 +11,11 @@ export const pagesList: Page[] = [
     hideWhenLoggedOut: true,
   },
   {
+    title: 'Stats',
+    path: '/stats',
+    hideWhenLoggedOut: true,
+  },
+  {
     title: 'Leaderboard',
     path: '/leaderboard',
     hideWhenLoggedOut: false,

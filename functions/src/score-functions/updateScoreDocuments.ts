@@ -1,5 +1,5 @@
 import { Game } from '../document-types/Games';
-import { Score } from '../document-types/Score';
+import { GameOutcome, Score } from '../document-types/Score';
 import * as admin from 'firebase-admin';
 
 import { get1v1EloUpdate, getFFAEloUpdate } from './getEloUpdate';
@@ -28,11 +28,19 @@ export const updateScoreDocuments = async (gameId: string) => {
   const scoreUpdates = gameData.players.map((p) => {
     const scoreRef = firestore.doc(`scores/${p.id}`);
 
+    const gameOutcome: GameOutcome = {
+      gameId,
+      type: isFFA ? 'FFA' : '1v1',
+      won: p.id === winner,
+      timestamp: gameData.endedAt,
+    };
+
     const parameters = {
       scores,
       playerId: p.id,
       playerIds,
       winner,
+      gameOutcome,
     };
 
     const scoreUpdate = isFFA

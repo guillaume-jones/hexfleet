@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
 import { useCollection, useDocument } from 'react-firebase-hooks/firestore';
 
-import { Score } from 'functions/src/document-types/Score';
+import { GameType, Score } from 'functions/src/document-types/Score';
 
 import Select from 'src/components/interactive/Select';
 import LargeSpinner from 'src/components/other/LargeSpinner';
@@ -23,7 +23,6 @@ import { LeaderboardRow } from 'src/leaderboard/LeaderboardRow';
 import TableHeaderForType from 'src/leaderboard/LeaderboardTableHeader';
 import {
   ExtendedScore,
-  LeaderboardType,
   PossibleOrderField,
 } from 'src/leaderboard/leaderboardTypes';
 import { sortScores } from 'src/leaderboard/leaderboardUtils';
@@ -46,7 +45,7 @@ export default function Leaderboard() {
 
   const [orderField, setOrderField] = useState<PossibleOrderField>('elo1v1');
   const [scores, setScores] = useState<ExtendedScore[]>();
-  const [typeToShow, setTypeToShow] = useState<LeaderboardType>('1v1');
+  const [typeToShow, setTypeToShow] = useState<GameType>('1v1');
 
   useEffect(() => {
     const asyncFunction = async () => {
@@ -84,7 +83,7 @@ export default function Leaderboard() {
         <title>HexFleet - Leaderboard</title>
       </Head>
       <div className="flex flex-1 flex-col items-center gap-4 p-8 pt-4 text-center">
-        <div className="flex max-w-2xl items-center gap-2 rounded-xl bg-zinc-800 p-2 text-xl font-semibold">
+        <div className="flex max-w-2xl items-center gap-2 rounded-xl bg-zinc-900 p-2 text-xl font-semibold">
           <h2 className="w-44">Name</h2>
           <div className="flex flex-col items-center gap-2 sm:hidden">
             <Select

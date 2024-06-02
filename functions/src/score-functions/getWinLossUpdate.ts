@@ -1,15 +1,17 @@
-import { Score } from '../document-types/Score';
+import { GameOutcome, Score } from '../document-types/Score';
 
 export const get1v1WinLossUpdate = ({
   scores,
   playerId,
   playerIds,
   winner,
+  gameOutcome,
 }: {
   scores: { [key: string]: Score };
   playerId: string;
   playerIds: string[];
   winner: string;
+  gameOutcome: GameOutcome;
 }) => {
   const playerScore = scores[playerId];
   const won = playerId === winner;
@@ -19,14 +21,19 @@ export const get1v1WinLossUpdate = ({
   };
 
   const opponent = playerIds.filter((p) => p !== playerId)[0];
+  const versusOpponent = playerScore.versus[opponent];
 
   return {
     ...winsLosses,
     versus: {
+      ...playerScore.versus,
       [opponent]: {
-        wins1v1: (playerScore.versus[opponent]?.wins1v1 ?? 0) + (won ? 1 : 0),
-        losses1v1:
-          (playerScore.versus[opponent]?.losses1v1 ?? 0) + (won ? 0 : 1),
+        ...versusOpponent,
+        wins1v1: (versusOpponent?.wins1v1 ?? 0) + (won ? 1 : 0),
+        losses1v1: (versusOpponent?.losses1v1 ?? 0) + (won ? 0 : 1),
+        pastGames: versusOpponent
+          ? [...versusOpponent.pastGames, gameOutcome]
+          : [gameOutcome],
       },
     },
   };
@@ -37,11 +44,13 @@ export const getFFAWinLossUpdate = ({
   playerId,
   playerIds,
   winner,
+  gameOutcome,
 }: {
   scores: { [key: string]: Score };
   playerId: string;
   playerIds: string[];
   winner: string;
+  gameOutcome: GameOutcome;
 }) => {
   const playerScore = scores[playerId];
   const won = playerId === winner;
@@ -52,19 +61,21 @@ export const getFFAWinLossUpdate = ({
 
   const opponents = playerIds.filter((p) => p !== playerId);
 
-  const versus = opponents.reduce((acc, opponent) => {
-    return {
-      ...acc,
-      [opponent]: {
-        winsFFA: (playerScore.versus[opponent]?.winsFFA ?? 0) + (won ? 1 : 0),
-        lossesFFA:
-          (playerScore.versus[opponent]?.lossesFFA ?? 0) + (won ? 0 : 1),
-      },
-    };
-  }, {});
-
   return {
     ...winsLosses,
-    versus,
+    versus: opponents.reduce((acc, opponent) => {
+      const versusOpponent = playerScore.versus[opponent];
+      return {
+        ...acc,
+        [opponent]: {
+          ...versusOpponent,
+          winsFFA: (versusOpponent?.winsFFA ?? 0) + (won ? 1 : 0),
+          lossesFFA: (versusOpponent?.lossesFFA ?? 0) + (won ? 0 : 1),
+          pastGames: versusOpponent
+            ? [...versusOpponent.pastGames, gameOutcome]
+            : [gameOutcome],
+        },
+      };
+    }, playerScore.versus),
   };
 };

@@ -18,7 +18,7 @@ function Select<T extends string>({
     <Listbox value={value} onChange={setValue} disabled={disabled}>
       <div className={`relative z-20 ${className ?? ''}`}>
         <Listbox.Button
-          className="w-full rounded-lg bg-zinc-900 text-violet-500 transition-all  duration-300 hover:bg-violet-900 active:bg-violet-950 disabled:bg-zinc-700 disabled:text-zinc-500 "
+          className="w-full rounded-lg bg-zinc-800 text-violet-500 transition-all  duration-300 hover:bg-violet-900 active:bg-violet-950 disabled:bg-zinc-700 disabled:text-zinc-500 "
           disabled={disabled}>
           {({ open }) => (
             <div
@@ -42,12 +42,12 @@ function Select<T extends string>({
           leave="transition duration-250 ease-in"
           leaveFrom="transform scale-y-100  opacity-100"
           leaveTo="transform scale-y-0  opacity-50">
-          <Listbox.Options className="absolute mt-1 w-full overflow-hidden rounded-lg bg-zinc-900 shadow-md">
+          <Listbox.Options className="absolute mt-1 w-full overflow-hidden rounded-lg bg-zinc-800">
             {options.map((option) => (
               <Listbox.Option key={option} value={option} className="group">
                 <button
                   className={`w-full px-2 py-1 text-left text-violet-400  shadow-lg transition-all duration-200 hover:bg-violet-900 active:bg-violet-950 group-last:rounded-b-lg ${
-                    option === value ? 'text-violet-500' : 'bg-zinc-800'
+                    option === value ? '' : 'bg-zinc-900 font-light'
                   }`}>
                   {option}
                 </button>

@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
 
 import SortableColumnTitle from './SortableColumnTitle';
-import { LeaderboardType, PossibleOrderField } from './leaderboardTypes';
+import { PossibleOrderField } from './leaderboardTypes';
+import { GameType } from 'functions/src/document-types/Score';
 
 const TableHeaderForType = ({
   type,
@@ -10,7 +11,7 @@ const TableHeaderForType = ({
   className,
   hideTitle,
 }: {
-  type: LeaderboardType;
+  type: GameType;
   orderField: PossibleOrderField;
   setOrderField: Dispatch<SetStateAction<PossibleOrderField>>;
   className?: string;

@@ -12,5 +12,3 @@ export type PossibleOrderField =
   | 'winsFFA'
   | 'wr1v1'
   | 'wrFFA';
-
-export type LeaderboardType = '1v1' | 'FFA';
