@@ -7,6 +7,7 @@ import {
   defaultPlayer,
   shortIdLength,
 } from 'functions/src/game-logic/GameConstants';
+import { addPlayersToBoard } from 'functions/src/game-logic/addPlayersToBoard';
 
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
@@ -15,7 +16,14 @@ const nanoid = customAlphabet(
   shortIdLength,
 );
 
-export const createGame = async (boardOptions: BoardOptions) => {
+export const aiId = 'AI';
+
+export const defaultGameOptions = {
+  boardSize: 9,
+  playerCount: 2,
+};
+
+const createGame = (boardOptions: BoardOptions): Game | undefined => {
   const id = auth.currentUser?.uid;
 
   if (!id) {
@@ -24,7 +32,7 @@ export const createGame = async (boardOptions: BoardOptions) => {
   }
 
   const boardState = generateBoard(boardOptions);
-  const newGame: Game = {
+  return {
     boardSize: boardOptions.boardSize,
     boardState,
     hasStarted: false,
@@ -32,12 +40,31 @@ export const createGame = async (boardOptions: BoardOptions) => {
     startedAt: null,
     endedAt: null,
     pastTurns: [],
-    players: [{ id, ...defaultPlayer }],
+    players: [{ ...defaultPlayer, id }],
     shortId: nanoid(),
     winner: null,
   };
+};
 
-  const docRef = await addDoc(collection(firestore, 'games'), newGame);
+export const createOnlineGame = async (boardOptions: BoardOptions) => {
+  const game = createGame(boardOptions);
 
-  return { id: docRef.id, shortId: newGame.shortId };
+  if (!game) return;
+
+  const docRef = await addDoc(collection(firestore, 'games'), game);
+
+  return { id: docRef.id, shortId: game.shortId };
+};
+
+export const createSinglePlayerGame = (boardOptions: BoardOptions) => {
+  const game = createGame(boardOptions);
+
+  if (!game) return;
+
+  game.players.push({ ...defaultPlayer, id: aiId });
+  game.boardState = addPlayersToBoard(game);
+  game.hasStarted = true;
+  game.startedAt = Timestamp.now();
+
+  return game;
 };

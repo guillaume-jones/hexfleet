@@ -1,3 +1,4 @@
+import { aiId } from '../create-game/createGame';
 import { doc, getDoc } from 'firebase/firestore';
 
 import { Player } from 'functions/src/document-types/Games';
@@ -15,14 +16,17 @@ export const getNameForId = async (id: string) => {
   let name: string | undefined = playerNameCache[id];
 
   if (!name) {
-    name = (
-      await getDoc<Partial<Profile>, Partial<Profile>>(
-        doc(firestore, 'profiles', id),
-      )
-    ).data()?.name;
+    name =
+      id === aiId
+        ? aiId
+        : (
+            await getDoc<Partial<Profile>, Partial<Profile>>(
+              doc(firestore, 'profiles', id),
+            )
+          ).data()?.name;
+    playerNameCache[id] = name || 'Anonymous';
   }
 
-  playerNameCache[id] = name || 'Anonymous';
   return playerNameCache[id];
 };
 

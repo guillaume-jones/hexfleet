@@ -18,11 +18,11 @@ import Button from 'src/components/interactive/Button';
 import Range from 'src/components/interactive/Range';
 import { auth, functions } from 'src/firebase/firebaseApp';
 import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
+import { generateBoard } from 'src/game/board/generateBoard';
 import {
-  defaultBoardOptions,
-  generateBoard,
-} from 'src/game/board/generateBoard';
-import { createGame } from 'src/game/create-game/createGame';
+  createOnlineGame,
+  defaultGameOptions,
+} from 'src/game/create-game/createGame';
 
 type CreateNewGameProps = {
   onCancel: () => void;
@@ -37,21 +37,21 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
     'httpsCallable',
   );
 
-  const [boardSize, setBoardSize] = useState(defaultBoardOptions.boardSize);
-  const [playersCount, setPlayersCount] = useState(
-    playerIds?.length ?? defaultBoardOptions.playerCount,
+  const [boardSize, setBoardSize] = useState(defaultGameOptions.boardSize);
+  const [playerCount, setPlayerCount] = useState(
+    playerIds?.length ?? defaultGameOptions.playerCount,
   );
   const [loading, setLoading] = useState(false);
 
   const boardPreview = useMemo(() => {
-    const players = (playerIds ?? range(0, 8618 * playersCount, 8618))?.map(
+    const players = (playerIds ?? range(0, 8618 * playerCount, 8618))?.map(
       (id) => ({ id: `${id}`, ...defaultPlayer }),
     );
 
     const boardState = generateBoard({ boardSize });
     const board = addPlayersToBoard({ boardState, boardSize, players });
     return addBordersToBoard(board, boardSize);
-  }, [boardSize, playerIds, playersCount]);
+  }, [boardSize, playerIds, playerCount]);
 
   return (
     <>
@@ -73,10 +73,10 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
         <div className="flex flex-row justify-between">
           <p>Players:</p>
           <div className="flex gap-2">
-            <p className="font-bold">{playersCount}</p>
+            <p className="font-bold">{playerCount}</p>
             <Range
-              value={playersCount}
-              setValue={setPlayersCount}
+              value={playerCount}
+              setValue={setPlayerCount}
               min={minimumPlayers}
               max={maximumPlayers}
             />
@@ -98,7 +98,7 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
               let userId = user?.uid;
               if (!userId) userId = (await signInAnonymously(auth)).user.uid;
 
-              const returned = await createGame({ boardSize });
+              const returned = await createOnlineGame({ boardSize });
 
               if (!returned) {
                 console.error('Failed to create game.');

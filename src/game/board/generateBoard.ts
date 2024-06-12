@@ -6,11 +6,6 @@ export type BoardOptions = {
   boardSize: number;
 };
 
-export const defaultBoardOptions = {
-  boardSize: 9,
-  playerCount: 2,
-};
-
 export const generateBoard = ({ boardSize }: BoardOptions): Tile[] => {
   boardSize = clamp(boardSize, 5, 50);
 
