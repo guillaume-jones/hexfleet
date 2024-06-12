@@ -60,7 +60,7 @@ export default function EmailLogin() {
     <form onSubmit={onSubmit} className="flex w-60 flex-col items-center gap-3">
       <EmailField email={email} setEmail={setEmail} />
       <PasswordField password={password} setPassword={setPassword} />
-      <Button disabled={!areFieldsValid}>Sign in &nbsp; /&nbsp; Sign up</Button>
+      <Button disabled={!areFieldsValid}>Log in &nbsp; /&nbsp; Sign up</Button>
       <p
         className={`mb-4 text-center text-sm text-red-500 transition-all duration-300 ${
           showError ? 'h-10 opacity-100' : 'h-0 opacity-0'

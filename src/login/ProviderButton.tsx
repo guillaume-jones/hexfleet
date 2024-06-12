@@ -30,7 +30,7 @@ export default function ProviderButton({
           className="h-auto"
           alt={`${provider} logo`}
         />
-        <p>Sign in with {provider}</p>
+        <p>Log in with {provider}</p>
       </div>
     </Button>
   );
