@@ -1,6 +1,7 @@
 import { BoardOptions, generateBoard } from '../board/generateBoard';
+import { spGameKey } from '../game-context/useSinglePlayerGame';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
-import { customAlphabet } from 'nanoid';
+import { customAlphabet, nanoid } from 'nanoid';
 
 import { Game } from 'functions/src/document-types/Games';
 import {
@@ -11,7 +12,7 @@ import { addPlayersToBoard } from 'functions/src/game-logic/addPlayersToBoard';
 
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
-const nanoid = customAlphabet(
+const shortIdGenerator = customAlphabet(
   '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ',
   shortIdLength,
 );
@@ -41,7 +42,7 @@ const createGame = (boardOptions: BoardOptions): Game | undefined => {
     endedAt: null,
     pastTurns: [],
     players: [{ ...defaultPlayer, id }],
-    shortId: nanoid(),
+    shortId: shortIdGenerator(),
     winner: null,
   };
 };
@@ -58,6 +59,7 @@ export const createOnlineGame = async (boardOptions: BoardOptions) => {
 
 export const createSinglePlayerGame = (boardOptions: BoardOptions) => {
   const game = createGame(boardOptions);
+  const id = nanoid(20);
 
   if (!game) return;
 
@@ -66,5 +68,7 @@ export const createSinglePlayerGame = (boardOptions: BoardOptions) => {
   game.hasStarted = true;
   game.startedAt = Timestamp.now();
 
-  return game;
+  localStorage.setItem(spGameKey(id), JSON.stringify(game));
+
+  return { id };
 };

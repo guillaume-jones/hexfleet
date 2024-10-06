@@ -1,5 +1,3 @@
-import { BoardOptions } from '../board/generateBoard';
-import { createSinglePlayerGame } from '../create-game/createGame';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -9,60 +7,67 @@ import {
   TileWithPressure,
 } from 'functions/src/document-types/Games';
 
-const nextTurnKey = 'next-turn-singleplayer';
+export const spNextTurnKey = (id: string) => `sp-next-turn-${id}`;
+export const spGameKey = (id: string) => `sp-game-${id}`;
 
-export const useSinglePlayerGame = () => {
+export const useSinglePlayerGame = (gameId: string) => {
   const [game, setGame] = useState<Game>();
   const [nextTurn, setNextTurn] = useState<NextTurn>();
   const [wasPlaying, setWasPlaying] = useState(false);
   const [waitingForAI, setWaitingForAI] = useState(false);
 
   useEffect(() => {
-    // Tries to load next turn from local storage on reload
-    const localNextTurn = localStorage.getItem(nextTurnKey);
+    // Tries to load game & next turn from local storage on reload
+    const localNextTurn = localStorage.getItem(spNextTurnKey(gameId));
+    const localGame = localStorage.getItem(spGameKey(gameId));
+    if (localGame) {
+      setGame(JSON.parse(localGame) as Game);
+    }
     if (localNextTurn) {
       setNextTurn(JSON.parse(localNextTurn) as NextTurn);
       setWasPlaying(true);
     }
-  }, []);
-
-  const createNewGame = useCallback((options: BoardOptions) => {
-    setGame(createSinglePlayerGame(options));
-  }, []);
+  }, [gameId]);
 
   const sendNextTurn = useCallback(async () => {
+    // TODO: Resolve previous turn
+
+    // Starts AI calculations for next turn
     setWaitingForAI(true);
     await Promise.resolve();
     // TODO: Implement AI update
     setWaitingForAI(false);
   }, []);
 
-  const updateNextTurn = useCallback((tile: TileWithPressure<TileCoords>) => {
-    setWasPlaying(true);
-    setNextTurn((prev) => {
-      const newPressures = (prev?.pressures ?? []).filter(
-        ({ x, y }) => !(x === tile.x && y === tile.y),
-      );
-      if (tile.pressure || tile.clear) newPressures.push(tile);
+  const updateNextTurn = useCallback(
+    (tile: TileWithPressure<TileCoords>) => {
+      setWasPlaying(true);
+      setNextTurn((prev) => {
+        const newPressures = (prev?.pressures ?? []).filter(
+          ({ x, y }) => !(x === tile.x && y === tile.y),
+        );
+        if (tile.pressure || tile.clear) newPressures.push(tile);
 
-      const newNextTurn = { pressures: newPressures };
-      localStorage.setItem(nextTurnKey, JSON.stringify(newNextTurn));
+        const newNextTurn = { pressures: newPressures };
+        localStorage.setItem(
+          spNextTurnKey(gameId),
+          JSON.stringify(newNextTurn),
+        );
 
-      return newNextTurn;
-    });
-  }, []);
+        return newNextTurn;
+      });
+    },
+    [gameId],
+  );
 
   const resetNextTurn = useCallback(() => {
-    if (waitingForAI) return;
-
     setNextTurn(undefined);
-    localStorage.removeItem(nextTurnKey);
-  }, [waitingForAI]);
+    localStorage.removeItem(spNextTurnKey(gameId));
+  }, [gameId]);
 
   return useMemo(
     () => ({
       game,
-      createNewGame,
       nextTurn,
       sendNextTurn,
       updateNextTurn,
@@ -73,7 +78,6 @@ export const useSinglePlayerGame = () => {
     }),
     [
       game,
-      createNewGame,
       nextTurn,
       sendNextTurn,
       updateNextTurn,

@@ -1,5 +1,4 @@
 import { getInfluenceInformation } from '../board-view-utils/getInfluenceInformation';
-import { BoardOptions } from '../board/generateBoard';
 import { ReactNode, createContext, useMemo } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
 
@@ -10,19 +9,17 @@ import { useSinglePlayerGame } from './useSinglePlayerGame';
 
 import { auth } from 'src/firebase/firebaseApp';
 
-export type SinglePlayerContextType = GameContextType & {
-  createNewGame: (options: BoardOptions) => void;
-};
+export type SinglePlayerContextType = GameContextType;
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 export const SinglePlayerContext = createContext<SinglePlayerContextType>(
   undefined!,
 );
 
-const useSinglePlayerProvider = (): SinglePlayerContextType => {
+const useSinglePlayerProvider = (gameId: string): SinglePlayerContextType => {
   const [user] = useIdToken(auth);
 
-  const gameParams = useSinglePlayerGame();
+  const gameParams = useSinglePlayerGame(gameId);
   const players = usePlayers(gameParams.game);
   const boardParams = useBoardState(gameParams.game, gameParams.nextTurn);
 
@@ -42,14 +39,20 @@ const useSinglePlayerProvider = (): SinglePlayerContextType => {
     ...influenceInformation,
     loading: false,
     players,
-    gameId: '',
+    gameId,
     userId: user?.uid ?? '',
     userDead: gameParams.game?.players?.find((p) => p.id === user?.uid)?.dead,
   };
 };
 
-export const GameProvider = ({ children }: { children: ReactNode }) => {
-  const value = useSinglePlayerProvider();
+export const SinglePlayerProvider = ({
+  gameId,
+  children,
+}: {
+  gameId: string;
+  children: ReactNode;
+}) => {
+  const value = useSinglePlayerProvider(gameId);
 
   return (
     <SinglePlayerContext.Provider value={value}>
