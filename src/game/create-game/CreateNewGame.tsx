@@ -21,6 +21,7 @@ import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
 import { generateBoard } from 'src/game/board/generateBoard';
 import {
   createOnlineGame,
+  createSinglePlayerGame,
   defaultGameOptions,
 } from 'src/game/create-game/createGame';
 
@@ -41,6 +42,7 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
   const [playerCount, setPlayerCount] = useState(
     playerIds?.length ?? defaultGameOptions.playerCount,
   );
+  const [isMultiPlayer, setIsMultiplayer] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const boardPreview = useMemo(() => {
@@ -69,7 +71,20 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
           />
         </div>
       </div>
-      {!playerIds && (
+      <div className="flex justify-between gap-2">
+        <Button
+          light={isMultiPlayer}
+          onClick={() => {
+            setIsMultiplayer(false);
+            setPlayerCount(2);
+          }}>
+          Singleplayer
+        </Button>
+        <Button light={!isMultiPlayer} onClick={() => setIsMultiplayer(true)}>
+          Online
+        </Button>
+      </div>
+      {!playerIds && isMultiPlayer && (
         <div className="flex flex-row justify-between">
           <p>Players:</p>
           <div className="flex gap-2">
@@ -92,11 +107,24 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
         <Button
           loading={userLoading || loading}
           onClick={() => {
-            const asyncFunction = async () => {
-              setLoading(true);
+            setLoading(true);
 
+            const asyncFunction = async () => {
               let userId = user?.uid;
               if (!userId) userId = (await signInAnonymously(auth)).user.uid;
+
+              if (!isMultiPlayer) {
+                const returned = createSinglePlayerGame({ boardSize });
+
+                if (!returned) {
+                  console.error('Failed to create game.');
+                  return;
+                }
+
+                await router.push(`/singleplayer/${returned.id}`);
+
+                return;
+              }
 
               const returned = await createOnlineGame({ boardSize });
 
@@ -119,10 +147,8 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
               await router.push(
                 `/game/${returned.id}${playerIds ? '?invites=true' : ''}`,
               );
-
-              setLoading(false);
             };
-            void asyncFunction();
+            void asyncFunction().finally(() => setLoading(false));
           }}>
           Confirm
         </Button>

@@ -11,11 +11,11 @@ import Button from 'src/components/interactive/Button';
 import Input from 'src/components/interactive/Input';
 import { auth, functions } from 'src/firebase/firebaseApp';
 
-type GameCreationProps = {
+type GameJoiningProps = {
   className?: string;
 };
 
-const GameJoining = ({ className }: GameCreationProps) => {
+const GameJoining = ({ className }: GameJoiningProps) => {
   const [user, userLoading] = useIdToken(auth);
   const router = useRouter();
 
