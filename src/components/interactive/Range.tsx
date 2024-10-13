@@ -1,16 +1,19 @@
 import clamp from 'lodash/clamp';
 import { Dispatch, SetStateAction } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 export default function Range({
   value,
   setValue,
-  className,
   id,
   min = 0,
   max = 100,
   step = 1,
   startText,
   endText,
+  showValue,
+  className = '',
+  containerClassname = '',
 }: {
   value: number;
   setValue: Dispatch<SetStateAction<number>>;
@@ -19,12 +22,16 @@ export default function Range({
   step?: number;
   startText?: string;
   endText?: string;
-  className?: string;
   id?: string;
+  showValue?: boolean;
+  className?: string;
+  containerClassname?: string;
 }) {
   return (
-    <div className="flex touch-none flex-row items-center">
-      {startText && <p className="mr-2">{startText}</p>}
+    <div
+      className={`flex touch-none flex-row items-center gap-2 ${containerClassname}`}>
+      {startText && <p>{startText}</p>}
+      {showValue && <p className="font-bold">{value}</p>}
       <input
         onWheel={(e) => {
           setValue((prev) =>
@@ -39,10 +46,12 @@ export default function Range({
         step={step}
         id={id}
         style={{}}
-        className={`w-28 rounded-lg hover:cursor-grab active:cursor-grabbing
-          ${className ?? ''}`}
+        className={twMerge(
+          'w-28 rounded-lg hover:cursor-grab active:cursor-grabbing',
+          className,
+        )}
       />
-      {endText && <p className="ml-2">{endText}</p>}
+      {endText && <p>{endText}</p>}
     </div>
   );
 }
