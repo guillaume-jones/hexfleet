@@ -1,22 +1,15 @@
 import { getInfluenceInformation } from '../board-view-utils/getInfluenceInformation';
-import { ReactNode, createContext, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
 
-import { GameContextType } from './GameContext';
+import { GameContext, GameContextType } from './GameContext';
 import useBoardState from './useBoardState';
 import usePlayers from './usePlayers';
 import { useSinglePlayerGame } from './useSinglePlayerGame';
 
 import { auth } from 'src/firebase/firebaseApp';
 
-export type SinglePlayerContextType = GameContextType;
-
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-export const SinglePlayerContext = createContext<SinglePlayerContextType>(
-  undefined!,
-);
-
-const useSinglePlayerProvider = (gameId: string): SinglePlayerContextType => {
+const useSinglePlayerProvider = (gameId: string): GameContextType => {
   const [user] = useIdToken(auth);
 
   const gameParams = useSinglePlayerGame(gameId);
@@ -54,9 +47,5 @@ export const SinglePlayerProvider = ({
 }) => {
   const value = useSinglePlayerProvider(gameId);
 
-  return (
-    <SinglePlayerContext.Provider value={value}>
-      {children}
-    </SinglePlayerContext.Provider>
-  );
+  return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 };

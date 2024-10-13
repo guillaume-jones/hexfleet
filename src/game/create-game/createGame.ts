@@ -63,7 +63,7 @@ export const createSinglePlayerGame = (boardOptions: BoardOptions) => {
 
   if (!game) return;
 
-  game.players.push({ ...defaultPlayer, id: aiId });
+  game.players.unshift({ id: aiId, ...defaultPlayer });
   game.boardState = addPlayersToBoard(game);
   game.hasStarted = true;
   game.startedAt = Timestamp.now();

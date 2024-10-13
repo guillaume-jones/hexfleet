@@ -38,13 +38,13 @@ input[type='range']::-webkit-slider-runnable-track {
   height: 8px;
   background: #fff;
   border: none;
-  border-radius: 50%;
+  border-radius: 8px;
 }
 input[type='range']::-moz-range-track {
   height: 8px;
   background: #fff;
   border: none;
-  border-radius: 50%;
+  border-radius: 8px;
 }
 
 input[type='range']::-webkit-slider-thumb {
