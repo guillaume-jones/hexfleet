@@ -1,3 +1,5 @@
+import { aiId } from '../create-game/createGame';
+import { Timestamp } from 'firebase/firestore';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -6,6 +8,10 @@ import {
   TileCoords,
   TileWithPressure,
 } from 'functions/src/document-types/Games';
+import { updateBoardTurn } from 'functions/src/game-logic/updateBoardTurn';
+
+import { getAiNextTurn } from 'src/ai/ai-calculations';
+import { auth } from 'src/firebase/firebaseApp';
 
 export const spNextTurnKey = (id: string) => `sp-next-turn-${id}`;
 export const spGameKey = (id: string) => `sp-game-${id}`;
@@ -29,15 +35,50 @@ export const useSinglePlayerGame = (gameId: string) => {
     }
   }, [gameId]);
 
-  const sendNextTurn = useCallback(async () => {
-    // TODO: Resolve previous turn
+  const resetNextTurn = useCallback(() => {
+    setNextTurn(undefined);
+    localStorage.removeItem(spNextTurnKey(gameId));
+  }, [gameId]);
 
-    // Starts AI calculations for next turn
+  const sendNextTurn = useCallback(async () => {
+    if (!auth.currentUser) {
+      console.error('User not loaded.');
+      return;
+    }
+    if (!game || !nextTurn) {
+      console.error('Game or user next turn not loaded.');
+      return;
+    }
+
+    // Starts AI calculations
     setWaitingForAI(true);
-    await Promise.resolve();
-    // TODO: Implement AI update
+
+    const aiNextTurn = getAiNextTurn(game);
+
+    const { newBoardState, newPlayers, winner } = updateBoardTurn({
+      game,
+      nextTurns: [aiNextTurn, nextTurn],
+      players: [aiId, auth.currentUser.uid],
+    });
+
+    const newGame = {
+      ...game,
+      boardState: newBoardState,
+      players: newPlayers,
+      pastTurns: game.pastTurns.concat({ boardState: game.boardState }),
+      winner,
+      endedAt: winner ? Timestamp.now() : null,
+    };
+
+    if (winner) {
+      // TODO: save games to cloud on game end
+      await Promise.resolve();
+    }
+
+    setGame(newGame);
     setWaitingForAI(false);
-  }, []);
+    resetNextTurn();
+  }, [game, nextTurn, resetNextTurn]);
 
   const updateNextTurn = useCallback(
     (tile: TileWithPressure<TileCoords>) => {
@@ -59,11 +100,6 @@ export const useSinglePlayerGame = (gameId: string) => {
     },
     [gameId],
   );
-
-  const resetNextTurn = useCallback(() => {
-    setNextTurn(undefined);
-    localStorage.removeItem(spNextTurnKey(gameId));
-  }, [gameId]);
 
   return useMemo(
     () => ({
