@@ -264,11 +264,10 @@ const HexagonalBoard = () => {
                   )}
                 </>
               )}
-              {/* For debugging
-              <text textAnchor="middle" alignmentBaseline="middle" fontSize={3}>
+              {/* For debugging */}
+              {/* <text textAnchor="middle" alignmentBaseline="middle" fontSize={3}>
                 {x},{y}
-              </text> 
-              */}
+              </text> */}
             </g>
           );
         })}

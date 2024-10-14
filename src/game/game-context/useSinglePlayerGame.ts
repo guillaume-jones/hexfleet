@@ -71,14 +71,20 @@ export const useSinglePlayerGame = (gameId: string) => {
     };
 
     if (winner) {
-      // TODO: save games to cloud on game end
+      // TODO: Fix this to save game to firestore
+
       await Promise.resolve();
+      // await addDoc(collection(firestore, 'games'), game);
+      localStorage.removeItem(spNextTurnKey(gameId));
+      localStorage.removeItem(spGameKey(gameId));
     }
 
     setGame(newGame);
+    localStorage.setItem(spGameKey(gameId), JSON.stringify(newGame));
+
     setWaitingForAI(false);
     resetNextTurn();
-  }, [game, nextTurn, resetNextTurn]);
+  }, [game, nextTurn, resetNextTurn, gameId]);
 
   const updateNextTurn = useCallback(
     (tile: TileWithPressure<TileCoords>) => {

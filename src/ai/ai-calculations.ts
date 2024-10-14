@@ -1,6 +1,12 @@
-import { clamp, maxBy, range, round } from 'lodash';
+import { clamp, maxBy, range } from 'lodash';
 
-import { Game, NextTurn, Tile } from 'functions/src/document-types/Games';
+import {
+  Game,
+  NextTurn,
+  Tile,
+  TileCoords,
+  TileWithPressure,
+} from 'functions/src/document-types/Games';
 import {
   maxInfluenceReach,
   maxPressure,
@@ -15,26 +21,60 @@ import { getValidNeighbors } from 'functions/src/game-logic/getValidNeighbors';
 import { getPlayersInfluence } from 'functions/src/game-logic/influenceUtils';
 
 import { aiId } from 'src/game/create-game/createGame';
+import { floorToNearest, roundToNearest } from 'src/utils/math';
 
-/** Minimum amount of influence gain to allow a removal
+/** Minimum amount of influence gain to allow a clear
  */
-const minimumRemovalGain = 2;
+const minClearGain = 1;
 
 /** Estimate of enemy spending on defense.
- * Increase to make the AI more "concentrated" on certain tiles
+ * Increase to make the AI more focused on defense.
  */
-const fractionOfGain = 0.5;
+const enemySpendForValue = 0.2;
+
+type TileAction = {
+  ratio: number;
+  tilePressure: TileWithPressure<TileCoords>;
+};
 
 const getBestActions = (game: Game) => {
   const { boardSize, boardState } = game;
 
+  const tilesToClear: TileCoords[] = [];
+
   return boardState
     .map((tile) => {
-      const isMine = tile.playerId === aiId;
+      let isMine = tile.playerId === aiId;
       const isEnemy = tile.playerId && tile.playerId !== aiId;
+      const isHomeworld = !!tile.homeworld;
       const coords = { x: tile.x, y: tile.y };
 
-      // Determines borders
+      /* Determines my costs */
+      const myDistance =
+        findClosestTileWithId({
+          coords,
+          boardState,
+          boardSize,
+          maxDistance: maxInfluenceReach,
+          id: aiId,
+        }).distance || 1;
+
+      // Returns early if untouchable
+      if (myDistance === Infinity) return undefined;
+
+      /* Determines enemy costs */
+      const enemyDistance =
+        findClosestTileWithId({
+          coords,
+          boardState,
+          boardSize,
+          maxDistance: maxInfluenceReach,
+          id: aiId,
+          invertSearch: true,
+        }).distance || 1;
+      const enemyCanReach = enemyDistance < Infinity;
+
+      /* Determines borders */
       const neighbors = getValidNeighbors({ tile, boardSize })
         .map(({ x, y }) =>
           boardState.find((tile) => tile.x === x && tile.y === y),
@@ -48,129 +88,150 @@ const getBestActions = (game: Game) => {
       ).length;
       const enemyNeighbors = neighbors.length - openNeighbors - meNeighbors;
 
-      // Determines costs
-      const myDistance =
-        findClosestTileWithId({
-          coords,
-          boardState,
-          boardSize,
-          maxDistance: maxInfluenceReach,
-          id: aiId,
-        }).distance || 1;
-      const enemyDistance =
-        findClosestTileWithId({
-          coords,
-          boardState,
-          boardSize,
-          maxDistance: maxInfluenceReach,
-          id: aiId,
-          invertSearch: true,
-        }).distance || 1;
+      /* Determines if should clear */
+      if (
+        isMine &&
+        !isHomeworld &&
+        meNeighbors + tileMaintenance - openNeighbors - enemyNeighbors >
+          minClearGain
+      ) {
+        tilesToClear.push(coords);
+        isMine = false;
+      }
 
-      // Determines gains & losses from changes
-      const gainFromRemoval = isMine
-        ? meNeighbors - openNeighbors - enemyNeighbors
-        : 0;
-      const gainFromFlip = isMine
+      /* Determines gains & losses from changes */
+      const gainFromFlipAndClear =
+        openNeighbors + meNeighbors - enemyNeighbors - tileMaintenance;
+      const gainFromFlip = 2 * (openNeighbors - tileMaintenance);
+
+      if (isEnemy && !isHomeworld && gainFromFlipAndClear > gainFromFlip) {
+        tilesToClear.push(coords);
+      }
+
+      const gainFromConquer = isMine
         ? 0 // Already mine: no gain
+        : isEnemy && isHomeworld
+        ? 25 // Enemy homeworld: win condition
         : isEnemy
-        ? 2 * (openNeighbors - tileMaintenance) // Enemy: double gain - tile cost
+        ? Math.max(gainFromFlipAndClear, gainFromFlip)
         : // Empty: gain - tile cost - blocks mine + blocks enemy
           openNeighbors - tileMaintenance - meNeighbors + enemyNeighbors;
       const gainFromDisable = isEnemy ? openNeighbors : 0;
 
-      const lossFromFlip = isEnemy
-        ? 0 // Already enemy: no gain
-        : isMine
-        ? 2 * (openNeighbors - tileMaintenance) // Mine: double loss - tile cost
-        : // Empty: loss - tile cost + blocks mine - blocks enemy
-          openNeighbors - tileMaintenance + meNeighbors - enemyNeighbors;
-      const lossFromDisable = isMine ? openNeighbors : 0;
+      const lossFromFlipAndClear =
+        openNeighbors + enemyNeighbors - meNeighbors - tileMaintenance;
+      const lossFromFlip = 2 * (openNeighbors - tileMaintenance);
 
-      // Estimates how much the enemy will spend on the tile
-      // Adjusts for my distance and for their distance
-      const totalValue =
-        gainFromFlip / myDistance +
-        gainFromDisable / myDistance +
-        lossFromFlip +
-        lossFromDisable;
-      const estimatedEnemySpend = clamp(
-        round(
-          // Rounds to nearest applicable pressure
-          (fractionOfGain * totalValue) / enemyDistance / minPressureInterval,
-        ) * minPressureInterval,
-        0,
-        maxPressure,
-      );
+      const lossFromConquer =
+        isEnemy || !enemyCanReach
+          ? 0 // Already enemy or enemy cannot reach: no gain
+          : isMine && isHomeworld && enemyCanReach
+          ? 50 // My homeworld: loss condition
+          : isMine
+          ? Math.max(lossFromFlipAndClear, lossFromFlip)
+          : // Empty: loss - tile cost + blocks mine - blocks enemy
+            openNeighbors - tileMaintenance + meNeighbors - enemyNeighbors;
+      const lossFromDisable = isMine && enemyCanReach ? openNeighbors : 0;
 
-      const gains = range(2, maxPressure + 1, minPressureInterval).map(
+      /* Estimates how much the enemy will spend */
+      let estimatedEnemySpend = 0;
+
+      if (enemyCanReach) {
+        // Calculates value, including my distance & enemy distance
+        const totalValue =
+          (gainFromConquer + gainFromDisable) / myDistance +
+          (lossFromConquer + lossFromDisable) / enemyDistance;
+
+        // Calculates spend, clamped within 2/4/6/8 range
+        estimatedEnemySpend = clamp(
+          roundToNearest(enemySpendForValue * totalValue, minPressureInterval),
+          0,
+          maxPressure,
+        );
+      }
+
+      /* Evaluates all possible gains for 2/4/6/8 spend */
+      const potentialGains = range(2, maxPressure + 1, minPressureInterval).map(
         (pressure) => {
-          if (pressure - estimatedEnemySpend > pressureToConquer) {
-            return {
-              ratio:
-                (gainFromFlip + lossFromDisable + lossFromFlip) /
-                (pressure * myDistance),
-              pressure,
-            };
+          let estimatedGain = 0;
+
+          if (pressure - estimatedEnemySpend >= pressureToConquer) {
+            estimatedGain += gainFromConquer;
+          } else if (pressure - estimatedEnemySpend >= pressureToDisable) {
+            estimatedGain += gainFromDisable;
           }
-          if (pressure - estimatedEnemySpend > pressureToDisable) {
-            return {
-              ratio:
-                (gainFromDisable + lossFromDisable + lossFromFlip) /
-                (pressure * myDistance),
-              pressure,
-            };
+
+          if (estimatedEnemySpend >= pressureToConquer) {
+            if (estimatedEnemySpend - pressure < pressureToDisable) {
+              estimatedGain += lossFromConquer;
+            } else if (estimatedEnemySpend - pressure < pressureToConquer) {
+              estimatedGain += lossFromConquer - lossFromDisable;
+            }
+          } else if (
+            estimatedEnemySpend >= pressureToDisable &&
+            estimatedEnemySpend - pressure < pressureToDisable
+          ) {
+            estimatedGain += lossFromDisable;
           }
-          if (pressure - estimatedEnemySpend === 0) {
-            return {
-              ratio: (lossFromDisable + lossFromFlip) / (pressure * myDistance),
-              pressure,
-            };
-          }
-          if (pressure - estimatedEnemySpend === -pressureToDisable) {
-            return {
-              ratio: lossFromFlip / (pressure * myDistance),
-              pressure,
-            };
-          }
+
+          return {
+            ratio: estimatedGain / (pressure * myDistance),
+            pressure,
+          };
         },
       );
 
-      const maxGain = maxBy(gains, 'ratio');
+      /* Calculates best gain and returns it */
+      const maxGain = maxBy(potentialGains, 'ratio');
+      if (!maxGain || maxGain.ratio === 0) return undefined;
 
       return {
-        ratio: maxGain?.ratio || 0,
+        ratio: maxGain.ratio,
         tilePressure: {
           ...coords,
-          pressure: maxGain?.pressure || 0,
+          pressure: maxGain.pressure,
           distance: myDistance,
-          clear: gainFromRemoval > minimumRemovalGain,
         },
       };
     })
+    .filter((action): action is TileAction => !!action)
     .sort((a, b) => b.ratio - a.ratio)
-    .map(({ tilePressure }) => tilePressure);
+    .map(({ tilePressure }) => {
+      tilePressure.clear = !!tilesToClear.find(
+        ({ x, y }) => x === tilePressure.x && y === tilePressure.y,
+      );
+
+      return tilePressure;
+    });
 };
 
-export const getAiNextTurn = (game: Game) => {
-  const bestActions = getBestActions(game);
-  const nextTurn: NextTurn = {
-    pressures: [],
-  };
-
+export const getAiNextTurn = (game: Game): NextTurn => {
   let remainingInfluence = getPlayersInfluence(
     addBordersToBoard(game.boardState, game.boardSize),
   )[aiId];
 
+  const bestActions = getBestActions(game);
+  const nextTurn: NextTurn = { pressures: [] };
+
   for (const action of bestActions) {
-    if (remainingInfluence <= action.pressure) {
-      nextTurn.pressures.push({ ...action, pressure: remainingInfluence });
-    } else {
-      nextTurn.pressures.push(action);
+    const cost = action.pressure * action.distance;
+
+    if (remainingInfluence <= cost) {
+      // Should not half attack distant tiles or homeworlds
+      if (action.distance > 1) {
+        continue;
+      }
+
+      // Spends all remaining influence on last tile
+      nextTurn.pressures.push({
+        ...action,
+        pressure: floorToNearest(remainingInfluence, minPressureInterval),
+      });
+      break;
     }
 
-    remainingInfluence -= action.pressure;
-    if (remainingInfluence <= 0) break;
+    nextTurn.pressures.push(action);
+    remainingInfluence -= cost;
   }
 
   return nextTurn;
