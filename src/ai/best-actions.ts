@@ -1,8 +1,4 @@
-import {
-  TilePressureGain,
-  calculateBestPressure,
-  calculatePositionMultiplier,
-} from './best-pressure';
+import { TilePressureGain, calculateBestPressure } from './best-pressure';
 import { getGainsLosses } from './gains-losses';
 import { getNeighborCounts } from './neighbor-counts';
 import { TileWithDistances } from './next-ai-turn';
@@ -25,13 +21,7 @@ const getBestActionForTile = ({
 }): TileWithBoth | undefined => {
   const neighbors = getNeighborCounts({ tile, boardState, boardSize });
   const gainsLosses = getGainsLosses({ tile, neighbors });
-  const positionMultipler = calculatePositionMultiplier({ tile, boardSize });
-
-  const bestPressure = calculateBestPressure({
-    tile,
-    gainsLosses,
-    multiplier: positionMultipler,
-  });
+  const bestPressure = calculateBestPressure({ tile, gainsLosses });
 
   if (!bestPressure || bestPressure.gainRatio <= 0) return undefined;
 

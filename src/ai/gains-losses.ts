@@ -19,14 +19,20 @@ export type GainsLosses = {
   shouldClearEnemy: boolean;
 };
 
+/** Incentive for AI to avoid edges
+ */
+const edgeAdjustment = -1;
+
 const getConquerValue = ({
   ownerValue,
   neighborsValue,
+  homeworldValue,
   status,
   attackerStatus,
 }: {
   ownerValue: number;
   neighborsValue: number;
+  homeworldValue: number;
   status: TileStatus;
   attackerStatus: TileStatus.Mine | TileStatus.Enemy;
 }) => {
@@ -36,7 +42,7 @@ const getConquerValue = ({
     case attackerStatus:
       return 0; // No value if already owned by attacker
     default:
-      return ownerValue + Math.max(neighborsValue, ownerValue);
+      return ownerValue + Math.max(neighborsValue, ownerValue) + homeworldValue;
   }
 };
 
@@ -54,9 +60,8 @@ export const getGainsLosses = ({
       ? TileStatus.Enemy
       : TileStatus.Empty;
 
-  const homeworldValue = status === TileStatus.Mine ? 60 : 30;
   const ownerValue =
-    neighbors.open - tileMaintenance + (tile.homeworld ? homeworldValue : 0);
+    neighbors.open - tileMaintenance + (neighbors.all < 6 ? edgeAdjustment : 0);
   const myNeighborsValue = neighbors.me - neighbors.enemy;
   const enemyNeighborsValue = neighbors.enemy - neighbors.me;
 
@@ -65,12 +70,14 @@ export const getGainsLosses = ({
     neighborsValue: myNeighborsValue,
     status,
     attackerStatus: TileStatus.Mine,
+    homeworldValue: tile.homeworld ? 20 : 0,
   });
   const lossFromConquer = getConquerValue({
     ownerValue,
     neighborsValue: enemyNeighborsValue,
     status,
     attackerStatus: TileStatus.Enemy,
+    homeworldValue: tile.homeworld ? 60 : 0,
   });
 
   const gainFromDisable = status === TileStatus.Enemy ? neighbors.open : 0;

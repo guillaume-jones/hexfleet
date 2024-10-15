@@ -26,6 +26,7 @@ export default function Switch({
       <input
         type="range"
         value={+value}
+        onChange={() => undefined}
         onClick={() => setValue((prev) => !prev)}
         min={0}
         max={1}

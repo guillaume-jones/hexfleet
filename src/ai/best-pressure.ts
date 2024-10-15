@@ -2,7 +2,6 @@ import { clamp, maxBy, range } from 'lodash';
 
 import { GainsLosses } from './gains-losses';
 import { TileWithDistances } from './next-ai-turn';
-import { Tile } from 'functions/src/document-types/Games';
 import {
   maxInfluenceReach,
   maxPressure,
@@ -26,12 +25,7 @@ export type TilePressureGain = {
  * Increase to make the AI more focused on defense.
  * TODO: adjust based on enemy pressure
  */
-const enemySpendFactor = 0.2;
-
-/** Incentive for AI to advance towards enemy
- * Increase to make AI more aggressive
- */
-const positionFactor = 0.3;
+const enemySpendFactor = 0.18;
 
 const enemyId = 'enemy';
 
@@ -66,11 +60,9 @@ const estimateEnemySpend = ({
 export const calculateBestPressure = ({
   tile,
   gainsLosses,
-  multiplier = 1,
 }: {
   tile: TileWithDistances;
   gainsLosses: GainsLosses;
-  multiplier?: number;
 }): TilePressureGain | undefined => {
   const enemySpend = estimateEnemySpend({ ...tile, gainsLosses });
 
@@ -121,7 +113,7 @@ export const calculateBestPressure = ({
         finalId = undefined;
 
       return {
-        gainRatio: (multiplier * estimatedGain) / (pressure * tile.distance),
+        gainRatio: estimatedGain / (pressure * tile.distance),
         initialId: tile.playerId,
         finalId,
         pressure,
@@ -133,11 +125,3 @@ export const calculateBestPressure = ({
   /* Calculates best gain and returns it */
   return maxBy(possibleActions, 'gainRatio');
 };
-
-export const calculatePositionMultiplier = ({
-  tile,
-  boardSize,
-}: {
-  tile: Tile;
-  boardSize: number;
-}) => (1 + tile.y / (boardSize - 1)) * positionFactor;
