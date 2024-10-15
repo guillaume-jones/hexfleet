@@ -1,3 +1,4 @@
+import { aiId } from '../create-game/createGame';
 import randomColor from 'randomcolor';
 import tinycolor from 'tinycolor2';
 
@@ -5,7 +6,9 @@ const defaultColor = '#52525b';
 const defaultClickableFill = '#26262b';
 const defaultFill = '#151518';
 
-const colorCache: Record<string, string> = {};
+const aiColor = '#e30952';
+
+const colorCache: Record<string, string> = { [aiId]: aiColor };
 const fillColorCache: Record<string, string> = {};
 
 export const getColorForPlayer = (playerId?: string) => {
