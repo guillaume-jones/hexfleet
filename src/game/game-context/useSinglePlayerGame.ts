@@ -1,5 +1,5 @@
 import { aiId } from '../create-game/createGame';
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -11,7 +11,7 @@ import {
 import { updateBoardTurn } from 'functions/src/game-logic/updateBoardTurn';
 
 import { getAiNextTurn } from 'src/ai/next-ai-turn';
-import { auth } from 'src/firebase/firebaseApp';
+import { auth, firestore } from 'src/firebase/firebaseApp';
 
 export const spNextTurnKey = (id: string) => `sp-next-turn-${id}`;
 export const spGameKey = (id: string) => `sp-game-${id}`;
@@ -40,14 +40,22 @@ export const useSinglePlayerGame = (gameId: string) => {
     localStorage.removeItem(spNextTurnKey(gameId));
   }, [gameId]);
 
-  const endGame = useCallback(async () => {
-    // TODO: Fix this to save game to firestore
-    await Promise.resolve();
-    // await addDoc(collection(firestore, 'games'), game);
+  const endGame = useCallback(
+    async (game: Game) => {
+      const gameToSave = {
+        ...game,
+        createdAt: Timestamp.fromMillis(game.createdAt.seconds * 1000),
+        startedAt:
+          game.startedAt && Timestamp.fromMillis(game.startedAt.seconds * 1000),
+        endedAt: Timestamp.now(),
+      };
+      await addDoc(collection(firestore, 'games'), gameToSave);
 
-    localStorage.removeItem(spNextTurnKey(gameId));
-    localStorage.removeItem(spGameKey(gameId));
-  }, [gameId]);
+      localStorage.removeItem(spNextTurnKey(gameId));
+      localStorage.removeItem(spGameKey(gameId));
+    },
+    [gameId],
+  );
 
   const sendNextTurn = useCallback(async () => {
     if (!auth.currentUser) {
@@ -76,12 +84,9 @@ export const useSinglePlayerGame = (gameId: string) => {
       players: newPlayers,
       pastTurns: game.pastTurns.concat({ boardState: game.boardState }),
       winner,
-      endedAt: winner ? Timestamp.now() : null,
     };
 
-    if (winner) {
-      await endGame();
-    }
+    if (winner) await endGame(newGame);
 
     setGame(newGame);
     localStorage.setItem(spGameKey(gameId), JSON.stringify(newGame));
@@ -112,20 +117,18 @@ export const useSinglePlayerGame = (gameId: string) => {
   );
 
   const updatePlayer = useCallback(async () => {
-    await Promise.resolve();
-    setGame((prev) => {
-      if (!prev) return prev;
-      const newPlayers = prev.players.map((p) =>
-        p.id !== aiId ? { ...p, dead: true } : p,
-      );
-      return {
-        ...prev,
-        players: newPlayers,
-        winner: aiId,
-        endedAt: Timestamp.now(),
-      };
-    });
-  }, []);
+    if (!game) return;
+
+    const newGame = {
+      ...game,
+      players: game.players.map((p) =>
+        p.id === aiId ? { ...p, dead: true } : p,
+      ),
+      winner: aiId,
+    };
+    setGame(newGame);
+    await endGame(newGame);
+  }, [endGame, game]);
 
   return useMemo(
     () => ({
