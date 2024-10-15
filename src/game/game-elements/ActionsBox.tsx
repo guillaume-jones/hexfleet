@@ -1,24 +1,15 @@
 import { GameContext } from '../game-context/GameContext';
 import { useContext, useEffect, useState } from 'react';
 import { ArrowRightCircle, RotateCcw } from 'react-feather';
-import { useHttpsCallable } from 'react-firebase-hooks/functions';
-
-import { EditGamePlayerData } from 'functions/src/game-functions/functionInputs';
 
 import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
-import { functions } from 'src/firebase/firebaseApp';
 
 type ActionsBoxProps = {
   className?: string;
 };
 
 const ActionsBox = ({ className }: ActionsBoxProps) => {
-  const [editGamePlayer, loading] = useHttpsCallable<EditGamePlayerData>(
-    functions,
-    'httpsCallable',
-  );
-
   const {
     hasStarted,
     gameId,
@@ -32,10 +23,12 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
     resetNextTurn,
     userId,
     setSelectedTile,
+    updatePlayer,
   } = useContext(GameContext);
 
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [sendLoading, setSendLoading] = useState(false);
+  const [resignLoading, setResignLoading] = useState(false);
 
   useEffect(() => {
     if (!hasStarted) return;
@@ -126,14 +119,16 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
             Cancel
           </Button>
           <Button
-            loading={loading}
+            loading={resignLoading}
             onClick={() => {
-              const asyncFunction = async () =>
-                editGamePlayer({
-                  gameId,
-                  action: hasStarted ? 'resign' : 'leave',
-                });
-              asyncFunction().catch(console.error);
+              setResignLoading(true);
+
+              updatePlayer({
+                gameId,
+                action: hasStarted ? 'resign' : 'leave',
+              })
+                .catch(console.error)
+                .finally(() => setResignLoading(false));
             }}>
             {hasStarted ? 'Resign' : 'Leave Game'}
           </Button>

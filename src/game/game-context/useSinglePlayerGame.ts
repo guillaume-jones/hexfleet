@@ -40,6 +40,15 @@ export const useSinglePlayerGame = (gameId: string) => {
     localStorage.removeItem(spNextTurnKey(gameId));
   }, [gameId]);
 
+  const endGame = useCallback(async () => {
+    // TODO: Fix this to save game to firestore
+    await Promise.resolve();
+    // await addDoc(collection(firestore, 'games'), game);
+
+    localStorage.removeItem(spNextTurnKey(gameId));
+    localStorage.removeItem(spGameKey(gameId));
+  }, [gameId]);
+
   const sendNextTurn = useCallback(async () => {
     if (!auth.currentUser) {
       console.error('User not loaded.');
@@ -71,12 +80,7 @@ export const useSinglePlayerGame = (gameId: string) => {
     };
 
     if (winner) {
-      // TODO: Fix this to save game to firestore
-
-      await Promise.resolve();
-      // await addDoc(collection(firestore, 'games'), game);
-      localStorage.removeItem(spNextTurnKey(gameId));
-      localStorage.removeItem(spGameKey(gameId));
+      await endGame();
     }
 
     setGame(newGame);
@@ -84,7 +88,7 @@ export const useSinglePlayerGame = (gameId: string) => {
 
     setWaitingForAI(false);
     resetNextTurn();
-  }, [game, nextTurn, resetNextTurn, gameId]);
+  }, [game, nextTurn, gameId, resetNextTurn, endGame]);
 
   const updateNextTurn = useCallback(
     (tile: TileWithPressure<TileCoords>) => {
@@ -107,6 +111,22 @@ export const useSinglePlayerGame = (gameId: string) => {
     [gameId],
   );
 
+  const updatePlayer = useCallback(async () => {
+    await Promise.resolve();
+    setGame((prev) => {
+      if (!prev) return prev;
+      const newPlayers = prev.players.map((p) =>
+        p.id !== aiId ? { ...p, dead: true } : p,
+      );
+      return {
+        ...prev,
+        players: newPlayers,
+        winner: aiId,
+        endedAt: Timestamp.now(),
+      };
+    });
+  }, []);
+
   return useMemo(
     () => ({
       game,
@@ -117,6 +137,7 @@ export const useSinglePlayerGame = (gameId: string) => {
       wasPlaying,
       nextTurnSent: waitingForAI,
       nextTurnEqualsSent: nextTurn === undefined || waitingForAI,
+      updatePlayer,
     }),
     [
       game,
@@ -126,6 +147,7 @@ export const useSinglePlayerGame = (gameId: string) => {
       resetNextTurn,
       wasPlaying,
       waitingForAI,
+      updatePlayer,
     ],
   );
 };

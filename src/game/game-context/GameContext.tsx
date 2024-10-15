@@ -13,6 +13,7 @@ import {
 } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
+import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
 import useBoardState from './useBoardState';
 import useNextTurn from './useNextTurn';
@@ -24,8 +25,9 @@ import {
   TileWithBorders,
   TileWithPressure,
 } from 'functions/src/document-types/Games';
+import { EditGamePlayerData } from 'functions/src/game-functions/functionInputs';
 
-import { auth, firestore } from 'src/firebase/firebaseApp';
+import { auth, firestore, functions } from 'src/firebase/firebaseApp';
 import { PlayerWithName } from 'src/game/board-view-utils/addNamesToPlayers';
 
 export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
@@ -51,6 +53,7 @@ export type GameContextType = Omit<Partial<Game>, 'boardState' | 'players'> & {
   updateNextTurn: (tile: TileWithPressure<TileCoords>) => void;
   resetNextTurn: () => void;
   sendNextTurn: () => Promise<void>;
+  updatePlayer: (data?: EditGamePlayerData | undefined) => Promise<unknown>;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -62,6 +65,10 @@ const useGameProvider = (gameId: string): GameContextType => {
 
   const [game, loading, error] = useDocumentData<Partial<Game>>(
     doc(firestore, 'games', gameId),
+  );
+  const [updatePlayer] = useHttpsCallable<EditGamePlayerData>(
+    functions,
+    'httpsCallable',
   );
   const players = usePlayers(game);
   const nextTurnParams = useNextTurn(gameId);
@@ -91,6 +98,7 @@ const useGameProvider = (gameId: string): GameContextType => {
     ...influenceInformation,
     loading,
     players,
+    updatePlayer,
     gameId,
     userId: user?.uid ?? '',
     userDead: game?.players?.find((p) => p.id === user?.uid)?.dead,
