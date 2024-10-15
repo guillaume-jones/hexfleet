@@ -66,13 +66,13 @@ export const getAiNextTurn = (game: Game): NextTurn => {
 
     if (bestActions.length === 0) break;
 
-    for (const action of bestActions) {
+    bestActions.forEach((action, i) => {
       const cost = action.pressure * action.distance;
 
       // Should not half-attack distant tiles or homeworlds
       if (remainingInfluence < cost && action.distance > 1) {
         nextTurn.pressures.push({ ...action, pressure: 0 });
-        continue;
+        return;
       }
 
       // Spends intended pressure or as much as is left
@@ -80,10 +80,20 @@ export const getAiNextTurn = (game: Game): NextTurn => {
         action.pressure,
         floorToNearest(remainingInfluence, minPressureInterval),
       );
-
       nextTurn.pressures.push({ ...action, pressure });
+
       remainingInfluence -= cost;
-    }
+
+      // Applies last action to board state, since this one is a change
+      if (i === bestActions.length - 1) {
+        for (const tile of boardState) {
+          if (tile.x === action.x && tile.y === action.y) {
+            tile.playerId = action.finalId;
+            break;
+          }
+        }
+      }
+    });
   }
 
   return nextTurn;

@@ -1,4 +1,8 @@
-import { TilePressureGain, calculateBestPressure } from './best-pressure';
+import {
+  TilePressureGain,
+  calculateBestPressure,
+  calculatePositionMultiplier,
+} from './best-pressure';
 import { getGainsLosses } from './gains-losses';
 import { getNeighborCounts } from './neighbor-counts';
 import { TileWithDistances } from './next-ai-turn';
@@ -8,6 +12,8 @@ import {
   TileWithPressure,
 } from 'functions/src/document-types/Games';
 
+type TileWithBoth = TileWithDistances & TilePressureGain;
+
 const getBestActionForTile = ({
   tile,
   boardState,
@@ -16,12 +22,16 @@ const getBestActionForTile = ({
   tile: TileWithDistances;
   boardState: Tile[];
   boardSize: number;
-}): (TilePressureGain & TileWithDistances) | undefined => {
+}): TileWithBoth | undefined => {
   const neighbors = getNeighborCounts({ tile, boardState, boardSize });
-
   const gainsLosses = getGainsLosses({ tile, neighbors });
+  const positionMultipler = calculatePositionMultiplier({ tile, boardSize });
 
-  const bestPressure = calculateBestPressure({ tile, gainsLosses });
+  const bestPressure = calculateBestPressure({
+    tile,
+    gainsLosses,
+    multiplier: positionMultipler,
+  });
 
   if (!bestPressure || bestPressure.gainRatio <= 0) return undefined;
 
@@ -36,7 +46,7 @@ export const getBestRemainingActions = ({
   boardSize: number;
   boardState: TileWithDistances[];
   previousActions: TileWithPressure<TileCoords>[];
-}): TileWithPressure<TileCoords>[] => {
+}): TileWithBoth[] => {
   const bestRemainingActions = boardState
     .map((tile) => {
       // Skips tiles which have already been acted on
@@ -55,16 +65,7 @@ export const getBestRemainingActions = ({
   const nextChangeIndex = bestRemainingActions.findIndex(
     (action) => action.finalId !== action.initialId,
   );
-  if (nextChangeIndex === -1) return bestRemainingActions;
-
-  // Applies next change, so that future calculations are accurate
-  const nextChange = bestRemainingActions[nextChangeIndex];
-  for (const tile of boardState) {
-    if (tile.x === nextChange.x && tile.y === nextChange.y) {
-      tile.playerId = nextChange.finalId;
-      break;
-    }
-  }
-
-  return bestRemainingActions.slice(0, nextChangeIndex + 1);
+  return nextChangeIndex === -1
+    ? bestRemainingActions
+    : bestRemainingActions.slice(0, nextChangeIndex + 1);
 };

@@ -19,9 +19,6 @@ export type GainsLosses = {
   shouldClearEnemy: boolean;
 };
 
-/** Value of homeworld conquest */
-const homeworldValue = 40;
-
 const getConquerValue = ({
   ownerValue,
   neighborsValue,
@@ -57,6 +54,7 @@ export const getGainsLosses = ({
       ? TileStatus.Enemy
       : TileStatus.Empty;
 
+  const homeworldValue = status === TileStatus.Mine ? 60 : 30;
   const ownerValue =
     neighbors.open - tileMaintenance + (tile.homeworld ? homeworldValue : 0);
   const myNeighborsValue = neighbors.me - neighbors.enemy;
