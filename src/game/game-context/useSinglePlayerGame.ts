@@ -10,7 +10,7 @@ import {
 } from 'functions/src/document-types/Games';
 import { updateBoardTurn } from 'functions/src/game-logic/updateBoardTurn';
 
-import { getAiNextTurn } from 'src/ai/ai-calculations';
+import { getAiNextTurn } from 'src/ai/next-ai-turn';
 import { auth } from 'src/firebase/firebaseApp';
 
 export const spNextTurnKey = (id: string) => `sp-next-turn-${id}`;

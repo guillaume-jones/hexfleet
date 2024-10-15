@@ -7,6 +7,7 @@ export type NeighborCounts = {
   open: number;
   me: number;
   enemy: number;
+  neighbors: Tile[];
 };
 
 export const getNeighborCounts = ({
@@ -23,6 +24,7 @@ export const getNeighborCounts = ({
     .filter((tile): tile is Tile => tile !== undefined);
 
   return {
+    neighbors: neighbors,
     open: neighbors.filter(({ playerId }) => !playerId).length,
     me: neighbors.filter(({ playerId }) => playerId === aiId).length,
     enemy: neighbors.filter(({ playerId }) => playerId && playerId !== aiId)

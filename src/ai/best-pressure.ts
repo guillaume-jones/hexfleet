@@ -1,6 +1,7 @@
 import { clamp, maxBy, range } from 'lodash';
 
 import { GainsLosses } from './gains-losses';
+import { TileWithDistances } from './next-ai-turn';
 import {
   maxInfluenceReach,
   maxPressure,
@@ -9,12 +10,24 @@ import {
   pressureToDisable,
 } from 'functions/src/game-logic/GameConstants';
 
+import { aiId } from 'src/game/create-game/createGame';
 import { roundToNearest } from 'src/utils/math';
+
+export type TilePressureGain = {
+  gainRatio: number;
+  initialId?: string;
+  finalId?: string;
+  pressure: number;
+  clear: boolean;
+};
 
 /** Estimate of enemy spending on defense.
  * Increase to make the AI more focused on defense.
  */
 const enemySpendFactor = 0.2;
+
+const enemyId = 'enemy';
+
 const estimateEnemySpend = ({
   gainsLosses: {
     gainFromConquer,
@@ -22,18 +35,18 @@ const estimateEnemySpend = ({
     lossFromDisable,
     lossFromConquer,
   },
-  myDistance,
+  distance,
   enemyDistance,
 }: {
   gainsLosses: GainsLosses;
-  myDistance: number;
+  distance: number;
   enemyDistance: number;
 }) => {
   if (enemyDistance > maxInfluenceReach) return 0;
 
   // Calculates value, including my distance & enemy distance
   const value =
-    (gainFromConquer + gainFromDisable) / myDistance +
+    (gainFromConquer + gainFromDisable) / distance +
     (lossFromConquer + lossFromDisable) / enemyDistance;
 
   // Estimates enemy spend
@@ -43,32 +56,34 @@ const estimateEnemySpend = ({
   return clamp(spend, 0, maxPressure);
 };
 
-export const getBestAction = ({
-  myDistance,
-  enemyDistance,
+export const calculateBestPressure = ({
+  tile,
   gainsLosses,
 }: {
-  myDistance: number;
-  enemyDistance: number;
+  tile: TileWithDistances;
   gainsLosses: GainsLosses;
-}) => {
-  const enemySpend = estimateEnemySpend({
-    gainsLosses,
-    myDistance,
-    enemyDistance,
-  });
+}): TilePressureGain | undefined => {
+  const enemySpend = estimateEnemySpend({ ...tile, gainsLosses });
 
-  const { gainFromConquer, gainFromDisable, lossFromConquer, lossFromDisable } =
-    gainsLosses;
+  const {
+    gainFromConquer,
+    gainFromDisable,
+    lossFromConquer,
+    lossFromDisable,
+    shouldClearEnemy,
+    shouldClearMine,
+  } = gainsLosses;
 
   /* Evaluates all possible gains for 2/4/6/8 spend */
   const possibleActions = range(2, maxPressure + 1, minPressureInterval).map(
     (pressure) => {
       let estimatedGain = 0;
+      let finalId = tile.playerId;
       const pressureDelta = pressure - enemySpend;
 
       if (pressureDelta >= pressureToConquer) {
         estimatedGain += gainFromConquer;
+        finalId = aiId;
       } else if (pressureDelta >= pressureToDisable) {
         estimatedGain += gainFromDisable;
       }
@@ -79,6 +94,8 @@ export const getBestAction = ({
           estimatedGain += lossFromConquer;
         } else if (-pressureDelta < pressureToConquer) {
           estimatedGain += lossFromConquer - lossFromDisable;
+        } else {
+          finalId = enemyId;
         }
       } else if (
         enemySpend >= pressureToDisable &&
@@ -87,9 +104,19 @@ export const getBestAction = ({
         estimatedGain += lossFromDisable;
       }
 
+      // Determines if enemy or me should clear the tile
+      if (
+        (shouldClearEnemy && finalId === enemyId) ||
+        (shouldClearMine && finalId === aiId)
+      )
+        finalId = undefined;
+
       return {
-        gainRatio: estimatedGain / (pressure * myDistance),
+        gainRatio: estimatedGain / (pressure * tile.distance),
+        initialId: tile.playerId,
+        finalId,
         pressure,
+        clear: shouldClearMine,
       };
     },
   );

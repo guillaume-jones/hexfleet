@@ -4,14 +4,11 @@ import { tileMaintenance } from 'functions/src/game-logic/GameConstants';
 
 import { aiId } from 'src/game/create-game/createGame';
 
-enum TileStatus {
+export enum TileStatus {
   Mine = 'Mine',
   Enemy = 'Enemy',
   Empty = 'Empty',
 }
-
-/** Value of homeworld conquest */
-const homeworldValue = 40;
 
 export type GainsLosses = {
   gainFromConquer: number;
@@ -21,6 +18,9 @@ export type GainsLosses = {
   shouldClearMine: boolean;
   shouldClearEnemy: boolean;
 };
+
+/** Value of homeworld conquest */
+const homeworldValue = 40;
 
 const getConquerValue = ({
   ownerValue,
