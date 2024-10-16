@@ -1,7 +1,7 @@
 import { TilePressureGain, calculateBestPressure } from './best-pressure';
 import { getGainsLosses } from './gains-losses';
 import { getNeighborCounts } from './neighbor-counts';
-import { TileWithDistances } from './next-ai-turn';
+import { TileWithDistances } from './tiles-distances';
 import {
   Tile,
   TileCoords,

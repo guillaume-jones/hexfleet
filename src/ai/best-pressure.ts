@@ -1,7 +1,7 @@
 import { clamp, maxBy, range } from 'lodash';
 
 import { GainsLosses } from './gains-losses';
-import { TileWithDistances } from './next-ai-turn';
+import { TileWithDistances } from './tiles-distances';
 import {
   maxInfluenceReach,
   maxPressure,
