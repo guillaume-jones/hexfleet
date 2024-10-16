@@ -28,6 +28,7 @@ export default function Switch({
         value={+value}
         onChange={() => undefined}
         onClick={() => setValue((prev) => !prev)}
+        onTouchEnd={() => setValue((prev) => !prev)}
         min={0}
         max={1}
         step={1}
