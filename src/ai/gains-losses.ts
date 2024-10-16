@@ -46,6 +46,24 @@ const getConquerValue = ({
   }
 };
 
+/** Incentive for AI to favor conquest over disable (for future gains)
+ */
+const disableFactor = 0.8;
+
+const getDisableValue = ({
+  openNeighbors: openNeighbors,
+  status,
+  attackerStatus,
+}: {
+  openNeighbors: number;
+  status: TileStatus;
+  attackerStatus: TileStatus.Mine | TileStatus.Enemy;
+}) => {
+  return status === TileStatus.Empty || status === attackerStatus
+    ? 0
+    : openNeighbors * disableFactor;
+};
+
 export const getGainsLosses = ({
   tile,
   neighbors,
@@ -80,8 +98,16 @@ export const getGainsLosses = ({
     homeworldValue: tile.homeworld ? 60 : 0,
   });
 
-  const gainFromDisable = status === TileStatus.Enemy ? neighbors.open : 0;
-  const lossFromDisable = status === TileStatus.Mine ? neighbors.open : 0;
+  const gainFromDisable = getDisableValue({
+    openNeighbors: neighbors.open,
+    attackerStatus: TileStatus.Mine,
+    status,
+  });
+  const lossFromDisable = getDisableValue({
+    openNeighbors: neighbors.open,
+    attackerStatus: TileStatus.Enemy,
+    status,
+  });
 
   return {
     gainFromConquer,
