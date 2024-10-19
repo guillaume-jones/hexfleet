@@ -32,6 +32,6 @@ export const getTilesWithDistances = ({
       findClosestTileWithId({ ...params, id: aiId, invertSearch: true })
         .distance || 1;
 
-    return { ...tile, distance, enemyDistance, disabled: false };
+    return { ...tile, distance, enemyDistance };
   });
 };

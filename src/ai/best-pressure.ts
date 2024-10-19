@@ -3,7 +3,6 @@ import { clamp, maxBy, range } from 'lodash';
 import { GainsLosses, shouldClearOwnTile } from './gains-losses';
 import { TileWithDistances } from './tiles-distances';
 import {
-  maxInfluenceReach,
   maxPressure,
   minPressureInterval,
   pressureToConquer,
@@ -22,12 +21,15 @@ export type TilePressureGain = {
 };
 
 /** Estimate of enemy spending on defense.
- * Increase to make the AI more focused on defense.
- * TODO: adjust based on enemy pressure
+ * Increase to make AI attacks more focused & spend less on offense.
+ * TODO: adjust based on enemy influence available
  */
-const enemySpendFactor = 0.18;
-
-const enemyId = 'enemy';
+const enemyDefenseFactor = 0.2;
+/** Estimate of enemy spending on attack.
+ * Increase to make AI defense more focused & spend less on offense.
+ * TODO: adjust based on enemy influence available
+ */
+const enemyAttackFactor = 0.4;
 
 const estimateEnemySpend = ({
   gainsLosses: {
@@ -43,18 +45,25 @@ const estimateEnemySpend = ({
   distance: number;
   enemyDistance: number;
 }) => {
-  if (enemyDistance > maxInfluenceReach) return 0;
+  if (enemyDistance === Infinity) {
+    return { enemyDefense: 0, enemyAttack: 0 };
+  }
 
-  // Calculates value, including my distance & enemy distance
-  const value =
-    (gainFromConquer + gainFromDisable) / distance +
-    (lossFromConquer + lossFromDisable) / enemyDistance;
+  const myAttackValue = (gainFromConquer + gainFromDisable) / distance;
+  const enemyAttackValue = (lossFromConquer + lossFromDisable) / enemyDistance;
 
-  // Estimates enemy spend
-  const spend = roundToNearest(enemySpendFactor * value, minPressureInterval);
+  const enemyDefense = clamp(
+    roundToNearest(myAttackValue * enemyDefenseFactor, minPressureInterval),
+    0,
+    maxPressure,
+  );
+  const enemyAttack = clamp(
+    roundToNearest(enemyAttackValue * enemyAttackFactor, minPressureInterval),
+    0,
+    maxPressure,
+  );
 
-  // Clamps to 2/4/6/8 range
-  return clamp(spend, 0, maxPressure);
+  return { enemyDefense, enemyAttack };
 };
 
 export const calculateBestPressure = ({
@@ -76,14 +85,19 @@ export const calculateBestPressure = ({
   } = gainsLosses;
 
   const shouldClear = shouldClearOwnTile({ ...tile, gainFromMyClear });
-  const enemySpend = estimateEnemySpend({ ...tile, gainsLosses });
+  const { enemyDefense, enemyAttack } = estimateEnemySpend({
+    ...tile,
+    gainsLosses,
+  });
 
   const maxSpend = Math.min(maxInfluence / tile.distance, maxPressure);
 
   // Special case, just checks if clear is the best action
-  if (maxSpend === 0) {
+  if (maxSpend < minPressureInterval) {
+    if (!shouldClear) return undefined;
+
     return {
-      gainRatio: shouldClear ? gainFromMyClear : 0,
+      gainRatio: gainFromMyClear,
       initialId: tile.playerId,
       finalId: undefined,
       pressure: 0,
@@ -99,34 +113,33 @@ export const calculateBestPressure = ({
   ).map((pressure) => {
     let estimatedGain = 0;
     let finalId = tile.playerId;
-    const pressureDelta = pressure - enemySpend;
 
-    if (pressureDelta >= pressureToConquer) {
+    if (pressure - enemyDefense >= pressureToConquer) {
       estimatedGain += gainFromConquer;
       finalId = aiId;
-    } else if (pressureDelta >= pressureToDisable) {
+    } else if (pressure - enemyDefense >= pressureToDisable) {
       estimatedGain += gainFromDisable;
     }
 
     // Enemy would have conquered
-    if (enemySpend >= pressureToConquer) {
-      if (-pressureDelta < pressureToDisable) {
+    if (enemyAttack >= pressureToConquer) {
+      if (enemyAttack - pressure < pressureToDisable) {
         estimatedGain += lossFromConquer;
-      } else if (-pressureDelta < pressureToConquer) {
+      } else if (enemyAttack - pressure < pressureToConquer) {
         estimatedGain += lossFromConquer - lossFromDisable;
       } else {
-        finalId = enemyId;
+        finalId = 'enemy'; // TODO: Set to actual users if needed
       }
     } else if (
-      enemySpend >= pressureToDisable &&
-      enemySpend - pressure < pressureToDisable
+      enemyAttack >= pressureToDisable &&
+      enemyAttack - pressure < pressureToDisable
     ) {
       estimatedGain += lossFromDisable;
     }
 
     // Determines if enemy or me should clear the tile
     if (
-      (gainFromEnemyClear > 0 && finalId === enemyId) ||
+      (gainFromEnemyClear > 0 && finalId && finalId !== aiId) ||
       (gainFromMyClear > 0 && finalId === aiId)
     )
       finalId = undefined;

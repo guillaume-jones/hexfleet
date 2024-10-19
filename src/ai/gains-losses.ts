@@ -22,26 +22,37 @@ export type GainsLosses = {
   gainFromMyClear: number;
   gainFromEnemyClear: number;
 };
+
+/** Incentive to attack & defend homeworlds.*/
+const homeworldValue = 50;
+/** Incentive to defend tiles that neighbor my own */
+const neighborFactor = 0.1;
+
 const getConquerValue = ({
   ownerValue,
   neighborsValue,
-  homeworldValue,
   status,
   attackerStatus,
+  isHomeworld,
 }: {
   ownerValue: number;
   neighborsValue: number;
-  homeworldValue: number;
   status: TileStatus;
   attackerStatus: TileStatus.Mine | TileStatus.Enemy;
+  isHomeworld?: boolean;
 }) => {
   switch (status) {
     case TileStatus.Empty:
-      return ownerValue - neighborsValue;
+      return ownerValue - neighborsValue + neighborFactor * neighborsValue;
     case attackerStatus:
       return 0; // No value if already owned by attacker
     default:
-      return ownerValue + Math.max(neighborsValue, ownerValue) + homeworldValue;
+      return (
+        ownerValue +
+        Math.max(neighborsValue, ownerValue) + // Tile could be cleared
+        neighborFactor * neighborsValue +
+        (isHomeworld ? homeworldValue : 0)
+      );
   }
 };
 
@@ -62,8 +73,6 @@ const getDisableValue = ({
     ? 0
     : openNeighbors * disableFactor;
 };
-/** Incentive to attack & defend homeworlds */
-const homeworldValue = 100;
 
 export const getGainsLosses = ({
   tile,
@@ -88,14 +97,14 @@ export const getGainsLosses = ({
     neighborsValue: myNeighborsValue,
     status,
     attackerStatus: TileStatus.Mine,
-    homeworldValue: tile.homeworld ? homeworldValue : 0,
+    isHomeworld: tile.homeworld,
   });
   const lossFromConquer = getConquerValue({
     ownerValue,
     neighborsValue: enemyNeighborsValue,
     status,
     attackerStatus: TileStatus.Enemy,
-    homeworldValue: tile.homeworld ? homeworldValue : 0,
+    isHomeworld: tile.homeworld,
   });
 
   const gainFromDisable = getDisableValue({

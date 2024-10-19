@@ -10,6 +10,7 @@ import {
 } from 'functions/src/document-types/Games';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
 import { getPlayersInfluence } from 'functions/src/game-logic/influenceUtils';
+import { removeDisabled } from 'functions/src/game-logic/removeDisabled';
 
 import { aiId } from 'src/game/create-game/createGame';
 
@@ -20,11 +21,11 @@ const generateTurn = ({
   boardSize: number;
   boardState: TileWithDistances[];
 }): NextTurn & { differential: number } => {
-  const boardState = shuffle(structuredClone(rawBoardState));
-  const pressures = [] as TileWithPressure<TileCoords>[];
+  const boardState = removeDisabled(shuffle(structuredClone(rawBoardState)));
 
+  const pressures = [] as TileWithPressure<TileCoords>[];
   let remainingInfluence = getPlayersInfluence(
-    addBordersToBoard(boardState, boardSize),
+    addBordersToBoard(rawBoardState, boardSize),
   )[aiId];
 
   while (remainingInfluence >= 0) {
@@ -37,9 +38,15 @@ const generateTurn = ({
 
     if (bestActions.length === 0) break;
 
-    bestActions.forEach((action, i) => {
+    for (let i = 0; i < bestActions.length; i++) {
+      const action = bestActions[i];
+      const cost = action.pressure * action.distance;
+
+      // Remaining influence has run out before bestActions are exhausted
+      if (cost > remainingInfluence) break;
+
       pressures.push(action);
-      remainingInfluence -= action.pressure * action.distance;
+      remainingInfluence -= cost;
 
       // Applies last action to board state, since this one is a change
       if (i === bestActions.length - 1) {
@@ -50,7 +57,7 @@ const generateTurn = ({
           }
         }
       }
-    });
+    }
   }
 
   // Calculates value of final board
@@ -73,7 +80,7 @@ export const getAiNextTurn = (game: Game): NextTurn => {
   const boardState = getTilesWithDistances(game);
 
   // Allows more simulations on smaller boards since takes less time
-  const absoluteMaxSimulations = 10000;
+  const absoluteMaxSimulations = 100;
   const maxSimulations = absoluteMaxSimulations / game.boardSize ** 2;
 
   const turns = range(maxSimulations)
