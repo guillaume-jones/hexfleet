@@ -1,6 +1,10 @@
 import { NeighborCounts } from './neighbor-counts';
+import { TileWithDistances } from './tiles-distances';
 import { Tile } from 'functions/src/document-types/Games';
-import { tileMaintenance } from 'functions/src/game-logic/GameConstants';
+import {
+  maxInfluenceReach,
+  tileMaintenance,
+} from 'functions/src/game-logic/GameConstants';
 
 import { aiId } from 'src/game/create-game/createGame';
 
@@ -15,14 +19,9 @@ export type GainsLosses = {
   gainFromDisable: number;
   lossFromConquer: number;
   lossFromDisable: number;
-  shouldClearMine: boolean;
-  shouldClearEnemy: boolean;
+  gainFromMyClear: number;
+  gainFromEnemyClear: number;
 };
-
-/** Incentive for AI to avoid edges
- */
-const edgeAdjustment = -1;
-
 const getConquerValue = ({
   ownerValue,
   neighborsValue,
@@ -48,7 +47,7 @@ const getConquerValue = ({
 
 /** Incentive for AI to favor conquest over disable (for future gains)
  */
-const disableFactor = 0.8;
+const disableFactor = 0.75;
 
 const getDisableValue = ({
   openNeighbors: openNeighbors,
@@ -63,6 +62,8 @@ const getDisableValue = ({
     ? 0
     : openNeighbors * disableFactor;
 };
+/** Incentive to attack & defend homeworlds */
+const homeworldValue = 100;
 
 export const getGainsLosses = ({
   tile,
@@ -78,8 +79,7 @@ export const getGainsLosses = ({
       ? TileStatus.Enemy
       : TileStatus.Empty;
 
-  const ownerValue =
-    neighbors.open - tileMaintenance + (neighbors.all < 6 ? edgeAdjustment : 0);
+  const ownerValue = neighbors.open - tileMaintenance + (neighbors.all - 6) / 6;
   const myNeighborsValue = neighbors.me - neighbors.enemy;
   const enemyNeighborsValue = neighbors.enemy - neighbors.me;
 
@@ -88,14 +88,14 @@ export const getGainsLosses = ({
     neighborsValue: myNeighborsValue,
     status,
     attackerStatus: TileStatus.Mine,
-    homeworldValue: tile.homeworld ? 20 : 0,
+    homeworldValue: tile.homeworld ? homeworldValue : 0,
   });
   const lossFromConquer = getConquerValue({
     ownerValue,
     neighborsValue: enemyNeighborsValue,
     status,
     attackerStatus: TileStatus.Enemy,
-    homeworldValue: tile.homeworld ? 60 : 0,
+    homeworldValue: tile.homeworld ? homeworldValue : 0,
   });
 
   const gainFromDisable = getDisableValue({
@@ -114,7 +114,20 @@ export const getGainsLosses = ({
     lossFromConquer,
     gainFromDisable,
     lossFromDisable,
-    shouldClearMine: myNeighborsValue > ownerValue,
-    shouldClearEnemy: enemyNeighborsValue > ownerValue,
+    gainFromMyClear: myNeighborsValue - ownerValue,
+    gainFromEnemyClear: enemyNeighborsValue - ownerValue,
   };
+};
+
+export const shouldClearOwnTile = ({
+  playerId,
+  homeworld,
+  enemyDistance,
+  gainFromMyClear,
+}: TileWithDistances & {
+  gainFromMyClear: number;
+}) => {
+  if (playerId !== aiId || homeworld) return false;
+  // Avoids clearing tiles whose neighbors may be conquered
+  return gainFromMyClear > (enemyDistance <= maxInfluenceReach ? 1 : 0);
 };

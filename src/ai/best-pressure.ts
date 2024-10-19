@@ -1,6 +1,6 @@
 import { clamp, maxBy, range } from 'lodash';
 
-import { GainsLosses } from './gains-losses';
+import { GainsLosses, shouldClearOwnTile } from './gains-losses';
 import { TileWithDistances } from './tiles-distances';
 import {
   maxInfluenceReach,
@@ -60,67 +60,85 @@ const estimateEnemySpend = ({
 export const calculateBestPressure = ({
   tile,
   gainsLosses,
+  maxInfluence,
 }: {
   tile: TileWithDistances;
   gainsLosses: GainsLosses;
+  maxInfluence: number;
 }): TilePressureGain | undefined => {
-  const enemySpend = estimateEnemySpend({ ...tile, gainsLosses });
-
   const {
     gainFromConquer,
     gainFromDisable,
     lossFromConquer,
     lossFromDisable,
-    shouldClearEnemy,
-    shouldClearMine,
+    gainFromMyClear,
+    gainFromEnemyClear,
   } = gainsLosses;
 
-  /* Evaluates all possible gains for 2/4/6/8 spend */
-  const possibleActions = range(2, maxPressure + 1, minPressureInterval).map(
-    (pressure) => {
-      let estimatedGain = 0;
-      let finalId = tile.playerId;
-      const pressureDelta = pressure - enemySpend;
+  const shouldClear = shouldClearOwnTile({ ...tile, gainFromMyClear });
+  const enemySpend = estimateEnemySpend({ ...tile, gainsLosses });
 
-      if (pressureDelta >= pressureToConquer) {
-        estimatedGain += gainFromConquer;
-        finalId = aiId;
-      } else if (pressureDelta >= pressureToDisable) {
-        estimatedGain += gainFromDisable;
+  const maxSpend = Math.min(maxInfluence / tile.distance, maxPressure);
+
+  // Special case, just checks if clear is the best action
+  if (maxSpend === 0) {
+    return {
+      gainRatio: shouldClear ? gainFromMyClear : 0,
+      initialId: tile.playerId,
+      finalId: undefined,
+      pressure: 0,
+      clear: shouldClear,
+    };
+  }
+
+  /* Evaluates all possible pressures (2,4,6,8) up to remaining spend */
+  const possibleActions = range(
+    minPressureInterval,
+    maxSpend + 0.001,
+    minPressureInterval,
+  ).map((pressure) => {
+    let estimatedGain = 0;
+    let finalId = tile.playerId;
+    const pressureDelta = pressure - enemySpend;
+
+    if (pressureDelta >= pressureToConquer) {
+      estimatedGain += gainFromConquer;
+      finalId = aiId;
+    } else if (pressureDelta >= pressureToDisable) {
+      estimatedGain += gainFromDisable;
+    }
+
+    // Enemy would have conquered
+    if (enemySpend >= pressureToConquer) {
+      if (-pressureDelta < pressureToDisable) {
+        estimatedGain += lossFromConquer;
+      } else if (-pressureDelta < pressureToConquer) {
+        estimatedGain += lossFromConquer - lossFromDisable;
+      } else {
+        finalId = enemyId;
       }
+    } else if (
+      enemySpend >= pressureToDisable &&
+      enemySpend - pressure < pressureToDisable
+    ) {
+      estimatedGain += lossFromDisable;
+    }
 
-      // Enemy would have conquered
-      if (enemySpend >= pressureToConquer) {
-        if (-pressureDelta < pressureToDisable) {
-          estimatedGain += lossFromConquer;
-        } else if (-pressureDelta < pressureToConquer) {
-          estimatedGain += lossFromConquer - lossFromDisable;
-        } else {
-          finalId = enemyId;
-        }
-      } else if (
-        enemySpend >= pressureToDisable &&
-        enemySpend - pressure < pressureToDisable
-      ) {
-        estimatedGain += lossFromDisable;
-      }
+    // Determines if enemy or me should clear the tile
+    if (
+      (gainFromEnemyClear > 0 && finalId === enemyId) ||
+      (gainFromMyClear > 0 && finalId === aiId)
+    )
+      finalId = undefined;
 
-      // Determines if enemy or me should clear the tile
-      if (
-        (shouldClearEnemy && finalId === enemyId) ||
-        (shouldClearMine && finalId === aiId)
-      )
-        finalId = undefined;
-
-      return {
-        gainRatio: estimatedGain / (pressure * tile.distance),
-        initialId: tile.playerId,
-        finalId,
-        pressure,
-        clear: shouldClearMine,
-      };
-    },
-  );
+    return {
+      gainRatio: estimatedGain / (pressure * tile.distance),
+      initialId: tile.playerId,
+      finalId,
+      pressure,
+      clear: shouldClear,
+    };
+  });
 
   /* Calculates best gain and returns it */
   return maxBy(possibleActions, 'gainRatio');

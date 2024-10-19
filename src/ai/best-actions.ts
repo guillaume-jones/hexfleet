@@ -2,26 +2,31 @@ import { TilePressureGain, calculateBestPressure } from './best-pressure';
 import { getGainsLosses } from './gains-losses';
 import { getNeighborCounts } from './neighbor-counts';
 import { TileWithDistances } from './tiles-distances';
-import {
-  Tile,
-  TileCoords,
-  TileWithPressure,
-} from 'functions/src/document-types/Games';
+import { TileCoords } from 'functions/src/document-types/Games';
 
 type TileWithBoth = TileWithDistances & TilePressureGain;
+
+type BaseActionData = {
+  boardState: TileWithDistances[];
+  boardSize: number;
+  maxInfluence: number;
+};
 
 const getBestActionForTile = ({
   tile,
   boardState,
   boardSize,
-}: {
+  maxInfluence,
+}: BaseActionData & {
   tile: TileWithDistances;
-  boardState: Tile[];
-  boardSize: number;
 }): TileWithBoth | undefined => {
   const neighbors = getNeighborCounts({ tile, boardState, boardSize });
   const gainsLosses = getGainsLosses({ tile, neighbors });
-  const bestPressure = calculateBestPressure({ tile, gainsLosses });
+  const bestPressure = calculateBestPressure({
+    tile,
+    gainsLosses,
+    maxInfluence,
+  });
 
   if (!bestPressure || bestPressure.gainRatio <= 0) return undefined;
 
@@ -32,20 +37,21 @@ export const getBestRemainingActions = ({
   boardSize,
   boardState,
   previousActions,
-}: {
-  boardSize: number;
-  boardState: TileWithDistances[];
-  previousActions: TileWithPressure<TileCoords>[];
+  maxInfluence,
+}: BaseActionData & {
+  previousActions: TileCoords[];
 }): TileWithBoth[] => {
   const bestRemainingActions = boardState
     .map((tile) => {
       // Skips tiles which have already been acted on
-      const previousAction = previousActions.find(
-        (action) => action.x === tile.x && action.y === tile.y,
-      );
-      if (previousAction) return undefined;
+      if (previousActions.find((v) => v.x === tile.x && v.y === tile.y)) return;
 
-      return getBestActionForTile({ tile, boardState, boardSize });
+      return getBestActionForTile({
+        tile,
+        boardState,
+        boardSize,
+        maxInfluence,
+      });
     })
     .filter(
       (action): action is TilePressureGain & TileWithDistances => !!action,

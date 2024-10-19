@@ -8,12 +8,10 @@ import {
   TileCoords,
   TileWithPressure,
 } from 'functions/src/document-types/Games';
-import { minPressureInterval } from 'functions/src/game-logic/GameConstants';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
 import { getPlayersInfluence } from 'functions/src/game-logic/influenceUtils';
 
 import { aiId } from 'src/game/create-game/createGame';
-import { floorToNearest } from 'src/utils/math';
 
 const generateTurn = ({
   boardSize,
@@ -29,32 +27,19 @@ const generateTurn = ({
     addBordersToBoard(boardState, boardSize),
   )[aiId];
 
-  while (remainingInfluence >= minPressureInterval) {
+  while (remainingInfluence >= 0) {
     const bestActions = getBestRemainingActions({
       boardState,
       boardSize,
       previousActions: pressures,
+      maxInfluence: remainingInfluence,
     });
 
     if (bestActions.length === 0) break;
 
     bestActions.forEach((action, i) => {
-      const cost = action.pressure * action.distance;
-
-      // Should not half-attack distant tiles or homeworlds
-      if (remainingInfluence < cost && action.distance > 1) {
-        pressures.push({ ...action, pressure: 0 });
-        return;
-      }
-
-      // Spends intended pressure or as much as is left
-      const pressure = Math.min(
-        action.pressure,
-        floorToNearest(remainingInfluence, minPressureInterval),
-      );
-      pressures.push({ ...action, pressure });
-
-      remainingInfluence -= cost;
+      pressures.push(action);
+      remainingInfluence -= action.pressure * action.distance;
 
       // Applies last action to board state, since this one is a change
       if (i === bestActions.length - 1) {
@@ -83,11 +68,13 @@ const generateTurn = ({
 };
 
 /** How many boards should be simulated each turn */
-const maxSimulations = 100;
-
 export const getAiNextTurn = (game: Game): NextTurn => {
   const boardSize = game.boardSize;
   const boardState = getTilesWithDistances(game);
+
+  // Allows more simulations on smaller boards since takes less time
+  const absoluteMaxSimulations = 10000;
+  const maxSimulations = absoluteMaxSimulations / game.boardSize ** 2;
 
   const turns = range(maxSimulations)
     .map(() => generateTurn({ boardSize, boardState }))
