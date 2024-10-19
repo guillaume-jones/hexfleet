@@ -67,17 +67,11 @@ const PlayersBox = () => {
               )}
               <p className="w-12">{tilesByPlayer[id] ?? 0}</p>
               <div className="group relative flex w-16 items-center justify-center">
-                {dead ? (
-                  <p>-</p>
-                ) : (
-                  <>
-                    <p>{influenceByPlayer[id] ?? 0}</p>
-                    <p className="ml-0.5 text-xs">
-                      /{influenceByPlayerWithoutDisabled[id] ?? 0}
-                    </p>
-                    <Tooltip>Active / active + disabled</Tooltip>
-                  </>
-                )}
+                <p>{influenceByPlayer[id] ?? 0}</p>
+                <p className="ml-0.5 text-xs">
+                  /{influenceByPlayerWithoutDisabled[id] ?? 0}
+                </p>
+                {!dead && <Tooltip>Active / active + disabled</Tooltip>}
               </div>
             </div>
           );

@@ -11,12 +11,14 @@ import {
 } from 'functions/src/game-logic/influenceUtils';
 
 export const getInfluenceInformation = ({
+  latestBoard = [],
   currentBoard = [],
   currentBoardWithoutDisabled = [],
   projectedBoard = [],
   nextTurn,
   userId,
 }: {
+  latestBoard?: TileWithBorders<Tile>[];
   currentBoard?: TileWithBorders<Tile>[];
   currentBoardWithoutDisabled?: TileWithBorders<Tile>[];
   projectedBoard?: TileWithBorders<Tile>[];
@@ -31,19 +33,18 @@ export const getInfluenceInformation = ({
   const tilesByPlayer = countBy(currentBoard, 'playerId');
 
   // Get projections of influence and tile information
-  const userInfluence = userId ? influenceByPlayer[userId] : 0;
-  const influenceRemaining = isNaN(userInfluence)
-    ? 0
-    : userInfluence - getInfluenceSpent(nextTurn);
-
-  // Project new board for display
-  const projectedInfluenceByPlayer = getPlayersInfluence(projectedBoard);
+  const userInfluence = userId ? getPlayersInfluence(latestBoard)[userId] : 0;
+  const userInfluenceRemaining = userInfluence - getInfluenceSpent(nextTurn);
+  const userInfluenceProjected = userId
+    ? getPlayersInfluence(projectedBoard)[userId]
+    : 0;
 
   return {
     tilesByPlayer,
     influenceByPlayer,
     influenceByPlayerWithoutDisabled,
-    projectedInfluenceByPlayer,
-    influenceRemaining,
+    userInfluenceProjected,
+    userInfluence,
+    userInfluenceRemaining,
   };
 };

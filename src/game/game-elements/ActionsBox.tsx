@@ -16,12 +16,11 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
     nextTurn,
     nextTurnSent,
     nextTurnEqualsSent,
-    influenceByPlayer,
-    influenceRemaining,
-    projectedInfluenceByPlayer,
+    userInfluence,
+    userInfluenceRemaining,
+    userInfluenceProjected,
     sendNextTurn,
     resetNextTurn,
-    userId,
     setSelectedTile,
     updatePlayer,
   } = useContext(GameContext);
@@ -61,18 +60,18 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
               <p>Influence left to spend:</p>
               <p
                 className={`ml-2 font-bold ${
-                  influenceRemaining < 0 ? 'text-red-500' : ''
+                  userInfluenceRemaining < 0 ? 'text-red-500' : ''
                 }`}>
-                {influenceRemaining}
+                {userInfluenceRemaining}
               </p>
-              <p className="font-bold">/{influenceByPlayer[userId]}</p>
+              <p className="font-bold">/{userInfluence}</p>
             </div>
             <div
               className={`flex items-center transition-opacity ${
                 nextTurn ? 'opacity-75' : 'opacity-0'
               }`}>
               <p>Projected future influence:</p>
-              <p className={'ml-2'}>{projectedInfluenceByPlayer[userId]}</p>
+              <p className={'ml-2'}>{userInfluenceProjected}</p>
             </div>
           </div>
           <RotateCcw
@@ -90,7 +89,7 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
         {hasStarted && (
           <Button
             loading={sendLoading}
-            disabled={!nextTurn || influenceRemaining < 0 || nextTurnSent}
+            disabled={!nextTurn || userInfluenceRemaining < 0 || nextTurnSent}
             onClick={() => {
               setSendLoading(true);
               sendNextTurn()
