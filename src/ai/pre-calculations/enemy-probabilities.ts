@@ -1,6 +1,5 @@
 import { getGainsLosses } from '../action-calculations/gains-losses';
 import { range, sum, sumBy } from 'lodash';
-import { Matrix, add, matrix } from 'mathjs';
 import NormalDistribution from 'normal-distribution';
 
 import { BoardInfluences } from './ai-influence';
@@ -11,7 +10,8 @@ import {
 } from 'functions/src/game-logic/GameConstants';
 
 export type TileWithEnemyProbabilities = TileWithNeighbors & {
-  enemyProbabilities: Matrix;
+  enemyAttack: number[];
+  enemyDefense: number[];
 };
 
 /** Factors of enemy spend
@@ -116,26 +116,18 @@ export const getEnemyProbabilities = ({
       (gainsLosses.lossFromConquer + gainsLosses.lossFromDisable) /
       tile.enemyDistance;
 
-    const defenseProbabilities = getProbabilities({
+    const enemyDefense = getProbabilities({
       distributions: defenseDistributions,
       value: defensiveValue,
       zeroSpendDistribution,
     });
 
-    const offenseProbabilities = getProbabilities({
+    const enemyAttack = getProbabilities({
       distributions: offenseDistributions,
       value: offensiveValue,
       zeroSpendDistribution,
     });
 
-    const enemyProbabilities = add(
-      matrix(defenseProbabilities),
-      matrix(offenseProbabilities),
-    );
-
-    return {
-      ...tile,
-      enemyProbabilities,
-    };
+    return { ...tile, enemyDefense, enemyAttack };
   });
 };

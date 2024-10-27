@@ -5,7 +5,6 @@ import {
 } from '../pre-calculations/neighbor-counts';
 
 import { TileActionChange, calculateBestAction } from './best-action';
-import { getGainsLosses } from './gains-losses';
 import {
   TileCoords,
   TileWithPressure,
@@ -28,16 +27,9 @@ export const getBestRemainingActions = ({
       // Skips tiles which have already been acted on
       if (previousActions.find((v) => v.x === tile.x && v.y === tile.y)) return;
 
-      // Skips unreachable tiles
-      if (tile.distance === Infinity) return;
-
       // Calculates best action
-      const gainsLosses = getGainsLosses(tile);
-      const bestPressure = calculateBestAction({
-        tile,
-        gainsLosses,
-        maxInfluence,
-      });
+      const bestPressure = calculateBestAction({ tile, maxInfluence });
+      if (!bestPressure || bestPressure.gainRatio <= 0) return;
 
       return { ...tile, ...bestPressure };
     })
@@ -50,16 +42,17 @@ export const getBestRemainingActions = ({
   const changeIndex = bestRemainingActions.findIndex(
     (action) => action.finalId !== action.initialId,
   );
-  const change = bestRemainingActions[changeIndex];
+  const change = bestRemainingActions.at(changeIndex);
 
-  const actions =
-    changeIndex === -1
-      ? bestRemainingActions
-      : bestRemainingActions.slice(0, changeIndex + 1);
+  const actions = change
+    ? bestRemainingActions.slice(0, changeIndex + 1)
+    : bestRemainingActions;
 
   return {
     actions,
-    applyUpdate: (boardState) =>
-      applyNeighborCountUpdate({ ...change, boardState }),
+    applyUpdate: (boardState) => {
+      if (!change) return;
+      applyNeighborCountUpdate({ ...change, boardState });
+    },
   };
 };

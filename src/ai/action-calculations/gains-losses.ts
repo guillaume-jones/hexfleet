@@ -71,7 +71,9 @@ const getDisableValue = ({
     : openNeighbors * disableFactor;
 };
 
-export const getGainsLosses = (tile: TileWithNeighbors): GainsLosses => {
+export const getGainsLosses = (
+  tile: Pick<TileWithNeighbors, 'neighbors' | 'playerId' | 'homeworld'>,
+): GainsLosses => {
   const status =
     tile.playerId === aiId
       ? TileStatus.Mine
@@ -120,15 +122,23 @@ export const getGainsLosses = (tile: TileWithNeighbors): GainsLosses => {
   };
 };
 
-export const shouldClearOwnTile = ({
+export const shouldClearTile = ({
   playerId,
   homeworld,
+  distance,
   enemyDistance,
   gainFromMyClear,
-}: TileWithDistances & {
-  gainFromMyClear: number;
-}) => {
-  if (playerId !== aiId || homeworld) return false;
-  // Avoids clearing tiles whose neighbors may be conquered
-  return gainFromMyClear > (enemyDistance === Infinity ? 0 : 1);
+  gainFromEnemyClear,
+}: Pick<
+  TileWithDistances,
+  'playerId' | 'homeworld' | 'distance' | 'enemyDistance'
+> &
+  GainsLosses) => {
+  if (playerId === undefined || homeworld) return false;
+
+  if (playerId === aiId) {
+    return gainFromMyClear > (enemyDistance === Infinity ? 0 : 1);
+  }
+
+  return gainFromEnemyClear > (distance === Infinity ? 0 : 1);
 };

@@ -1,16 +1,19 @@
-import { TileWithDistances } from '../pre-calculations/tiles-distances';
-import { clamp, maxBy, range } from 'lodash';
+import { TileWithEnemyProbabilities } from '../pre-calculations/enemy-probabilities';
+import range from 'lodash/range';
+import { add, dotDivide, matrix, max, multiply } from 'mathjs';
 
-import { GainsLosses, shouldClearOwnTile } from './gains-losses';
+import {
+  buildDefenseMatrix,
+  buildOffenseMatrix,
+} from './build-action-matrices';
+import { getGainsLosses, shouldClearTile } from './gains-losses';
 import {
   maxPressure,
   minPressureInterval,
   pressureToConquer,
-  pressureToDisable,
 } from 'functions/src/game-logic/GameConstants';
 
 import { aiId } from 'src/game/create-game/createGame';
-import { roundToNearest } from 'src/utils/math';
 
 export type TileActionChange = {
   gainRatio: number;
@@ -20,139 +23,94 @@ export type TileActionChange = {
   clear: boolean;
 };
 
-/** Estimate of enemy spending on defense.
- * Increase to make AI attacks more focused & spend less on offense.
- * TODO: adjust based on enemy influence available
- */
-const enemyDefenseFactor = 0.2;
-/** Estimate of enemy spending on attack.
- * Increase to make AI defense more focused & spend less on offense.
- * TODO: adjust based on enemy influence available
- */
-const enemyAttackFactor = 0.4;
-
-const estimateEnemySpend = ({
-  gainsLosses: {
-    gainFromConquer,
-    gainFromDisable,
-    lossFromDisable,
-    lossFromConquer,
-  },
-  distance,
-  enemyDistance,
-}: {
-  gainsLosses: GainsLosses;
-  distance: number;
-  enemyDistance: number;
-}) => {
-  if (enemyDistance === Infinity) {
-    return { enemyDefense: 0, enemyAttack: 0 };
-  }
-
-  const myAttackValue = (gainFromConquer + gainFromDisable) / distance;
-  const enemyAttackValue = (lossFromConquer + lossFromDisable) / enemyDistance;
-
-  const enemyDefense = clamp(
-    roundToNearest(myAttackValue * enemyDefenseFactor, minPressureInterval),
-    0,
-    maxPressure,
-  );
-  const enemyAttack = clamp(
-    roundToNearest(enemyAttackValue * enemyAttackFactor, minPressureInterval),
-    0,
-    maxPressure,
-  );
-
-  return { enemyDefense, enemyAttack };
-};
+export const actionCache: Record<string, TileActionChange | undefined> = {};
 
 export const calculateBestAction = ({
   tile,
-  gainsLosses,
   maxInfluence,
 }: {
-  tile: TileWithDistances;
-  gainsLosses: GainsLosses;
+  tile: TileWithEnemyProbabilities;
   maxInfluence: number;
-}) => {
-  const {
-    gainFromConquer,
-    gainFromDisable,
-    lossFromConquer,
-    lossFromDisable,
-    gainFromMyClear,
-    gainFromEnemyClear,
-  } = gainsLosses;
-
-  const shouldClear = shouldClearOwnTile({ ...tile, gainFromMyClear });
-  const { enemyDefense, enemyAttack } = estimateEnemySpend({
-    ...tile,
-    gainsLosses,
-  });
-
+}): TileActionChange | undefined => {
   const maxSpend = Math.min(maxInfluence / tile.distance, maxPressure);
+  const gainsLosses = getGainsLosses(tile);
 
-  // Special case, just checks if clear is the best action
+  // Checks cache for existing calculations
+  // cacheKey MUST INCLUDE ALL VARIABLES SUSCEPTIBLE TO CHANGE
+  const cacheKey =
+    JSON.stringify(tile.neighbors) +
+    tile.distance +
+    tile.enemyDistance +
+    tile.playerId +
+    maxInfluence;
+  const cached = actionCache[cacheKey];
+  if (cached) return actionCache[cacheKey];
+
+  // Special case, nothing to spend, just checks if clear is worthwhile
   if (maxSpend < minPressureInterval) {
+    if (tile.playerId !== aiId) return undefined;
+
+    const shouldClear = shouldClearTile({ ...tile, ...gainsLosses });
     if (!shouldClear) return undefined;
 
     return {
-      gainRatio: gainFromMyClear,
+      gainRatio: gainsLosses.gainFromMyClear,
       initialId: tile.playerId,
       finalId: undefined,
       pressure: 0,
-      clear: shouldClear,
+      clear: true,
     };
   }
 
-  /* Evaluates all possible pressures (2,4,6,8) up to remaining spend */
-  const possibleActions = range(
+  if (
+    // Unreachable
+    tile.distance === Infinity ||
+    // In safe territory
+    (tile.enemyDistance === Infinity &&
+      gainsLosses.gainFromConquer <= 0 &&
+      gainsLosses.gainFromDisable <= 0)
+  )
+    return;
+
+  const myPressures = range(
     minPressureInterval,
-    maxSpend + 0.001,
+    maxSpend + 0.0001,
     minPressureInterval,
-  ).map((pressure) => {
-    let estimatedGain = 0;
-    let finalId = tile.playerId;
+  );
+  const myPressuresMatrix = matrix(myPressures);
 
-    if (pressure - enemyDefense >= pressureToConquer) {
-      estimatedGain += gainFromConquer;
-      finalId = aiId;
-    } else if (pressure - enemyDefense >= pressureToDisable) {
-      estimatedGain += gainFromDisable;
-    }
+  const offenseMatrix = buildOffenseMatrix({ ...gainsLosses, myPressures });
+  const defenseMatrix = buildDefenseMatrix({ ...gainsLosses, myPressures });
 
-    // Enemy would have conquered
-    if (enemyAttack >= pressureToConquer) {
-      if (enemyAttack - pressure < pressureToDisable) {
-        estimatedGain += lossFromConquer;
-      } else if (enemyAttack - pressure < pressureToConquer) {
-        estimatedGain += lossFromConquer - lossFromDisable;
-      } else {
-        finalId = 'enemy'; // TODO: Set to actual users if needed
-      }
-    } else if (
-      enemyAttack >= pressureToDisable &&
-      enemyAttack - pressure < pressureToDisable
-    ) {
-      estimatedGain += lossFromDisable;
-    }
+  const offenseGainRatios = multiply(offenseMatrix, matrix(tile.enemyDefense));
+  const defenseGainRatios = multiply(defenseMatrix, matrix(tile.enemyAttack));
+  const finalGainRatios = dotDivide(
+    add(offenseGainRatios, defenseGainRatios),
+    myPressuresMatrix,
+  ).toArray();
 
-    // Determines if enemy or me should clear the tile
-    if (
-      (gainFromEnemyClear > 0 && finalId && finalId !== aiId) ||
-      (gainFromMyClear > 0 && finalId === aiId)
-    )
-      finalId = undefined;
+  const bestGainRatio = max(finalGainRatios);
+  const bestGainRatioIndex = finalGainRatios.findIndex(
+    (value) => value === bestGainRatio,
+  );
 
-    return {
-      gainRatio: estimatedGain / (pressure * tile.distance),
-      initialId: tile.playerId,
-      finalId,
-      pressure,
-      clear: shouldClear,
-    };
+  const pressure = myPressures[bestGainRatioIndex];
+  const newOwner = pressure >= pressureToConquer ? aiId : tile.playerId;
+  const isCleared = shouldClearTile({
+    ...tile,
+    ...gainsLosses,
+    playerId: newOwner,
   });
 
-  /* Calculates best gain and returns it */
-  return maxBy(possibleActions, 'gainRatio');
+  const returned = {
+    gainRatio: (bestGainRatio.valueOf() as number) / tile.distance,
+    pressure,
+    initialId: tile.playerId,
+    finalId: isCleared ? undefined : newOwner,
+    clear: isCleared,
+  };
+
+  actionCache[cacheKey] = returned;
+
+  return returned;
 };
