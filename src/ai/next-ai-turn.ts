@@ -1,91 +1,91 @@
-import { range, shuffle, sum } from 'lodash';
+import { range, shuffle } from 'lodash';
 
-import { getBestRemainingActions } from './best-actions';
-import { TileWithDistances, getTilesWithDistances } from './tiles-distances';
+import { getBestRemainingActions } from './action-calculations/best-remaining-actions';
+import {
+  BoardInfluences,
+  getAiInfluence,
+} from './pre-calculations/ai-influence';
+import {
+  TileWithEnemyProbabilities,
+  getEnemyProbabilities,
+} from './pre-calculations/enemy-probabilities';
+import { getNeighborCounts } from './pre-calculations/neighbor-counts';
+import { getTilesWithDistances } from './pre-calculations/tiles-distances';
 import {
   Game,
   NextTurn,
   TileCoords,
   TileWithPressure,
 } from 'functions/src/document-types/Games';
-import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
-import { getPlayersInfluence } from 'functions/src/game-logic/influenceUtils';
 import { removeDisabled } from 'functions/src/game-logic/removeDisabled';
-
-import { aiId } from 'src/game/create-game/createGame';
 
 const generateTurn = ({
   boardSize,
-  boardState: rawBoardState,
+  fullBoardState: unshuffledBoardState,
+  influences,
 }: {
   boardSize: number;
-  boardState: TileWithDistances[];
-}): NextTurn & { differential: number } => {
-  const boardState = removeDisabled(shuffle(structuredClone(rawBoardState)));
+  fullBoardState: TileWithEnemyProbabilities[];
+  influences: BoardInfluences;
+}): NextTurn & { relativeInfluence: number } => {
+  const boardState = shuffle(structuredClone(unshuffledBoardState));
 
   const pressures = [] as TileWithPressure<TileCoords>[];
-  let remainingInfluence = getPlayersInfluence(
-    addBordersToBoard(rawBoardState, boardSize),
-  )[aiId];
+  let remainingInfluence = influences.aiInfluence;
 
   while (remainingInfluence >= 0) {
-    const bestActions = getBestRemainingActions({
+    const { actions, applyUpdate } = getBestRemainingActions({
       boardState,
-      boardSize,
       previousActions: pressures,
       maxInfluence: remainingInfluence,
     });
 
-    if (bestActions.length === 0) break;
+    // No more good actions to take (including clears)
+    if (actions.length === 0) break;
 
-    for (let i = 0; i < bestActions.length; i++) {
-      const action = bestActions[i];
-      const cost = action.pressure * action.distance;
+    for (let i = 0; i < actions.length; i++) {
+      const cost = actions[i].pressure * actions[i].distance;
 
       // Remaining influence has run out before bestActions are exhausted
       if (cost > remainingInfluence) break;
 
-      pressures.push(action);
+      pressures.push(actions[i]);
       remainingInfluence -= cost;
 
-      // Applies last action to board state, since this one is a change
-      if (i === bestActions.length - 1) {
-        for (const tile of boardState) {
-          if (tile.x === action.x && tile.y === action.y) {
-            tile.playerId = action.finalId;
-            break;
-          }
-        }
-      }
+      // If last action was taken, must update board state since it is a change
+      if (i === actions.length - 1) applyUpdate(boardState);
     }
   }
 
-  // Calculates value of final board
-  const finalInfluences = getPlayersInfluence(
-    addBordersToBoard(boardState, boardSize),
-  );
-  const enemyInfluence =
-    sum(Object.values(finalInfluences)) - finalInfluences[aiId];
-  const differential = finalInfluences[aiId] - enemyInfluence;
+  // Calculates value of final board)
+  const { relativeInfluence } = getAiInfluence({ boardState, boardSize });
 
-  return {
-    pressures,
-    differential,
-  };
+  return { pressures, relativeInfluence };
 };
 
 /** How many boards should be simulated each turn */
 export const getAiNextTurn = (game: Game): NextTurn => {
   const boardSize = game.boardSize;
-  const boardState = getTilesWithDistances(game);
+  const influences = getAiInfluence(game);
+
+  const boardWithDistances = getTilesWithDistances(game);
+  const boardWithoutDisabled = removeDisabled(boardWithDistances);
+  const boardWithNeighbors = getNeighborCounts({
+    boardState: boardWithoutDisabled,
+    boardSize,
+  });
+  const fullBoardState = getEnemyProbabilities({
+    boardState: boardWithNeighbors,
+    influences,
+  });
 
   // Allows more simulations on smaller boards since takes less time
-  const absoluteMaxSimulations = 100;
+  const absoluteMaxSimulations = 10000;
   const maxSimulations = absoluteMaxSimulations / game.boardSize ** 2;
 
   const turns = range(maxSimulations)
-    .map(() => generateTurn({ boardSize, boardState }))
-    .sort((a, b) => b.differential - a.differential);
+    .map(() => generateTurn({ boardSize, fullBoardState, influences }))
+    .sort((a, b) => b.relativeInfluence - a.relativeInfluence);
 
   return { pressures: turns[0].pressures };
 };

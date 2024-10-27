@@ -1,7 +1,7 @@
+import { TileWithDistances } from '../pre-calculations/tiles-distances';
 import { clamp, maxBy, range } from 'lodash';
 
 import { GainsLosses, shouldClearOwnTile } from './gains-losses';
-import { TileWithDistances } from './tiles-distances';
 import {
   maxPressure,
   minPressureInterval,
@@ -12,7 +12,7 @@ import {
 import { aiId } from 'src/game/create-game/createGame';
 import { roundToNearest } from 'src/utils/math';
 
-export type TilePressureGain = {
+export type TileActionChange = {
   gainRatio: number;
   initialId?: string;
   finalId?: string;
@@ -66,7 +66,7 @@ const estimateEnemySpend = ({
   return { enemyDefense, enemyAttack };
 };
 
-export const calculateBestPressure = ({
+export const calculateBestAction = ({
   tile,
   gainsLosses,
   maxInfluence,
@@ -74,7 +74,7 @@ export const calculateBestPressure = ({
   tile: TileWithDistances;
   gainsLosses: GainsLosses;
   maxInfluence: number;
-}): TilePressureGain | undefined => {
+}) => {
   const {
     gainFromConquer,
     gainFromDisable,
