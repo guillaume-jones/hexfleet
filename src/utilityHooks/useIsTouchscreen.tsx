@@ -1,8 +1,14 @@
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function useIsTouchscreen() {
-  return useMemo(
-    () => 'ontouchstart' in window || navigator.maxTouchPoints > 0,
-    [],
-  );
+  const [isTouchscreen, setIsTouchscreen] = useState(false);
+
+  useEffect(() => {
+    setIsTouchscreen(
+      (window !== undefined && 'ontouchstart' in window) ||
+        navigator.maxTouchPoints > 0,
+    );
+  }, []);
+
+  return isTouchscreen;
 }

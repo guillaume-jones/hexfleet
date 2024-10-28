@@ -34,7 +34,10 @@ export const getInfluenceInformation = ({
 
   // Get projections of influence and tile information
   const userInfluence = userId ? getPlayersInfluence(latestBoard)[userId] : 0;
-  const userInfluenceRemaining = userInfluence - getInfluenceSpent(nextTurn);
+  const userInfluenceRemaining =
+    userInfluence !== undefined
+      ? userInfluence - getInfluenceSpent(nextTurn)
+      : 0;
   const userInfluenceProjected = userId
     ? getPlayersInfluence(projectedBoard)[userId]
     : 0;

@@ -72,3 +72,26 @@ export const createSinglePlayerGame = (boardOptions: BoardOptions) => {
 
   return { id };
 };
+
+export const createAIGame = (
+  boardOptions: BoardOptions,
+  players: string[],
+): Game => {
+  const boardState = generateBoard(boardOptions);
+  const game = {
+    boardSize: boardOptions.boardSize,
+    boardState,
+    hasStarted: true,
+    createdAt: Timestamp.now(),
+    startedAt: Timestamp.now(),
+    endedAt: null,
+    pastTurns: [],
+    players: players.map((id) => ({ ...defaultPlayer, id })),
+    shortId: shortIdGenerator(),
+    winner: null,
+  };
+
+  game.boardState = addPlayersToBoard(game);
+
+  return game;
+};

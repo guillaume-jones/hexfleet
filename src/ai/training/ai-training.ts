@@ -20,3 +20,10 @@ const fixedConstants = {
 export const defaultAiConstants = { ...adjustableConstants, ...fixedConstants };
 
 export type AIConstants = typeof defaultAiConstants;
+
+// TEMPORARY
+export const defaultAiConstants2 = {
+  ...adjustableConstants,
+  ...fixedConstants,
+  myId: 'AI2',
+};
