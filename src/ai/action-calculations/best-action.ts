@@ -14,8 +14,6 @@ import {
   pressureToConquer,
 } from 'functions/src/game-logic/GameConstants';
 
-import { aiId } from 'src/game/create-game/createGame';
-
 export type TileActionChange = {
   gainRatio: number;
   initialId?: string;
@@ -51,9 +49,13 @@ export const calculateBestAction = ({
 
   // Special case, nothing to spend, just checks if clear is worthwhile
   if (maxSpend < minPressureInterval) {
-    if (tile.playerId !== aiId) return undefined;
+    if (tile.playerId !== constants.myId) return undefined;
 
-    const shouldClear = shouldClearTile({ ...tile, ...gainsLosses });
+    const shouldClear = shouldClearTile({
+      ...tile,
+      ...gainsLosses,
+      myId: constants.myId,
+    });
     if (!shouldClear) return undefined;
 
     return {
@@ -98,11 +100,13 @@ export const calculateBestAction = ({
   );
 
   const pressure = myPressures[bestGainRatioIndex];
-  const newOwner = pressure >= pressureToConquer ? aiId : tile.playerId;
+  const newOwner =
+    pressure >= pressureToConquer ? constants.myId : tile.playerId;
   const isCleared = shouldClearTile({
     ...tile,
     ...gainsLosses,
     playerId: newOwner,
+    myId: constants.myId,
   });
 
   const returned = {

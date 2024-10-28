@@ -59,7 +59,7 @@ export const getBestRemainingActions = ({
     actions,
     applyUpdate: (boardState) => {
       if (!change) return;
-      applyNeighborCountUpdate({ ...change, boardState });
+      applyNeighborCountUpdate({ ...change, boardState, myId: constants.myId });
     },
   };
 };

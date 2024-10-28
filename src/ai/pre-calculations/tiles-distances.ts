@@ -3,8 +3,6 @@ import { maxInfluenceReach } from 'functions/src/game-logic/GameConstants';
 import { findClosestTileWithId } from 'functions/src/game-logic/findClosestTileWithId';
 import { ValidDistance } from 'functions/src/game-logic/getValidNeighbors';
 
-import { aiId } from 'src/game/create-game/createGame';
-
 export type TileWithDistances = Tile & {
   distance: number;
   enemyDistance: number;
@@ -13,9 +11,11 @@ export type TileWithDistances = Tile & {
 export const getTilesWithDistances = ({
   boardState,
   boardSize,
+  myId,
 }: {
   boardState: Tile[];
   boardSize: number;
+  myId: string;
 }): TileWithDistances[] => {
   return boardState.map((tile) => {
     const params = {
@@ -26,10 +26,10 @@ export const getTilesWithDistances = ({
     };
 
     const distance =
-      findClosestTileWithId({ ...params, id: aiId }).distance || 1;
+      findClosestTileWithId({ ...params, id: myId }).distance || 1;
 
     const enemyDistance =
-      findClosestTileWithId({ ...params, id: aiId, invertSearch: true })
+      findClosestTileWithId({ ...params, id: myId, invertSearch: true })
         .distance || 1;
 
     return { ...tile, distance, enemyDistance };

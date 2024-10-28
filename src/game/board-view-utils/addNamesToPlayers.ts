@@ -1,4 +1,3 @@
-import { aiId } from '../create-game/createGame';
 import { doc, getDoc } from 'firebase/firestore';
 
 import { Player } from 'functions/src/document-types/Games';
@@ -17,8 +16,8 @@ export const getNameForId = async (id: string) => {
 
   if (!name) {
     name =
-      id === aiId
-        ? aiId
+      id.slice(0, 2) === 'AI'
+        ? id
         : (
             await getDoc<Partial<Profile>, Partial<Profile>>(
               doc(firestore, 'profiles', id),

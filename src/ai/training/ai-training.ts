@@ -14,6 +14,7 @@ const adjustableConstants = {
 
 const fixedConstants = {
   maxSimulations: 10000,
+  myId: 'AI',
 };
 
 export const defaultAiConstants = { ...adjustableConstants, ...fixedConstants };

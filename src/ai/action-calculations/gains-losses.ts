@@ -4,8 +4,6 @@ import { AIConstants } from '../training/ai-training';
 
 import { tileMaintenance } from 'functions/src/game-logic/GameConstants';
 
-import { aiId } from 'src/game/create-game/createGame';
-
 export enum TileStatus {
   Mine = 'Mine',
   Enemy = 'Enemy',
@@ -74,7 +72,7 @@ export const getGainsLosses = (
   constants: AIConstants,
 ): GainsLosses => {
   const status =
-    tile.playerId === aiId
+    tile.playerId === constants.myId
       ? TileStatus.Mine
       : tile.playerId
       ? TileStatus.Enemy
@@ -132,14 +130,17 @@ export const shouldClearTile = ({
   enemyDistance,
   gainFromMyClear,
   gainFromEnemyClear,
+  myId,
 }: Pick<
   TileWithDistances,
   'playerId' | 'homeworld' | 'distance' | 'enemyDistance'
 > &
-  GainsLosses) => {
+  GainsLosses & {
+    myId: string;
+  }) => {
   if (playerId === undefined || homeworld) return false;
 
-  if (playerId === aiId) {
+  if (playerId === myId) {
     return gainFromMyClear > (enemyDistance === Infinity ? 0 : 1);
   }
 

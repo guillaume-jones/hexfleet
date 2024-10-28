@@ -2,8 +2,6 @@ import { TileWithDistances } from './tiles-distances';
 import { Tile } from 'functions/src/document-types/Games';
 import { getValidNeighbors } from 'functions/src/game-logic/getValidNeighbors';
 
-import { aiId } from 'src/game/create-game/createGame';
-
 export type TileWithNeighbors = TileWithDistances & {
   neighbors: NeighborCounts;
 };
@@ -19,9 +17,11 @@ export type NeighborCounts = {
 export const getNeighborCounts = ({
   boardState,
   boardSize,
+  myId,
 }: {
   boardState: TileWithDistances[];
   boardSize: number;
+  myId: string;
 }): TileWithNeighbors[] =>
   boardState.map((tile) => {
     const neighbors = getValidNeighbors({ tile, boardSize })
@@ -36,8 +36,8 @@ export const getNeighborCounts = ({
         tiles: neighbors,
         all: neighbors.length,
         open: neighbors.filter(({ playerId }) => !playerId).length,
-        me: neighbors.filter(({ playerId }) => playerId === aiId).length,
-        enemy: neighbors.filter(({ playerId }) => playerId && playerId !== aiId)
+        me: neighbors.filter(({ playerId }) => playerId === myId).length,
+        enemy: neighbors.filter(({ playerId }) => playerId && playerId !== myId)
           .length,
       },
     };
@@ -50,6 +50,7 @@ export const applyNeighborCountUpdate = ({
   y,
   neighbors,
   boardState,
+  myId,
 }: {
   initialId?: string;
   finalId?: string;
@@ -57,14 +58,15 @@ export const applyNeighborCountUpdate = ({
   y: number;
   neighbors: NeighborCounts;
   boardState: TileWithNeighbors[];
+  myId: string;
 }) => {
   if (initialId === finalId) return;
 
   const openUpdate =
     finalId === undefined ? 1 : initialId === undefined ? -1 : 0;
-  const meUpdate = finalId === aiId ? 1 : initialId === aiId ? -1 : 0;
+  const meUpdate = finalId === myId ? 1 : initialId === myId ? -1 : 0;
   const enemyUpdate =
-    finalId && finalId !== aiId ? 1 : initialId && initialId !== aiId ? -1 : 0;
+    finalId && finalId !== myId ? 1 : initialId && initialId !== myId ? -1 : 0;
 
   for (const tile of boardState) {
     if (tile.x === x && tile.y === y) {

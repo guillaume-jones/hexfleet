@@ -4,10 +4,8 @@ import { Tile } from 'functions/src/document-types/Games';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
 import { getPlayersInfluence } from 'functions/src/game-logic/influenceUtils';
 
-import { aiId } from 'src/game/create-game/createGame';
-
 export type BoardInfluences = {
-  aiInfluence: number;
+  myInfluence: number;
   enemyInfluence: number;
   relativeInfluence: number;
 };
@@ -15,19 +13,21 @@ export type BoardInfluences = {
 export const getAiInfluence = ({
   boardState,
   boardSize,
+  myId,
 }: {
   boardState: Tile[];
   boardSize: number;
+  myId: string;
 }): BoardInfluences => {
   const boardWithBorders = addBordersToBoard(boardState, boardSize);
   const influences = getPlayersInfluence(boardWithBorders);
 
-  const aiInfluence = influences[aiId];
-  const enemyInfluence = sum(Object.values(influences)) - aiInfluence;
+  const myInfluence = influences[myId];
+  const enemyInfluence = sum(Object.values(influences)) - myInfluence;
 
   return {
-    aiInfluence,
+    myInfluence,
     enemyInfluence,
-    relativeInfluence: aiInfluence - enemyInfluence,
+    relativeInfluence: myInfluence - enemyInfluence,
   };
 };

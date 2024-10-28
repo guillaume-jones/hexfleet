@@ -34,7 +34,7 @@ const generateTurn = ({
   const boardState = shuffle(structuredClone(unshuffledBoardState));
 
   const pressures = [] as TileWithPressure<TileCoords>[];
-  let remainingInfluence = influences.aiInfluence;
+  let remainingInfluence = influences.myInfluence;
 
   while (remainingInfluence >= 0) {
     const { actions, applyUpdate } = getBestRemainingActions({
@@ -62,33 +62,55 @@ const generateTurn = ({
   }
 
   // Calculates value of final board)
-  const { relativeInfluence } = getAiInfluence({ boardState, boardSize });
+  const { relativeInfluence } = getAiInfluence({
+    boardState,
+    boardSize,
+    myId: constants.myId,
+  });
 
   return { pressures, relativeInfluence };
 };
 
 /** How many boards should be simulated each turn */
-export const getAiNextTurn = (game: Game, constants: AIConstants): NextTurn => {
-  const boardSize = game.boardSize;
-  const influences = getAiInfluence(game);
+export const getAiNextTurn = (
+  { boardSize, boardState }: Game,
+  constants: AIConstants,
+): NextTurn => {
+  const influences = getAiInfluence({
+    boardState,
+    boardSize,
+    myId: constants.myId,
+  });
 
-  const boardWithDistances = getTilesWithDistances(game);
+  const boardWithDistances = getTilesWithDistances({
+    boardState,
+    boardSize,
+    myId: constants.myId,
+  });
   const boardWithoutDisabled = removeDisabled(boardWithDistances);
   const boardWithNeighbors = getNeighborCounts({
     boardState: boardWithoutDisabled,
     boardSize,
+    myId: constants.myId,
   });
-  const boardState = getEnemyProbabilities({
+  const fullBoardState = getEnemyProbabilities({
     boardState: boardWithNeighbors,
     influences,
     constants,
   });
 
   // Allows more simulations on smaller boards since takes less time
-  const maxSimulations = constants.maxSimulations / game.boardSize ** 2;
+  const maxSimulations = constants.maxSimulations / boardSize ** 2;
 
   const turns = range(maxSimulations)
-    .map(() => generateTurn({ boardSize, boardState, influences, constants }))
+    .map(() =>
+      generateTurn({
+        boardSize,
+        boardState: fullBoardState,
+        influences,
+        constants,
+      }),
+    )
     .sort((a, b) => b.relativeInfluence - a.relativeInfluence);
 
   return { pressures: turns[0].pressures };
