@@ -11,6 +11,7 @@ import {
 import { updateBoardTurn } from 'functions/src/game-logic/updateBoardTurn';
 
 import { getAiNextTurn } from 'src/ai/next-ai-turn';
+import { defaultAiConstants } from 'src/ai/training/ai-training';
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
 export const spNextTurnKey = (id: string) => `sp-next-turn-${id}`;
@@ -70,7 +71,7 @@ export const useSinglePlayerGame = (gameId: string) => {
     // Starts AI calculations
     setWaitingForAI(true);
 
-    const aiNextTurn = getAiNextTurn(game);
+    const aiNextTurn = getAiNextTurn(game, defaultAiConstants);
 
     const { newBoardState, newPlayers, winner } = updateBoardTurn({
       game,

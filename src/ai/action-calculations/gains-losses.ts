@@ -1,5 +1,6 @@
 import { TileWithNeighbors } from '../pre-calculations/neighbor-counts';
 import { TileWithDistances } from '../pre-calculations/tiles-distances';
+import { AIConstants } from '../training/ai-training';
 
 import { tileMaintenance } from 'functions/src/game-logic/GameConstants';
 
@@ -20,59 +21,57 @@ export type GainsLosses = {
   gainFromEnemyClear: number;
 };
 
-/** Incentive to attack & defend homeworlds.*/
-const homeworldValue = 50;
-/** Incentive to defend tiles that neighbor my own */
-const neighborFactor = 0.1;
-
 const getConquerValue = ({
   ownerValue,
   neighborsValue,
   status,
   attackerStatus,
   isHomeworld,
+  constants,
 }: {
   ownerValue: number;
   neighborsValue: number;
   status: TileStatus;
   attackerStatus: TileStatus.Mine | TileStatus.Enemy;
   isHomeworld?: boolean;
+  constants: AIConstants;
 }) => {
   switch (status) {
     case TileStatus.Empty:
-      return ownerValue - neighborsValue + neighborFactor * neighborsValue;
+      return (
+        ownerValue - neighborsValue + constants.neighborFactor * neighborsValue
+      );
     case attackerStatus:
       return 0; // No value if already owned by attacker
     default:
       return (
         ownerValue +
         Math.max(neighborsValue, ownerValue) + // Tile could be cleared
-        neighborFactor * neighborsValue +
-        (isHomeworld ? homeworldValue : 0)
+        constants.neighborFactor * neighborsValue +
+        (isHomeworld ? constants.homeworldValue : 0)
       );
   }
 };
-
-/** Incentive for AI to favor conquest over disable (for future gains)
- */
-const disableFactor = 0.75;
 
 const getDisableValue = ({
   openNeighbors: openNeighbors,
   status,
   attackerStatus,
+  constants,
 }: {
   openNeighbors: number;
   status: TileStatus;
   attackerStatus: TileStatus.Mine | TileStatus.Enemy;
+  constants: AIConstants;
 }) => {
   return status === TileStatus.Empty || status === attackerStatus
     ? 0
-    : openNeighbors * disableFactor;
+    : openNeighbors * constants.disableFactor;
 };
 
 export const getGainsLosses = (
   tile: Pick<TileWithNeighbors, 'neighbors' | 'playerId' | 'homeworld'>,
+  constants: AIConstants,
 ): GainsLosses => {
   const status =
     tile.playerId === aiId
@@ -92,6 +91,7 @@ export const getGainsLosses = (
     status,
     attackerStatus: TileStatus.Mine,
     isHomeworld: tile.homeworld,
+    constants,
   });
   const lossFromConquer = getConquerValue({
     ownerValue,
@@ -99,17 +99,20 @@ export const getGainsLosses = (
     status,
     attackerStatus: TileStatus.Enemy,
     isHomeworld: tile.homeworld,
+    constants,
   });
 
   const gainFromDisable = getDisableValue({
     openNeighbors: neighbors.open,
     attackerStatus: TileStatus.Mine,
     status,
+    constants,
   });
   const lossFromDisable = getDisableValue({
     openNeighbors: neighbors.open,
     attackerStatus: TileStatus.Enemy,
     status,
+    constants,
   });
 
   return {

@@ -1,4 +1,5 @@
 import { getGainsLosses } from '../action-calculations/gains-losses';
+import { AIConstants } from '../training/ai-training';
 import { range, sum, sumBy } from 'lodash';
 import NormalDistribution from 'normal-distribution';
 
@@ -12,18 +13,6 @@ import {
 export type TileWithEnemyProbabilities = TileWithNeighbors & {
   enemyAttack: number[];
   enemyDefense: number[];
-};
-
-/** Factors of enemy spend
- * TODO: Adjust with training
- */
-const factors = {
-  // 2, 4, 6, 8
-  defensiveMeans: [2, 6, 14, 100],
-  defensiveVariances: [5, 8, 5, 0.1],
-  offensiveMeans: [2, 5, 9, 13],
-  offensiveVariances: [4, 8, 6, 4],
-  zeroSpend: 40,
 };
 
 const getZeroSpendFunction = ({
@@ -74,9 +63,11 @@ const getProbabilities = ({
 export const getEnemyProbabilities = ({
   boardState,
   influences,
+  constants,
 }: {
   boardState: TileWithNeighbors[];
   influences: BoardInfluences;
+  constants: AIConstants;
 }): TileWithEnemyProbabilities[] => {
   const pressures = range(
     minPressureInterval,
@@ -87,27 +78,27 @@ export const getEnemyProbabilities = ({
   const defenseDistributions = pressures.map(
     (_, i) =>
       new NormalDistribution(
-        factors.defensiveMeans[i],
-        factors.defensiveVariances[i],
+        constants.defensiveMeans[i],
+        constants.defensiveVariances[i],
       ),
   );
 
   const offenseDistributions = pressures.map(
     (_, i) =>
       new NormalDistribution(
-        factors.offensiveMeans[i],
-        factors.offensiveVariances[i],
+        constants.offensiveMeans[i],
+        constants.offensiveVariances[i],
       ),
   );
 
   const zeroSpendDistribution = getZeroSpendFunction({
     boardState,
     enemyInfluence: influences.enemyInfluence,
-    zeroSpendFactor: factors.zeroSpend,
+    zeroSpendFactor: constants.zeroSpend,
   });
 
   return boardState.map((tile) => {
-    const gainsLosses = getGainsLosses(tile);
+    const gainsLosses = getGainsLosses(tile, constants);
 
     const defensiveValue =
       (gainsLosses.gainFromConquer + gainsLosses.gainFromDisable) /

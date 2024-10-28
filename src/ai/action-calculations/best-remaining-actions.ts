@@ -3,6 +3,7 @@ import {
   TileWithNeighbors,
   applyNeighborCountUpdate,
 } from '../pre-calculations/neighbor-counts';
+import { AIConstants } from '../training/ai-training';
 
 import { TileActionChange, calculateBestAction } from './best-action';
 import {
@@ -14,9 +15,11 @@ export const getBestRemainingActions = ({
   boardState,
   previousActions,
   maxInfluence,
+  constants,
 }: {
   boardState: TileWithEnemyProbabilities[];
   maxInfluence: number;
+  constants: AIConstants;
   previousActions: TileCoords[];
 }): {
   actions: TileWithPressure<TileWithEnemyProbabilities>[];
@@ -28,7 +31,11 @@ export const getBestRemainingActions = ({
       if (previousActions.find((v) => v.x === tile.x && v.y === tile.y)) return;
 
       // Calculates best action
-      const bestPressure = calculateBestAction({ tile, maxInfluence });
+      const bestPressure = calculateBestAction({
+        tile,
+        maxInfluence,
+        constants,
+      });
       if (!bestPressure || bestPressure.gainRatio <= 0) return;
 
       return { ...tile, ...bestPressure };

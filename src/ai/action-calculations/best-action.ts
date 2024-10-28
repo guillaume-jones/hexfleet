@@ -1,4 +1,5 @@
 import { TileWithEnemyProbabilities } from '../pre-calculations/enemy-probabilities';
+import { AIConstants } from '../training/ai-training';
 import range from 'lodash/range';
 import { add, dotDivide, matrix, max, multiply } from 'mathjs';
 
@@ -28,12 +29,14 @@ export const actionCache: Record<string, TileActionChange | undefined> = {};
 export const calculateBestAction = ({
   tile,
   maxInfluence,
+  constants,
 }: {
   tile: TileWithEnemyProbabilities;
   maxInfluence: number;
+  constants: AIConstants;
 }): TileActionChange | undefined => {
   const maxSpend = Math.min(maxInfluence / tile.distance, maxPressure);
-  const gainsLosses = getGainsLosses(tile);
+  const gainsLosses = getGainsLosses(tile, constants);
 
   // Checks cache for existing calculations
   // cacheKey MUST INCLUDE ALL VARIABLES SUSCEPTIBLE TO CHANGE
