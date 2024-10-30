@@ -11,7 +11,7 @@ import {
 import { updateBoardTurn } from 'functions/src/game-logic/updateBoardTurn';
 
 import { getAiNextTurn } from 'src/ai/next-ai-turn';
-import { defaultAiConstants } from 'src/ai/training/ai-training';
+import { defaultAiConstants } from 'src/ai/training/ai-constants';
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
 export const spNextTurnKey = (id: string) => `sp-next-turn-${id}`;

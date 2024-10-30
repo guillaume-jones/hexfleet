@@ -1,5 +1,5 @@
 import { TileWithEnemyProbabilities } from '../pre-calculations/enemy-probabilities';
-import { AIConstants } from '../training/ai-training';
+import { AIConstants } from '../training/ai-constants';
 import range from 'lodash/range';
 import { add, dotDivide, matrix, max, multiply } from 'mathjs';
 

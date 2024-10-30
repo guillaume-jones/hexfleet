@@ -3,7 +3,7 @@ import {
   TileWithNeighbors,
   applyNeighborCountUpdate,
 } from '../pre-calculations/neighbor-counts';
-import { AIConstants } from '../training/ai-training';
+import { AIConstants } from '../training/ai-constants';
 
 import { TileActionChange, calculateBestAction } from './best-action';
 import {

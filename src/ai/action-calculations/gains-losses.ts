@@ -1,6 +1,6 @@
 import { TileWithNeighbors } from '../pre-calculations/neighbor-counts';
 import { TileWithDistances } from '../pre-calculations/tiles-distances';
-import { AIConstants } from '../training/ai-training';
+import { AIConstants } from '../training/ai-constants';
 
 import { tileMaintenance } from 'functions/src/game-logic/GameConstants';
 

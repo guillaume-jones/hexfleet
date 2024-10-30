@@ -11,7 +11,7 @@ import {
 } from './pre-calculations/enemy-probabilities';
 import { getNeighborCounts } from './pre-calculations/neighbor-counts';
 import { getTilesWithDistances } from './pre-calculations/tiles-distances';
-import { AIConstants } from './training/ai-training';
+import { AIConstants } from './training/ai-constants';
 import {
   Game,
   NextTurn,

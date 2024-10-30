@@ -1,5 +1,5 @@
 import { getGainsLosses } from '../action-calculations/gains-losses';
-import { AIConstants } from '../training/ai-training';
+import { AIConstants } from '../training/ai-constants';
 import { range, sum, sumBy } from 'lodash';
 import NormalDistribution from 'normal-distribution';
 
