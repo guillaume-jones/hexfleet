@@ -8,7 +8,7 @@ export const adjustableConstants = {
 
   // Gains & losses
   homeworldValue: 75.747,
-  neighborFactor: 0.0732,
+  neighborFactor: 0.2,
   disableFactor: 0.719,
 };
 
