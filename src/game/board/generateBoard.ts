@@ -1,13 +1,23 @@
 import clamp from 'lodash/clamp';
 
 import { Tile } from 'functions/src/document-types/Games';
+import {
+  maxBoardSize,
+  minBoardSize,
+} from 'functions/src/game-logic/GameConstants';
 
 export type BoardOptions = {
   boardSize: number;
+  boardState?: Tile[];
 };
 
-export const generateBoard = ({ boardSize }: BoardOptions): Tile[] => {
-  boardSize = clamp(boardSize, 5, 50);
+export const generateBoard = ({
+  boardSize,
+  boardState,
+}: BoardOptions): Tile[] => {
+  if (boardState) return boardState;
+
+  boardSize = clamp(boardSize, minBoardSize, maxBoardSize);
 
   const tiles: Tile[] = [];
 

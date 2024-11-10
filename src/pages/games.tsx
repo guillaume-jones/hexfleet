@@ -1,6 +1,6 @@
 import Head from 'next/head';
 
-import { InvitesSection } from 'src/games/InvitesSection';
+import InvitesSection from 'src/games/InvitesSection';
 import PastGamesSection from 'src/games/PastGamesSection';
 import AnonymousGameWarning from 'src/login/AnonymousGameWarning';
 import useRedirectIfNotAuth from 'src/utilityHooks/useRedirectIfNotAuth';

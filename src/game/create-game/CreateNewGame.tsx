@@ -5,7 +5,11 @@ import { useIdToken } from 'react-firebase-hooks/auth';
 import { useHttpsCallable } from 'react-firebase-hooks/functions';
 
 import { GameInviteData } from 'functions/src/game-functions/functionInputs';
-import { defaultPlayer } from 'functions/src/game-logic/GameConstants';
+import {
+  defaultPlayer,
+  maxBoardSize,
+  minBoardSize,
+} from 'functions/src/game-logic/GameConstants';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
 import { addPlayersToBoard } from 'functions/src/game-logic/addPlayersToBoard';
 
@@ -59,8 +63,8 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
         startText="Board size:"
         value={boardSize}
         setValue={setBoardSize}
-        min={5}
-        max={21}
+        min={minBoardSize}
+        max={maxBoardSize}
         step={2}
       />
       <Switch
@@ -92,7 +96,7 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
                   return;
                 }
 
-                await router.push(`/singleplayer/${returned.id}`);
+                await router.push(`/campaign/${returned.id}`);
 
                 return;
               }

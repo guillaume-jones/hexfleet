@@ -12,6 +12,8 @@ export const tileMaintenance = 1;
 export const startingInfluence = 2;
 
 // Game setup
+export const minBoardSize = 5;
+export const maxBoardSize = 21;
 export const shortIdLength = 5;
 export const minimumPlayers = 2;
 export const maximumPlayers = 6;

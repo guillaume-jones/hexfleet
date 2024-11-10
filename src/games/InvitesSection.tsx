@@ -8,7 +8,7 @@ import { Invites } from 'functions/src/document-types/Invites';
 
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
-export const InvitesSection = () => {
+const InvitesSection = () => {
   const [user] = useIdToken(auth);
   const [invites, loading] = useDocumentData<Partial<Invites>>(
     user && doc(firestore, 'invites', user.uid),
@@ -46,3 +46,5 @@ export const InvitesSection = () => {
     </div>
   );
 };
+
+export default InvitesSection;

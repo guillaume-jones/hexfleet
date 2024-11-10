@@ -6,7 +6,12 @@ type Page = {
 
 export const pagesList: Page[] = [
   {
-    title: 'Games',
+    title: 'Campaign',
+    path: '/campaign',
+    hideWhenLoggedOut: true,
+  },
+  {
+    title: 'Multiplayer',
     path: '/games',
     hideWhenLoggedOut: true,
   },
