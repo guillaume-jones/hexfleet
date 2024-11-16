@@ -1,5 +1,5 @@
 import { BoardOptions, generateBoard } from '../board/generateBoard';
-import { spGameKey } from '../game-context/useSinglePlayerGame';
+import { spGameKey } from '../game-context/useCampaignGame';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { customAlphabet, nanoid } from 'nanoid';
 
@@ -10,6 +10,7 @@ import {
 } from 'functions/src/game-logic/GameConstants';
 import { addPlayersToBoard } from 'functions/src/game-logic/addPlayersToBoard';
 
+import { campaignMaps } from 'src/campaign/campaign-maps';
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
 const shortIdGenerator = customAlphabet(
@@ -57,8 +58,12 @@ export const createOnlineGame = async (boardOptions: BoardOptions) => {
   return { id: docRef.id, shortId: game.shortId };
 };
 
-export const createSinglePlayerGame = (boardOptions: BoardOptions) => {
-  const game = createGame(boardOptions);
+export const createCampaignGame = (gameId: string) => {
+  const campaignMap = campaignMaps.find(({ id }) => id === gameId);
+
+  if (!campaignMap) return;
+
+  const game = createGame(campaignMap);
   const id = nanoid(20);
 
   if (!game) return;
@@ -70,7 +75,7 @@ export const createSinglePlayerGame = (boardOptions: BoardOptions) => {
 
   localStorage.setItem(spGameKey(id), JSON.stringify(game));
 
-  return { id };
+  return game;
 };
 
 export const createAIGame = (

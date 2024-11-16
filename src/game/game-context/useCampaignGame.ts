@@ -1,4 +1,4 @@
-import { aiId } from '../create-game/createGame';
+import { aiId, createCampaignGame } from '../create-game/createGame';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -17,7 +17,7 @@ import { auth, firestore } from 'src/firebase/firebaseApp';
 export const spNextTurnKey = (id: string) => `sp-next-turn-${id}`;
 export const spGameKey = (id: string) => `sp-game-${id}`;
 
-export const useSinglePlayerGame = (gameId: string) => {
+export const useCampaignGame = (gameId: string) => {
   const [game, setGame] = useState<Game>();
   const [nextTurn, setNextTurn] = useState<NextTurn>();
   const [wasPlaying, setWasPlaying] = useState(false);
@@ -29,6 +29,8 @@ export const useSinglePlayerGame = (gameId: string) => {
     const localGame = localStorage.getItem(spGameKey(gameId));
     if (localGame) {
       setGame(JSON.parse(localGame) as Game);
+    } else {
+      setGame(createCampaignGame(gameId));
     }
     if (localNextTurn) {
       setNextTurn(JSON.parse(localNextTurn) as NextTurn);

@@ -16,7 +16,7 @@ import Button from 'src/components/interactive/Button';
 import { auth } from 'src/firebase/firebaseApp';
 import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
 import { aiId } from 'src/game/create-game/createGame';
-import { spGameKey } from 'src/game/game-context/useSinglePlayerGame';
+import { spGameKey } from 'src/game/game-context/useCampaignGame';
 
 type CampaignMapProps = {
   campaignMap: CampaignMap;

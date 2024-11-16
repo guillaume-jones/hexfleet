@@ -4,15 +4,15 @@ import { useIdToken } from 'react-firebase-hooks/auth';
 
 import { GameContext, GameContextType } from './GameContext';
 import useBoardState from './useBoardState';
+import { useCampaignGame } from './useCampaignGame';
 import usePlayers from './usePlayers';
-import { useSinglePlayerGame } from './useSinglePlayerGame';
 
 import { auth } from 'src/firebase/firebaseApp';
 
 const useSinglePlayerProvider = (gameId: string): GameContextType => {
   const [user] = useIdToken(auth);
 
-  const gameParams = useSinglePlayerGame(gameId);
+  const gameParams = useCampaignGame(gameId);
   const players = usePlayers(gameParams.game);
   const boardParams = useBoardState(gameParams.game, gameParams.nextTurn);
 

@@ -15,13 +15,11 @@ import { addPlayersToBoard } from 'functions/src/game-logic/addPlayersToBoard';
 
 import Button from 'src/components/interactive/Button';
 import Range from 'src/components/interactive/Range';
-import Switch from 'src/components/interactive/Switch';
 import { auth, functions } from 'src/firebase/firebaseApp';
 import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
 import { generateBoard } from 'src/game/board/generateBoard';
 import {
   createOnlineGame,
-  createSinglePlayerGame,
   defaultGameOptions,
 } from 'src/game/create-game/createGame';
 
@@ -39,7 +37,6 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
   );
 
   const [boardSize, setBoardSize] = useState(defaultGameOptions.boardSize);
-  const [isMultiPlayer, setIsMultiplayer] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const boardPreview = useMemo(() => {
@@ -67,12 +64,6 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
         max={maxBoardSize}
         step={2}
       />
-      <Switch
-        value={isMultiPlayer}
-        setValue={setIsMultiplayer}
-        startText="Singleplayer"
-        endText="Online"
-      />
       <h3 className="text-center text-lg font-semibold">Preview</h3>
       <SimpleHexBoard board={boardPreview} boardSize={boardSize} />
       <div className="mt-2 flex justify-between">
@@ -88,24 +79,10 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
               let userId = user?.uid;
               if (!userId) userId = (await signInAnonymously(auth)).user.uid;
 
-              if (!isMultiPlayer) {
-                const returned = createSinglePlayerGame({ boardSize });
-
-                if (!returned) {
-                  console.error('Failed to create game.');
-                  return;
-                }
-
-                await router.push(`/campaign/${returned.id}`);
-
-                return;
-              }
-
               const returned = await createOnlineGame({ boardSize });
 
               if (!returned) {
-                console.error('Failed to create game.');
-                return;
+                throw new Error('Failed to create game.');
               }
 
               if (playerIds) {
@@ -123,7 +100,9 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
                 `/game/${returned.id}${playerIds ? '?invites=true' : ''}`,
               );
             };
-            void asyncFunction().finally(() => setLoading(false));
+            asyncFunction()
+              .catch(console.error)
+              .finally(() => setLoading(false));
           }}>
           Confirm
         </Button>
