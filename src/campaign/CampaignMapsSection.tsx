@@ -2,11 +2,18 @@ import { useEffect } from 'react';
 
 import CampaignMapBox from './CampaignMapBox';
 import { campaignMaps } from './campaign-maps';
+import { useCampaignDoc } from './useCampaignDoc';
 
 const CampaignMapsSection = () => {
-  const maxAchievedIndex = 3; // TODO: Use Firebase
+  const [campaign] = useCampaignDoc();
+
+  const maxAchievedIndex = campaignMaps.findLastIndex((v) =>
+    campaign?.achievedMaps?.includes(v.id),
+  );
 
   useEffect(() => {
+    if (maxAchievedIndex === -1) return;
+
     const nextMap = document.getElementById(
       `campaign-map-${Math.min(maxAchievedIndex + 1, campaignMaps.length - 1)}`,
     );
@@ -29,11 +36,7 @@ const CampaignMapsSection = () => {
         id="campaign-maps-container"
         className="relative flex w-full flex-col gap-12 py-6 sm:flex-row sm:overflow-x-scroll sm:px-20">
         {campaignMaps.map((campaignMap, i) => (
-          <CampaignMapBox
-            key={campaignMap.id}
-            campaignMap={campaignMap}
-            index={i}
-          />
+          <CampaignMapBox key={campaignMap.id + i} campaignMap={campaignMap} />
         ))}
       </div>
       <div className="pointer-events-none absolute bottom-0 left-0 top-0 hidden w-20 bg-gradient-to-r from-zinc-950 from-10%  sm:block" />
