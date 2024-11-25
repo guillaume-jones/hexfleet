@@ -1,10 +1,4 @@
-import {
-  DocumentData,
-  DocumentReference,
-  deleteDoc,
-  doc,
-  setDoc,
-} from 'firebase/firestore';
+import { deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { useCallback } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
@@ -16,20 +10,13 @@ import { auth, firestore } from 'src/firebase/firebaseApp';
 export const useCampaignGameDoc = (gameId: string) => {
   const [user] = useIdToken(auth);
 
-  const docRef =
-    user &&
-    (doc(
-      firestore,
-      'campaigns',
-      user.uid,
-      'games',
-      gameId,
-    ) as DocumentReference<Game, DocumentData>);
+  const docRef = user && doc(firestore, 'campaigns', user.uid, 'games', gameId);
 
-  const [game, loading] = useDocumentData<Game>(docRef);
+  const [game, loading] = useDocumentData<Partial<Game>>(docRef);
 
   const setGame = useCallback(
-    (newGame: Game) => docRef && setDoc(docRef, newGame),
+    (newGame: Partial<Game>) =>
+      docRef && setDoc(docRef, newGame, { merge: true }),
     [docRef],
   );
 

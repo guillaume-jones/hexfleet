@@ -5,7 +5,7 @@ import { campaignMaps } from './campaign-maps';
 import { useCampaignDoc } from './useCampaignDoc';
 
 const CampaignMapsSection = () => {
-  const [campaign] = useCampaignDoc();
+  const { campaign } = useCampaignDoc();
 
   const maxAchievedIndex = campaignMaps.findLastIndex((v) =>
     campaign?.achievedMaps?.includes(v.id),

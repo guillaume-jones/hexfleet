@@ -1,5 +1,5 @@
 import { doc, setDoc } from 'firebase/firestore';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
@@ -9,11 +9,10 @@ import { auth, firestore } from 'src/firebase/firebaseApp';
 
 export const useCampaignDoc = () => {
   const [user] = useIdToken(auth);
-  const data = useDocumentData<Partial<Campaign>>(
-    user && doc(firestore, 'campaigns', user.uid),
-  );
 
-  const [loading, campaign] = data;
+  const docRef = user && doc(firestore, 'campaigns', user.uid);
+
+  const [campaign, loading] = useDocumentData<Partial<Campaign>>(docRef);
 
   useEffect(() => {
     if (loading || campaign || !user) return;
@@ -29,5 +28,10 @@ export const useCampaignDoc = () => {
     createCampaign().catch(console.error);
   }, [loading, campaign, user]);
 
-  return data;
+  const setCampaign = useCallback(
+    (newGame: Partial<Campaign>) =>
+      docRef && setDoc(docRef, newGame, { merge: true }),
+    [docRef],
+  );
+  return { campaign, loading, setCampaign };
 };

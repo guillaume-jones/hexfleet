@@ -11,7 +11,7 @@ export const updateBoardTurn = ({
   nextTurns,
   players,
 }: {
-  game: Game;
+  game: Pick<Game, 'boardSize' | 'boardState' | 'players'>;
   nextTurns: NextTurn[];
   // Expects player ids to be in same order as nextTurns
   players: string[];

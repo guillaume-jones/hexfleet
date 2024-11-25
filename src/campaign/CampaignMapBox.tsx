@@ -26,7 +26,7 @@ type CampaignMapProps = {
 
 const CampaignMapBox = ({ campaignMap }: CampaignMapProps) => {
   const [user] = useIdToken(auth);
-  const [campaign, campaignLoading] = useCampaignDoc();
+  const { campaign, loading: campaignLoading } = useCampaignDoc();
   const { game, loading: gameLoading } = useCampaignGameDoc(campaignMap.id);
 
   const router = useRouter();
@@ -59,6 +59,8 @@ const CampaignMapBox = ({ campaignMap }: CampaignMapProps) => {
     return { achieved, upNext, locked };
   }, [campaign?.achievedMaps, campaignMap.id]);
 
+  const inProgress = game?.endedAt === null;
+
   return (
     <div
       id={`campaign-map-${campaignMap.id}`}
@@ -80,43 +82,51 @@ const CampaignMapBox = ({ campaignMap }: CampaignMapProps) => {
             board={boardPreview}
             boardSize={campaignMap.boardSize}
           />
-          <Button
-            className="w-36"
-            light={!upNext}
-            disabled={locked}
-            loading={redirectLoading}
-            onClick={() => {
-              const asyncfunction = async () => {
-                if (!game) {
-                  console.info('Creating new campaign game.');
+          <div className="flex flex-row justify-center gap-4">
+            <Button
+              className="w-36"
+              light={!upNext && !inProgress}
+              disabled={locked}
+              loading={redirectLoading}
+              onClick={() => {
+                const asyncfunction = async () => {
                   const success = await createCampaignGame(campaignMap.id);
 
                   if (!success) throw Error('Failed to create campaign game.');
-                }
 
-                await router.push(`/campaign/${campaignMap.id}`);
-              };
+                  await router.push(`/campaign/${campaignMap.id}`);
+                };
 
-              setRedirectLoading(true);
-              asyncfunction()
-                .catch(console.error)
-                .finally(() => setRedirectLoading(false));
-            }}>
-            <div className="flex flex-row gap-2">
-              {locked ? (
-                <LockClosedIcon className="h-6 w-6 text-zinc-950" />
-              ) : (
-                <p>
-                  {game?.endedAt === null
-                    ? 'Continue Game'
-                    : achieved
-                    ? 'Play Again'
-                    : 'Start Game'}
-                </p>
-              )}
-              {achieved && <ArrowPathIcon className="h-6 w-6 text-zinc-950" />}
-            </div>
-          </Button>
+                setRedirectLoading(true);
+                asyncfunction()
+                  .catch(console.error)
+                  .finally(() => setRedirectLoading(false));
+              }}>
+              <div className="flex flex-row gap-2">
+                {locked ? (
+                  <LockClosedIcon className="h-6 w-6 text-zinc-950" />
+                ) : (
+                  <p>
+                    {inProgress
+                      ? 'Continue Game'
+                      : achieved
+                      ? 'Play Again'
+                      : 'Start Game'}
+                  </p>
+                )}
+                {achieved && !inProgress && (
+                  <ArrowPathIcon className="h-6 w-6 text-zinc-950" />
+                )}
+              </div>
+            </Button>
+            {game?.winner && (
+              <Button
+                light
+                onClick={() => void router.push(`/campaign/${campaignMap.id}`)}>
+                View Game
+              </Button>
+            )}
+          </div>
         </>
       )}
     </div>

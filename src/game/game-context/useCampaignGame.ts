@@ -3,6 +3,7 @@ import { Timestamp } from 'firebase/firestore';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
+  Game,
   NextTurn,
   TileCoords,
   TileWithPressure,
@@ -11,11 +12,20 @@ import { updateBoardTurn } from 'functions/src/game-logic/updateBoardTurn';
 
 import { getAiNextTurn } from 'src/ai/next-ai-turn';
 import { defaultAiConstants } from 'src/ai/training/ai-constants';
+import { useCampaignDoc } from 'src/campaign/useCampaignDoc';
 import { useCampaignGameDoc } from 'src/campaign/useCampaignGameDoc';
 import { auth } from 'src/firebase/firebaseApp';
 
+const isFullGame = (game: Partial<Game>): game is Game => {
+  return (
+    !!game.boardSize && !!game.boardState && !!game.players && !!game.pastTurns
+  );
+};
+
 export const useCampaignGame = (gameId: string) => {
   const { game, setGame } = useCampaignGameDoc(gameId);
+  const { campaign, setCampaign } = useCampaignDoc();
+
   const [nextTurn, setNextTurn] = useState<NextTurn>();
   const [wasPlaying, setWasPlaying] = useState(false);
   const [waitingForAI, setWaitingForAI] = useState(false);
@@ -44,7 +54,7 @@ export const useCampaignGame = (gameId: string) => {
       console.error('User not loaded.');
       return;
     }
-    if (!game || !nextTurn) {
+    if (!game || !nextTurn || !isFullGame(game)) {
       console.error('Game or user next turn not loaded.');
       return;
     }
@@ -64,15 +74,29 @@ export const useCampaignGame = (gameId: string) => {
       ...game,
       boardState: newBoardState,
       players: newPlayers,
-      pastTurns: game.pastTurns.concat({ boardState: game.boardState }),
+      pastTurns: [...(game.pastTurns ?? []), { boardState: game.boardState }],
       winner,
       endedAt: winner ? Timestamp.now() : null,
     };
 
+    if (winner && winner !== aiId) {
+      await setCampaign({
+        achievedMaps: [...(campaign?.achievedMaps ?? []), gameId],
+      });
+    }
+
     await setGame(newGame);
     setWaitingForAI(false);
     resetNextTurn();
-  }, [game, nextTurn, setGame, resetNextTurn]);
+  }, [
+    game,
+    nextTurn,
+    setGame,
+    resetNextTurn,
+    campaign?.achievedMaps,
+    setCampaign,
+    gameId,
+  ]);
 
   const updateNextTurn = useCallback(
     (tile: TileWithPressure<TileCoords>) => {
@@ -96,7 +120,7 @@ export const useCampaignGame = (gameId: string) => {
 
     const newGame = {
       ...game,
-      players: game.players.map((p) =>
+      players: game?.players?.map((p) =>
         p.id === aiId ? { ...p, dead: true } : p,
       ),
       winner: aiId,

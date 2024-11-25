@@ -73,7 +73,7 @@ const generateTurn = ({
 
 /** How many boards should be simulated each turn */
 export const getAiNextTurn = (
-  { boardSize, boardState }: Game,
+  { boardSize, boardState }: Pick<Game, 'boardSize' | 'boardState'>,
   constants: AIConstants,
 ): NextTurn => {
   const influences = getAiInfluence({
