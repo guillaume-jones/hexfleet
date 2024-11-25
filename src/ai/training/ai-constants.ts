@@ -1,15 +1,15 @@
 export const adjustableConstants = {
   // Enemy probability calculations
-  defensiveMeans: [1.436, 15.026, 11.365, 1000],
-  defensiveVariances: [3.313, 5.684, 6.776, 0.001],
-  offensiveMeans: [1.698, 5.594, 8.959, 20.352],
-  offensiveVariances: [2.428, 6.211, 7.372, 3.672],
-  zeroSpend: 21.6,
+  defensiveMeans: [1.45, 9, 10, 1000],
+  defensiveVariances: [3.3, 4.5, 5, 0.001],
+  offensiveMeans: [1.7, 4.8, 8.3, 21],
+  offensiveVariances: [2.7, 5.4, 7, 3.68],
+  zeroSpend: 20,
 
   // Gains & losses
-  homeworldValue: 75.747,
+  homeworldValue: 75,
   neighborFactor: 0.2,
-  disableFactor: 0.719,
+  disableFactor: 0.78,
 };
 
 export const fixedConstants = {

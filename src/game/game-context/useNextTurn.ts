@@ -36,6 +36,7 @@ const useNextTurn = (gameId: string) => {
     // Tries to load next turn from server
     if (sentNextTurn) {
       setNextTurn(sentNextTurn as NextTurn);
+      setWasPlaying(true);
       return;
     }
 
@@ -43,6 +44,7 @@ const useNextTurn = (gameId: string) => {
     const localNextTurn = localStorage.getItem(nextTurnKey);
     if (localNextTurn) {
       setNextTurn(JSON.parse(localNextTurn) as NextTurn);
+      setWasPlaying(true);
       return;
     }
 

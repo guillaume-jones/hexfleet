@@ -9,7 +9,7 @@ import usePlayers from './usePlayers';
 
 import { auth } from 'src/firebase/firebaseApp';
 
-const useSinglePlayerProvider = (gameId: string): GameContextType => {
+const useCampaignProvider = (gameId: string): GameContextType => {
   const [user] = useIdToken(auth);
 
   const gameParams = useCampaignGame(gameId);
@@ -38,14 +38,14 @@ const useSinglePlayerProvider = (gameId: string): GameContextType => {
   };
 };
 
-export const SinglePlayerProvider = ({
+export const CampaignProvider = ({
   gameId,
   children,
 }: {
   gameId: string;
   children: ReactNode;
 }) => {
-  const value = useSinglePlayerProvider(gameId);
+  const value = useCampaignProvider(gameId);
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 };

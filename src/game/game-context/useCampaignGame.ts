@@ -1,9 +1,8 @@
-import { aiId, createCampaignGame } from '../create-game/createGame';
-import { Timestamp, addDoc, collection } from 'firebase/firestore';
+import { aiId } from '../create-game/createGame';
+import { Timestamp } from 'firebase/firestore';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
-  Game,
   NextTurn,
   TileCoords,
   TileWithPressure,
@@ -12,53 +11,33 @@ import { updateBoardTurn } from 'functions/src/game-logic/updateBoardTurn';
 
 import { getAiNextTurn } from 'src/ai/next-ai-turn';
 import { defaultAiConstants } from 'src/ai/training/ai-constants';
-import { auth, firestore } from 'src/firebase/firebaseApp';
-
-export const spNextTurnKey = (id: string) => `sp-next-turn-${id}`;
-export const spGameKey = (id: string) => `sp-game-${id}`;
+import { useCampaignGameDoc } from 'src/campaign/useCampaignGameDoc';
+import { auth } from 'src/firebase/firebaseApp';
 
 export const useCampaignGame = (gameId: string) => {
-  const [game, setGame] = useState<Game>();
+  const { game, setGame } = useCampaignGameDoc(gameId);
   const [nextTurn, setNextTurn] = useState<NextTurn>();
   const [wasPlaying, setWasPlaying] = useState(false);
   const [waitingForAI, setWaitingForAI] = useState(false);
 
+  const spNextTurnKey = useMemo(() => {
+    return `sp-next-turn-${gameId}`;
+  }, [gameId]);
+
   useEffect(() => {
     // Tries to load game & next turn from local storage on reload
-    const localNextTurn = localStorage.getItem(spNextTurnKey(gameId));
-    const localGame = localStorage.getItem(spGameKey(gameId));
-    if (localGame) {
-      setGame(JSON.parse(localGame) as Game);
-    } else {
-      setGame(createCampaignGame(gameId));
-    }
+    const localNextTurn = localStorage.getItem(spNextTurnKey);
+
     if (localNextTurn) {
       setNextTurn(JSON.parse(localNextTurn) as NextTurn);
       setWasPlaying(true);
     }
-  }, [gameId]);
+  }, [spNextTurnKey]);
 
   const resetNextTurn = useCallback(() => {
     setNextTurn(undefined);
-    localStorage.removeItem(spNextTurnKey(gameId));
-  }, [gameId]);
-
-  const endGame = useCallback(
-    async (game: Game) => {
-      const gameToSave = {
-        ...game,
-        createdAt: Timestamp.fromMillis(game.createdAt.seconds * 1000),
-        startedAt:
-          game.startedAt && Timestamp.fromMillis(game.startedAt.seconds * 1000),
-        endedAt: Timestamp.now(),
-      };
-      await addDoc(collection(firestore, 'games'), gameToSave);
-
-      localStorage.removeItem(spNextTurnKey(gameId));
-      localStorage.removeItem(spGameKey(gameId));
-    },
-    [gameId],
-  );
+    localStorage.removeItem(spNextTurnKey);
+  }, [spNextTurnKey]);
 
   const sendNextTurn = useCallback(async () => {
     if (!auth.currentUser) {
@@ -87,16 +66,13 @@ export const useCampaignGame = (gameId: string) => {
       players: newPlayers,
       pastTurns: game.pastTurns.concat({ boardState: game.boardState }),
       winner,
+      endedAt: winner ? Timestamp.now() : null,
     };
 
-    if (winner) await endGame(newGame);
-
-    setGame(newGame);
-    localStorage.setItem(spGameKey(gameId), JSON.stringify(newGame));
-
+    await setGame(newGame);
     setWaitingForAI(false);
     resetNextTurn();
-  }, [game, nextTurn, gameId, resetNextTurn, endGame]);
+  }, [game, nextTurn, setGame, resetNextTurn]);
 
   const updateNextTurn = useCallback(
     (tile: TileWithPressure<TileCoords>) => {
@@ -108,15 +84,11 @@ export const useCampaignGame = (gameId: string) => {
         if (tile.pressure || tile.clear) newPressures.push(tile);
 
         const newNextTurn = { pressures: newPressures };
-        localStorage.setItem(
-          spNextTurnKey(gameId),
-          JSON.stringify(newNextTurn),
-        );
-
+        localStorage.setItem(spNextTurnKey, JSON.stringify(newNextTurn));
         return newNextTurn;
       });
     },
-    [gameId],
+    [spNextTurnKey],
   );
 
   const updatePlayer = useCallback(async () => {
@@ -128,10 +100,11 @@ export const useCampaignGame = (gameId: string) => {
         p.id === aiId ? { ...p, dead: true } : p,
       ),
       winner: aiId,
+      endedAt: Timestamp.now(),
     };
-    setGame(newGame);
-    await endGame(newGame);
-  }, [endGame, game]);
+    await setGame(newGame);
+    resetNextTurn();
+  }, [game, resetNextTurn, setGame]);
 
   return useMemo(
     () => ({

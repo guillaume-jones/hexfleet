@@ -1,7 +1,6 @@
 import { BoardOptions, generateBoard } from '../board/generateBoard';
-import { spGameKey } from '../game-context/useCampaignGame';
-import { Timestamp, addDoc, collection } from 'firebase/firestore';
-import { customAlphabet, nanoid } from 'nanoid';
+import { Timestamp, addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { customAlphabet } from 'nanoid';
 
 import { Game } from 'functions/src/document-types/Games';
 import {
@@ -25,7 +24,10 @@ export const defaultGameOptions = {
   playerCount: 2,
 };
 
-const createGame = (boardOptions: BoardOptions): Game | undefined => {
+const createGame = (
+  boardOptions: BoardOptions,
+  gameOptions?: Partial<Game>,
+): Game | undefined => {
   const id = auth.currentUser?.uid;
 
   if (!id) {
@@ -41,16 +43,16 @@ const createGame = (boardOptions: BoardOptions): Game | undefined => {
     createdAt: Timestamp.now(),
     startedAt: null,
     endedAt: null,
-    pastTurns: [],
-    players: [{ ...defaultPlayer, id }],
     shortId: shortIdGenerator(),
     winner: null,
+    pastTurns: [],
+    ...gameOptions,
+    players: [...(gameOptions?.players ?? []), { ...defaultPlayer, id }],
   };
 };
 
 export const createOnlineGame = async (boardOptions: BoardOptions) => {
   const game = createGame(boardOptions);
-
   if (!game) return;
 
   const docRef = await addDoc(collection(firestore, 'games'), game);
@@ -58,24 +60,25 @@ export const createOnlineGame = async (boardOptions: BoardOptions) => {
   return { id: docRef.id, shortId: game.shortId };
 };
 
-export const createCampaignGame = (gameId: string) => {
-  const campaignMap = campaignMaps.find(({ id }) => id === gameId);
+export const createCampaignGame = async (gameId: string) => {
+  const id = auth.currentUser?.uid;
+  if (!id) return;
 
+  const campaignMap = campaignMaps.find(({ id }) => id === gameId);
   if (!campaignMap) return;
 
-  const game = createGame(campaignMap);
-  const id = nanoid(20);
-
+  const game = createGame(campaignMap, {
+    shortId: gameId,
+    hasStarted: true,
+    startedAt: Timestamp.now(),
+    players: [{ ...defaultPlayer, id: aiId }],
+  });
   if (!game) return;
 
-  game.players.unshift({ ...defaultPlayer, id: aiId });
   game.boardState = addPlayersToBoard(game);
-  game.hasStarted = true;
-  game.startedAt = Timestamp.now();
+  await setDoc(doc(firestore, 'campaigns', id, 'games', gameId), game);
 
-  localStorage.setItem(spGameKey(id), JSON.stringify(game));
-
-  return game;
+  return { gameId };
 };
 
 export const createAIGame = (

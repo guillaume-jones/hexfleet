@@ -19,7 +19,7 @@ export type SimulationOptions = {
 export const defaultSimulationOptions: SimulationOptions = {
   boardSize: 9,
   matchesPerMatchup: 5,
-  maxTurnsPerGame: 15,
+  maxTurnsPerGame: 20,
   fractionToKeep: 0.2,
   evolutionRate: 0.05,
   populationSize: 10,

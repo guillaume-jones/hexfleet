@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import GameDisplay from 'src/game/GameDisplay';
-import { SinglePlayerProvider } from 'src/game/game-context/SinglePlayerContext';
+import { CampaignProvider } from 'src/game/game-context/CampaignContext';
 
 export default function Game() {
   const { query } = useRouter();
@@ -14,9 +14,9 @@ export default function Game() {
         <title>HexFleet - Singleplayer</title>
       </Head>
       {typeof gameId === 'string' && (
-        <SinglePlayerProvider gameId={gameId}>
+        <CampaignProvider gameId={gameId}>
           <GameDisplay />
-        </SinglePlayerProvider>
+        </CampaignProvider>
       )}
     </>
   );
