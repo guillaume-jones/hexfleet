@@ -36,8 +36,8 @@ const CampaignMapBox = ({ campaignMap }: CampaignMapProps) => {
     let boardState = game?.boardState;
     if (!boardState) {
       const players = [
-        { id: user?.uid ?? 'abc', ...defaultPlayer },
         { id: aiId, ...defaultPlayer },
+        { id: user?.uid ?? 'abc', ...defaultPlayer },
       ];
 
       boardState = addPlayersToBoard({ ...campaignMap, players });

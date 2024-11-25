@@ -8,8 +8,8 @@ import GameCodeBox from './game-elements/GameCodeBox';
 import GameEndModal from './game-elements/GameEndModal';
 import HelpBox from './game-elements/HelpBox';
 import PlayersBox from './game-elements/PlayersBox';
-import RematchButton from './game-elements/RematchButton';
 import TurnBox from './game-elements/TurnBox';
+import RematchButton from './game-elements/rematch-button/RematchButton';
 
 import AnonymousGameWarning from 'src/login/AnonymousGameWarning';
 

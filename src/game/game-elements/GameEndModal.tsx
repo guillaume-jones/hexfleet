@@ -1,7 +1,7 @@
 import { GameContext } from '../game-context/GameContext';
 import { useContext, useEffect, useState } from 'react';
 
-import RematchButton from './RematchButton';
+import RematchButton from './rematch-button/RematchButton';
 
 import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
@@ -40,7 +40,7 @@ const GameEndModal = () => {
             : 'You were unable to resist your foes. Perhaps another galaxy beckons?'}
         </p>
         <div className="flex justify-between">
-          <RematchButton />
+          <RematchButton onRematch={() => setOpen(false)} />
           <Button light onClick={() => setOpen(false)}>
             View board
           </Button>

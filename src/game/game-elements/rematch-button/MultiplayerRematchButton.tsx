@@ -1,11 +1,11 @@
-import CreateNewGame from '../create-game/CreateNewGame';
-import { GameContext } from '../game-context/GameContext';
+import CreateNewGame from '../../create-game/CreateNewGame';
+import { GameContext } from '../../game-context/GameContext';
 import { useContext, useState } from 'react';
 
 import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
 
-const RematchButton = () => {
+const MultiplayerRematchButton = () => {
   const { players } = useContext(GameContext);
 
   const [open, setOpen] = useState(false);
@@ -23,4 +23,4 @@ const RematchButton = () => {
   );
 };
 
-export default RematchButton;
+export default MultiplayerRematchButton;
