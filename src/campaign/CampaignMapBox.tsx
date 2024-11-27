@@ -61,7 +61,7 @@ const CampaignMapBox = ({ mapId }: CampaignMapProps) => {
     );
 
     const upNext = index === maxAchievedIndex + 1;
-    const locked = index > maxAchievedIndex + 1;
+    const locked = index > maxAchievedIndex + 2;
 
     return { achieved, upNext, locked };
   }, [campaign?.achievedMaps, mapId]);
@@ -71,9 +71,9 @@ const CampaignMapBox = ({ mapId }: CampaignMapProps) => {
   return (
     <div
       id={`campaign-map-${mapId}`}
-      className={`relative flex min-h-96 min-w-80 flex-col items-center gap-4 rounded-lg bg-zinc-800 p-4 ${
-        locked ? 'opacity-50' : ''
-      }`}>
+      className={`relative flex min-h-96 min-w-80 flex-col items-center gap-4 rounded-lg  ${
+        upNext ? 'bg-violet-950 bg-opacity-50' : 'bg-zinc-900'
+      } p-4 ${locked ? 'opacity-50' : ''} ${achieved ? 'bg-opacity-50' : ''}`}>
       <h3
         className={`text-xl font-semibold ${achieved ? 'text-green-400' : ''}`}>
         {campaignMap?.title}
@@ -118,7 +118,9 @@ const CampaignMapBox = ({ mapId }: CampaignMapProps) => {
                       ? 'Continue Game'
                       : achieved
                       ? 'Play Again'
-                      : 'Start Game'}
+                      : upNext
+                      ? 'Start Game'
+                      : 'Skip to Map'}
                   </p>
                 )}
                 {achieved && !inProgress && (

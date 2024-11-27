@@ -52,26 +52,34 @@ const ClickableBoard = ({
             onContextMenu={(e) => e.preventDefault()}
             onMouseUp={(e) => {
               const button = e.button;
-              // Left/right click to assign players
+              // Left/right click to assign or clear players
               if (button === 0 || button === 2) {
                 setBoardState((prevBoard) =>
                   prevBoard.map((tile) => {
                     if (tile.x === x && tile.y === y) {
+                      const newPlayerId = button ? playerIds[0] : playerIds[1];
                       return {
                         ...tile,
-                        playerId: button ? playerIds[0] : playerIds[1],
+                        ...(newPlayerId === tile.playerId
+                          ? { playerId: undefined }
+                          : {
+                              playerId: newPlayerId,
+                            }),
                       };
                     }
                     return tile;
                   }),
                 );
               }
-              // Middle click to clear players
+              // Middle click to change homeworlds
               else if (button === 1) {
                 setBoardState((prevBoard) =>
                   prevBoard.map((tile) => {
                     if (tile.x === x && tile.y === y) {
-                      return { ...tile, playerId: undefined };
+                      return {
+                        ...tile,
+                        homeworld: tile.homeworld ? undefined : true,
+                      };
                     }
                     return tile;
                   }),

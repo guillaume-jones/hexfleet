@@ -43,8 +43,8 @@ export default function AiTraining() {
       <div className="mx-12 mt-8 flex flex-1 flex-col gap-4">
         <h1 className={'text-3xl font-semibold text-zinc-50'}>Map Editor</h1>
         <div className="flex gap-6">
-          <div className="flex w-20 flex-col gap-2">
-            <p className="font-semibold">Influence:</p>
+          <div className="flex w-20 flex-col">
+            <p className="font-semibold">Influence</p>
             <div className="flex justify-between">
               <p>AI:</p>
               <p>{influenceByPlayer[aiId]}</p>
@@ -54,7 +54,7 @@ export default function AiTraining() {
               <p>{influenceByPlayer[playerId]}</p>
             </div>
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
             <div className="flex gap-2">
               <p className="font-semibold">Board Size:</p>
 
@@ -76,7 +76,7 @@ export default function AiTraining() {
               max={15}
             />
           </div>
-          <p className="min-w-24 font-semibold">Load a Map:</p>
+          <p className="font-semibold">Load Map:</p>
           <div className="flex flex-1 flex-row gap-2 overflow-x-scroll">
             {campaignMaps.map((map) => {
               const withBorders = addBordersToBoard(
@@ -91,7 +91,7 @@ export default function AiTraining() {
                   onClick={() => {
                     setBoardState(map.boardState), setBoardSize(map.boardSize);
                   }}>
-                  <p className="font-semibold">{map.title}</p>
+                  <p className="text-sm font-semibold">{map.title}</p>
                   <SimpleHexBoard
                     board={withBorders}
                     boardSize={map.boardSize}
