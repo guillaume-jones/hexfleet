@@ -7,12 +7,10 @@ import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
 
-import { aiId, campaignMaps, getCampaignMapForUser } from './campaign-maps';
+import { campaignMaps, getCampaignMapForUser } from './campaign-maps';
 import { useCampaignDoc } from './useCampaignDoc';
 import { useCampaignGameDoc } from './useCampaignGameDoc';
-import { defaultPlayer } from 'functions/src/game-logic/GameConstants';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
-import { addPlayersToBoard } from 'functions/src/game-logic/addPlayersToBoard';
 
 import Button from 'src/components/interactive/Button';
 import LargeSpinner from 'src/components/other/LargeSpinner';
@@ -26,31 +24,21 @@ type CampaignMapProps = {
 
 const CampaignMapBox = ({ mapId }: CampaignMapProps) => {
   const [user] = useIdToken(auth);
+
+  const router = useRouter();
+  const [redirectLoading, setRedirectLoading] = useState(false);
+
   const { campaign, loading: campaignLoading } = useCampaignDoc();
+  const { game, setGame, loading: gameLoading } = useCampaignGameDoc(mapId);
 
   const campaignMap = useMemo(
     () => getCampaignMapForUser(mapId, user?.uid),
     [mapId, user?.uid],
   );
-  const { game, loading: gameLoading } = useCampaignGameDoc(mapId);
-
-  const router = useRouter();
-  const [redirectLoading, setRedirectLoading] = useState(false);
-
-  const boardPreview = useMemo(() => {
-    if (!campaignMap) return;
-
-    let boardState = game?.boardState;
-    if (!boardState) {
-      const players = [
-        { id: aiId, ...defaultPlayer },
-        { id: user?.uid ?? 'abc', ...defaultPlayer },
-      ];
-
-      boardState = addPlayersToBoard({ ...campaignMap, players });
-    }
-    return addBordersToBoard(boardState, campaignMap.boardSize);
-  }, [game, campaignMap, user?.uid]);
+  const boardPreview = useMemo(
+    () => addBordersToBoard(campaignMap?.boardState, campaignMap?.boardSize),
+    [campaignMap],
+  );
 
   const { achieved, upNext, locked } = useMemo(() => {
     const achieved = !!campaign?.achievedMaps?.includes(mapId);
@@ -97,10 +85,11 @@ const CampaignMapBox = ({ mapId }: CampaignMapProps) => {
               loading={redirectLoading}
               onClick={() => {
                 const asyncfunction = async () => {
-                  const success = await createCampaignGame(campaignMap.id);
+                  const game = createCampaignGame(campaignMap.id);
 
-                  if (!success) throw Error('Failed to create campaign game.');
+                  if (!game) throw Error('Failed to create campaign game.');
 
+                  await setGame(game);
                   await router.push(`/campaign/${campaignMap.id}`);
                 };
 

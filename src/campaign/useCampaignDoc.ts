@@ -1,11 +1,16 @@
 import { doc, setDoc } from 'firebase/firestore';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 
 import { Campaign } from 'functions/src/document-types/Campaign';
 
 import { auth, firestore } from 'src/firebase/firebaseApp';
+
+const newCampaign: Campaign = {
+  achievedMaps: [],
+  finishedCampaign: null,
+};
 
 export const useCampaignDoc = () => {
   const [user] = useIdToken(auth);
@@ -14,24 +19,16 @@ export const useCampaignDoc = () => {
 
   const [campaign, loading] = useDocumentData<Partial<Campaign>>(docRef);
 
-  useEffect(() => {
-    if (loading || campaign || !user) return;
-
-    const createCampaign = async () => {
-      const newCampaign: Campaign = {
-        achievedMaps: [],
-        finishedCampaign: null,
-      };
-      await setDoc(doc(firestore, 'campaigns', user.uid), newCampaign);
-    };
-
-    createCampaign().catch(console.error);
-  }, [loading, campaign, user]);
-
   const setCampaign = useCallback(
-    (newGame: Partial<Campaign>) =>
-      docRef && setDoc(docRef, newGame, { merge: true }),
-    [docRef],
+    async (update: Partial<Campaign>) => {
+      if (!docRef) return;
+
+      const newDoc = campaign ? update : { ...newCampaign, ...update };
+
+      await setDoc(docRef, newDoc, { merge: true });
+    },
+    [campaign, docRef],
   );
+
   return { campaign, loading, setCampaign };
 };

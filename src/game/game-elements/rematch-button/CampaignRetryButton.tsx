@@ -15,7 +15,7 @@ const CampaignRetryButton = ({ onRematch }: CampaignRetryButtonProps) => {
 
   const gameId = router.query.gameId as string;
 
-  const { game, deleteGame } = useCampaignGameDoc(gameId);
+  const { game, setGame, deleteGame } = useCampaignGameDoc(gameId);
 
   const [loading, setLoading] = useState(false);
 
@@ -39,7 +39,11 @@ const CampaignRetryButton = ({ onRematch }: CampaignRetryButtonProps) => {
             }
 
             await deleteGame();
-            await createCampaignGame(gameId);
+
+            const newGame = createCampaignGame(gameId);
+            if (!newGame) throw Error('Failed to create campaign game.');
+
+            await setGame(newGame);
           };
 
           setLoading(true);

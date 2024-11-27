@@ -1,5 +1,5 @@
 import { BoardOptions, generateBoard } from '../board/generateBoard';
-import { Timestamp, addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { customAlphabet } from 'nanoid';
 
 import { Game } from 'functions/src/document-types/Games';
@@ -58,24 +58,19 @@ export const createOnlineGame = async (boardOptions: BoardOptions) => {
   return { id: docRef.id, shortId: game.shortId };
 };
 
-export const createCampaignGame = async (gameId: string) => {
+export const createCampaignGame = (gameId: string) => {
   const userId = auth.currentUser?.uid;
   if (!userId) return;
 
   const campaignMap = getCampaignMapForUser(gameId, userId);
   if (!campaignMap) return;
 
-  const game = createGame(campaignMap, {
+  return createGame(campaignMap, {
     shortId: gameId,
     hasStarted: true,
     startedAt: Timestamp.now(),
     players: [{ ...defaultPlayer, id: aiId }],
   });
-  if (!game) return;
-
-  await setDoc(doc(firestore, 'campaigns', userId, 'games', gameId), game);
-
-  return { gameId };
 };
 
 export const createAIGame = (
