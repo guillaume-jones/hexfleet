@@ -1,7 +1,8 @@
-import { aiId, createCampaignGame } from '../../create-game/createGame';
+import { createCampaignGame } from '../../create-game/createGame';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
+import { aiId } from 'src/campaign/campaign-maps';
 import { useCampaignGameDoc } from 'src/campaign/useCampaignGameDoc';
 import Button from 'src/components/interactive/Button';
 

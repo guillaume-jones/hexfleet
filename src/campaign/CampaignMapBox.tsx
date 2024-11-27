@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { useIdToken } from 'react-firebase-hooks/auth';
 
-import { campaignMaps, getCampaignMapForUser } from './campaign-maps';
+import { aiId, campaignMaps, getCampaignMapForUser } from './campaign-maps';
 import { useCampaignDoc } from './useCampaignDoc';
 import { useCampaignGameDoc } from './useCampaignGameDoc';
 import { defaultPlayer } from 'functions/src/game-logic/GameConstants';
@@ -18,7 +18,7 @@ import Button from 'src/components/interactive/Button';
 import LargeSpinner from 'src/components/other/LargeSpinner';
 import { auth } from 'src/firebase/firebaseApp';
 import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
-import { aiId, createCampaignGame } from 'src/game/create-game/createGame';
+import { createCampaignGame } from 'src/game/create-game/createGame';
 
 type CampaignMapProps = {
   mapId: string;

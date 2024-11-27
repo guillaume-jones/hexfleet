@@ -1,4 +1,3 @@
-import { aiId } from '../create-game/createGame';
 import { Timestamp } from 'firebase/firestore';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -12,6 +11,7 @@ import { updateBoardTurn } from 'functions/src/game-logic/updateBoardTurn';
 
 import { getAiNextTurn } from 'src/ai/next-ai-turn';
 import { defaultAiConstants } from 'src/ai/training/ai-constants';
+import { aiId } from 'src/campaign/campaign-maps';
 import { useCampaignDoc } from 'src/campaign/useCampaignDoc';
 import { useCampaignGameDoc } from 'src/campaign/useCampaignGameDoc';
 import { auth } from 'src/firebase/firebaseApp';

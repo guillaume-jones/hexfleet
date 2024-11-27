@@ -1,13 +1,14 @@
 import { Tile } from 'functions/src/document-types/Games';
 
-import { aiId } from 'src/game/create-game/createGame';
-
 export type CampaignMap = {
   id: string;
   title: string;
   boardSize: number;
   boardState: Tile[];
 };
+
+export const aiId = 'AI';
+export const playerId = 'playerId';
 
 export const campaignMaps: CampaignMap[] = [
   {

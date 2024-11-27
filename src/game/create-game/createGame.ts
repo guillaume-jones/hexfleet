@@ -9,15 +9,13 @@ import {
 } from 'functions/src/game-logic/GameConstants';
 import { addPlayersToBoard } from 'functions/src/game-logic/addPlayersToBoard';
 
-import { getCampaignMapForUser } from 'src/campaign/campaign-maps';
+import { aiId, getCampaignMapForUser } from 'src/campaign/campaign-maps';
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
 const shortIdGenerator = customAlphabet(
   '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ',
   shortIdLength,
 );
-
-export const aiId = 'AI';
 
 export const defaultGameOptions = {
   boardSize: 9,

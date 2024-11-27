@@ -6,14 +6,13 @@ import { defaultPlayer } from 'functions/src/game-logic/GameConstants';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
 import { addPlayersToBoard } from 'functions/src/game-logic/addPlayersToBoard';
 
-import { campaignMaps } from 'src/campaign/campaign-maps';
+import { aiId, campaignMaps, playerId } from 'src/campaign/campaign-maps';
 import Range from 'src/components/interactive/Range';
 import ClickableBoard from 'src/game/board/ClickableBoard';
 import SimpleHexBoard from 'src/game/board/SimpleHexBoard';
 import { generateBoard } from 'src/game/board/generateBoard';
-import { aiId } from 'src/game/create-game/createGame';
 
-const playerIds = [aiId, 'playerId'];
+const playerIds = [aiId, playerId];
 const players = playerIds.map((id) => ({ ...defaultPlayer, id }));
 const initialBoardSize = 9;
 

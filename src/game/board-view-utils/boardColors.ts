@@ -1,6 +1,7 @@
-import { aiId } from '../create-game/createGame';
 import randomColor from 'randomcolor';
 import tinycolor from 'tinycolor2';
+
+import { aiId } from 'src/campaign/campaign-maps';
 
 const defaultColor = '#52525b';
 const defaultClickableFill = '#26262b';
