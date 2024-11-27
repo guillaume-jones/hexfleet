@@ -8,12 +8,12 @@ import HexBoardTile from './HexBoardTile';
 import { getBoardParameters } from './getBoardParameters';
 import { Tile, TileWithBorders } from 'functions/src/document-types/Games';
 
-type HexagonalBoardProps = {
+type SimpleHexBoardProps = {
   board?: TileWithBorders<Tile>[];
   boardSize?: number;
 };
 
-const SimpleHexBoard = ({ board, boardSize }: HexagonalBoardProps) => {
+const SimpleHexBoard = ({ board, boardSize }: SimpleHexBoardProps) => {
   if (!board || !boardSize) return null;
 
   const { d, r, R, halfBoardSize, viewBoxW, viewBoxH, baseStrokeWidth } =

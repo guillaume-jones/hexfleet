@@ -75,7 +75,6 @@ export const createCampaignGame = async (gameId: string) => {
   });
   if (!game) return;
 
-  game.boardState = addPlayersToBoard(game);
   await setDoc(doc(firestore, 'campaigns', id, 'games', gameId), game);
 
   return { gameId };

@@ -14,6 +14,7 @@ export default function Range({
   showValue,
   className = '',
   containerClassname = '',
+  onChange,
 }: {
   value: number;
   setValue: Dispatch<SetStateAction<number>>;
@@ -26,6 +27,7 @@ export default function Range({
   showValue?: boolean;
   className?: string;
   containerClassname?: string;
+  onChange?: (value: number) => void;
 }) {
   return (
     <div
@@ -34,13 +36,21 @@ export default function Range({
       {showValue && <p className="font-bold">{value}</p>}
       <input
         onWheel={(e) => {
-          setValue((prev) =>
-            clamp(prev + step * (e.deltaY > 0 ? -1 : 1), min, max),
+          const newValue = clamp(
+            value + step * (e.deltaY > 0 ? -1 : 1),
+            min,
+            max,
           );
+          setValue(newValue);
+          onChange?.(newValue);
         }}
         type="range"
         value={value}
-        onChange={(e) => setValue(parseInt(e.target.value))}
+        onChange={(e) => {
+          const newValue = parseInt(e.target.value);
+          setValue(newValue);
+          onChange?.(newValue);
+        }}
         min={min}
         max={max}
         step={step}
