@@ -22,7 +22,6 @@ const ClickableBoard = ({
   setBoardState,
   boardSize,
   playerIds,
-  shouldConsoleOnClick,
 }: ClickableBoardProps) => {
   const { d, r, R, halfBoardSize, viewBoxW, viewBoxH, baseStrokeWidth } =
     useMemo(() => getBoardParameters(boardSize), [boardSize]);
@@ -60,7 +59,7 @@ const ClickableBoard = ({
                     if (tile.x === x && tile.y === y) {
                       return {
                         ...tile,
-                        playerId: button ? playerIds[1] : playerIds[0],
+                        playerId: button ? playerIds[0] : playerIds[1],
                       };
                     }
                     return tile;
@@ -78,8 +77,6 @@ const ClickableBoard = ({
                   }),
                 );
               }
-
-              if (shouldConsoleOnClick) console.info(boardState);
             }}>
             <HexBoardTile
               {...tile}

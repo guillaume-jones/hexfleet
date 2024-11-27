@@ -1,10 +1,11 @@
 import Head from 'next/head';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { BoardState } from 'functions/src/document-types/Games';
 import { defaultPlayer } from 'functions/src/game-logic/GameConstants';
 import { addBordersToBoard } from 'functions/src/game-logic/addBordersToBoard';
 import { addPlayersToBoard } from 'functions/src/game-logic/addPlayersToBoard';
+import { getPlayersInfluence } from 'functions/src/game-logic/influenceUtils';
 
 import { aiId, campaignMaps, playerId } from 'src/campaign/campaign-maps';
 import Range from 'src/components/interactive/Range';
@@ -26,6 +27,14 @@ export default function AiTraining() {
     }),
   );
 
+  const influenceByPlayer = getPlayersInfluence(
+    addBordersToBoard(boardState, boardSize),
+  );
+
+  useEffect(() => {
+    console.info(boardState);
+  }, [boardState]);
+
   return (
     <>
       <Head>
@@ -34,6 +43,17 @@ export default function AiTraining() {
       <div className="mx-12 mt-8 flex flex-1 flex-col gap-4">
         <h1 className={'text-3xl font-semibold text-zinc-50'}>Map Editor</h1>
         <div className="flex gap-6">
+          <div className="flex w-20 flex-col gap-2">
+            <p className="font-semibold">Influence:</p>
+            <div className="flex justify-between">
+              <p>AI:</p>
+              <p>{influenceByPlayer[aiId]}</p>
+            </div>
+            <div className="flex justify-between">
+              <p>Player:</p>
+              <p>{influenceByPlayer[playerId]}</p>
+            </div>
+          </div>
           <div className="flex flex-col gap-4">
             <div className="flex gap-2">
               <p className="font-semibold">Board Size:</p>
@@ -57,7 +77,7 @@ export default function AiTraining() {
             />
           </div>
           <p className="min-w-24 font-semibold">Load a Map:</p>
-          <div className="flex w-full flex-row gap-2 overflow-x-scroll">
+          <div className="flex flex-1 flex-row gap-2 overflow-x-scroll">
             {campaignMaps.map((map) => {
               const withBorders = addBordersToBoard(
                 map.boardState,
