@@ -35,8 +35,8 @@ const CampaignMapsSection = () => {
       <div
         id="campaign-maps-container"
         className="relative flex w-full flex-col gap-12 py-6 sm:flex-row sm:overflow-x-scroll sm:px-20">
-        {campaignMaps.map((campaignMap, i) => (
-          <CampaignMapBox key={campaignMap.id + i} campaignMap={campaignMap} />
+        {campaignMaps.map((campaignMap) => (
+          <CampaignMapBox key={campaignMap.id} mapId={campaignMap.id} />
         ))}
       </div>
       <div className="pointer-events-none absolute bottom-0 left-0 top-0 hidden w-20 bg-gradient-to-r from-zinc-950 from-10%  sm:block" />

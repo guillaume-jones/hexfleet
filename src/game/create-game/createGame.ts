@@ -9,7 +9,7 @@ import {
 } from 'functions/src/game-logic/GameConstants';
 import { addPlayersToBoard } from 'functions/src/game-logic/addPlayersToBoard';
 
-import { campaignMaps } from 'src/campaign/campaign-maps';
+import { getCampaignMapForUser } from 'src/campaign/campaign-maps';
 import { auth, firestore } from 'src/firebase/firebaseApp';
 
 const shortIdGenerator = customAlphabet(
@@ -61,10 +61,10 @@ export const createOnlineGame = async (boardOptions: BoardOptions) => {
 };
 
 export const createCampaignGame = async (gameId: string) => {
-  const id = auth.currentUser?.uid;
-  if (!id) return;
+  const userId = auth.currentUser?.uid;
+  if (!userId) return;
 
-  const campaignMap = campaignMaps.find(({ id }) => id === gameId);
+  const campaignMap = getCampaignMapForUser(gameId, userId);
   if (!campaignMap) return;
 
   const game = createGame(campaignMap, {
@@ -75,7 +75,7 @@ export const createCampaignGame = async (gameId: string) => {
   });
   if (!game) return;
 
-  await setDoc(doc(firestore, 'campaigns', id, 'games', gameId), game);
+  await setDoc(doc(firestore, 'campaigns', userId, 'games', gameId), game);
 
   return { gameId };
 };

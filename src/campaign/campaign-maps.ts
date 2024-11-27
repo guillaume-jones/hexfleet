@@ -1,5 +1,7 @@
 import { Tile } from 'functions/src/document-types/Games';
 
+import { aiId } from 'src/game/create-game/createGame';
+
 export type CampaignMap = {
   id: string;
   title: string;
@@ -15,7 +17,7 @@ export const campaignMaps: CampaignMap[] = [
     boardState: [
       { x: 0, y: 0 },
       { x: 1, y: 0 },
-      { x: 2, y: 0, playerId: 'abc', homeworld: true },
+      { x: 2, y: 0, playerId: aiId, homeworld: true },
       { x: 3, y: 0 },
       { x: 4, y: 0 },
       { x: 0, y: 1 },
@@ -71,9 +73,24 @@ export const campaignMaps: CampaignMap[] = [
       { x: 8, y: 7 },
       { x: 4, y: 8 },
       { x: 5, y: 8 },
-      { x: 6, y: 8, playerId: 'def', homeworld: true },
+      { x: 6, y: 8, playerId: 'playerId', homeworld: true },
       { x: 7, y: 8 },
       { x: 8, y: 8 },
     ],
   },
 ];
+
+export const getCampaignMapForUser = (mapId: string, userId?: string) => {
+  const campaignMap = campaignMaps.find((m) => m.id === mapId);
+  if (!campaignMap || !userId) return;
+
+  return {
+    ...campaignMap,
+    boardState: campaignMap.boardState.map((tile) => {
+      if (tile.playerId === 'playerId') {
+        return { ...tile, playerId: userId };
+      }
+      return tile;
+    }),
+  };
+};
