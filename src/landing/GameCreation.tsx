@@ -16,7 +16,7 @@ const GameCreation = ({ className }: GameCreationProps) => {
       <Button
         fontClassName="text-lg font-semibold"
         onClick={() => setShown(true)}>
-        Create Game
+        New Game
       </Button>
       <Transition
         className="flex w-full flex-col gap-3 overflow-hidden rounded-lg bg-zinc-800 p-3 transition-all duration-500"

@@ -20,7 +20,7 @@ type RejoinButtonProps = {
 const RejoinButton = ({ className }: RejoinButtonProps) => {
   const [user] = useIdToken(auth);
 
-  const [pastGames, loading] = useCollectionOnce(
+  const [pastGames] = useCollectionOnce(
     user &&
       query(
         collection(firestore, 'games'),
@@ -44,15 +44,16 @@ const RejoinButton = ({ className }: RejoinButtonProps) => {
       ),
   );
 
-  return !pastGames || pastGames.empty ? null : (
+  return (
     <Button
       light
+      disabled={!pastGames || pastGames.empty}
+      fontClassName="font-medium text-sm"
       className={`transition-all ${
-        pastGames ? 'opacity-100' : 'opacity-0'
+        !pastGames || pastGames.empty ? 'opacity-0' : 'opacity-100'
       } ${className}`}
-      loading={loading}
-      href={`/game/${pastGames.docs[0].id}`}>
-      Rejoin Game
+      href={`/game/${pastGames?.docs[0].id}`}>
+      Rejoin Last Game
     </Button>
   );
 };
