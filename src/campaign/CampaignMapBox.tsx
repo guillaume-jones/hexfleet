@@ -89,11 +89,13 @@ const CampaignMapBox = ({ mapId }: CampaignMapProps) => {
               loading={redirectLoading}
               onClick={() => {
                 const asyncfunction = async () => {
-                  const game = createCampaignGame(campaignMap.id);
+                  if (!inProgress) {
+                    const game = createCampaignGame(campaignMap.id);
 
-                  if (!game) throw Error('Failed to create campaign game.');
+                    if (!game) throw Error('Failed to create campaign game.');
 
-                  await setGame(game);
+                    await setGame(game);
+                  }
                   await router.push(`/campaign/${campaignMap.id}`);
                 };
 
