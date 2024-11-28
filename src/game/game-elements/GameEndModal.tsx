@@ -40,7 +40,7 @@ const GameEndModal = () => {
             : 'You were unable to resist your foes. Perhaps another galaxy beckons?'}
         </p>
         <div className="flex justify-between">
-          <RematchButton onRematch={() => setOpen(false)} />
+          <RematchButton onRematch={() => setOpen(undefined)} />
           <Button light onClick={() => setOpen(false)}>
             View board
           </Button>

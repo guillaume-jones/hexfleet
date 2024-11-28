@@ -37,7 +37,7 @@ const CampaignProgression = () => {
         const { x: nextX, y: nextY } = getCircleXY(i + 1);
 
         return (
-          <>
+          <g key={campaignMap.id}>
             {i !== campaignMaps.length - 1 && (
               <line
                 x1={x}
@@ -49,7 +49,6 @@ const CampaignProgression = () => {
               />
             )}
             <circle
-              key={campaignMap.id}
               className="transition-all duration-200"
               r={r}
               cx={x}
@@ -80,7 +79,7 @@ const CampaignProgression = () => {
                 />
               </>
             )}
-          </>
+          </g>
         );
       })}
     </svg>
