@@ -70,6 +70,7 @@ const PastGamesSection = () => {
   return (
     <div className="flex flex-col items-center gap-4">
       <h2 className={'text-2xl font-semibold'}>Past Games</h2>
+
       {pastGamesDocs?.slice(0, pageSize * pagesToLoad).map((doc, i) => {
         return (
           <GameProvider gameId={doc.id} key={doc.id}>
@@ -84,16 +85,16 @@ const PastGamesSection = () => {
           </GameProvider>
         );
       })}
-      {pastGamesDocs && pastGamesDocs.length > pageSize * pagesToLoad && (
-        <div
-          className={`transition-opacity delay-1000 ${
-            pastGamesDocs ? 'opacity-100' : 'opacity-0'
-          }`}>
-          <Button onClick={() => setPagesToLoad(pagesToLoad + 1)}>
-            Load more
-          </Button>
-        </div>
-      )}
+
+      <Button
+        className={`transition-opacity delay-1000 duration-200 ${
+          pastGamesDocs && pastGamesDocs.length > pageSize * pagesToLoad
+            ? 'opacity-100'
+            : 'opacity-0'
+        }`}
+        onClick={() => setPagesToLoad(pagesToLoad + 1)}>
+        Load more
+      </Button>
       <p
         className={`transition-opacity delay-200 ${
           !loading && !pastGamesDocs?.length ? 'opacity-100' : 'opacity-0'
