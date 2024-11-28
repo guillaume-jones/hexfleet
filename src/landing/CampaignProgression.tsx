@@ -11,7 +11,7 @@ import {
 const getCircleXY = (i: number) => {
   return {
     x: (100 / (campaignMaps.length - 1)) * i,
-    y: Math.sin((i * 1.01 + 0.15) * Math.PI) * 10,
+    y: Math.sin((i * 1.01 + 0.15) * Math.PI) * 9.5,
   };
 };
 
@@ -36,10 +36,15 @@ const CampaignProgression = () => {
         const { x, y } = getCircleXY(i);
         const { x: nextX, y: nextY } = getCircleXY(i + 1);
 
+        const delay = { transitionDelay: `${i * 100}ms` };
+        const className = 'transition-all duration-200'; // cannot be applied to <g> element
+
         return (
           <g key={campaignMap.id}>
             {i !== campaignMaps.length - 1 && (
               <line
+                className={className}
+                style={delay}
                 x1={x}
                 y1={y}
                 x2={nextX}
@@ -49,7 +54,8 @@ const CampaignProgression = () => {
               />
             )}
             <circle
-              className="transition-all duration-200"
+              className={className}
+              style={delay}
               r={r}
               cx={x}
               cy={y}
@@ -57,28 +63,32 @@ const CampaignProgression = () => {
               stroke={nextMap ? getColorForPlayer(user?.uid) : color}
               fill={fillColor}
             />
-            {achieved && (
-              <>
-                <line
-                  x1={x - r / 3}
-                  y1={y}
-                  x2={x - r / 8}
-                  y2={y + r / 4}
-                  strokeLinecap={'round'}
-                  stroke={color}
-                  strokeWidth={1}
-                />
-                <line
-                  x1={x - r / 8}
-                  y1={y + r / 4}
-                  x2={x + r / 3}
-                  y2={y - r / 3}
-                  strokeLinecap={'round'}
-                  stroke={color}
-                  strokeWidth={0.7}
-                />
-              </>
-            )}
+            <>
+              <line
+                className={className}
+                style={delay}
+                x1={x - r / 3}
+                y1={y}
+                x2={x - r / 8}
+                y2={y + r / 4}
+                strokeLinecap={'round'}
+                stroke={color}
+                strokeWidth={1}
+                opacity={achieved ? 1 : 0}
+              />
+              <line
+                className={className}
+                style={delay}
+                x1={x - r / 8}
+                y1={y + r / 4}
+                x2={x + r / 3}
+                y2={y - r / 3}
+                strokeLinecap={'round'}
+                stroke={color}
+                strokeWidth={0.7}
+                opacity={achieved ? 1 : 0}
+              />
+            </>
           </g>
         );
       })}
