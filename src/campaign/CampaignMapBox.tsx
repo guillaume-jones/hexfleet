@@ -36,8 +36,12 @@ const CampaignMapBox = ({ mapId }: CampaignMapProps) => {
     [mapId, user?.uid],
   );
   const boardPreview = useMemo(
-    () => addBordersToBoard(campaignMap?.boardState, campaignMap?.boardSize),
-    [campaignMap],
+    () =>
+      addBordersToBoard(
+        game?.boardState ?? campaignMap?.boardState,
+        campaignMap?.boardSize,
+      ),
+    [campaignMap, game?.boardState],
   );
 
   const { achieved, upNext, locked } = useMemo(() => {
@@ -48,7 +52,7 @@ const CampaignMapBox = ({ mapId }: CampaignMapProps) => {
       campaign?.achievedMaps?.includes(v.id),
     );
 
-    const upNext = index === maxAchievedIndex + 1;
+    const upNext = maxAchievedIndex !== -1 && index === maxAchievedIndex + 1;
     const locked = index > maxAchievedIndex + 2;
 
     return { achieved, upNext, locked };
@@ -80,7 +84,7 @@ const CampaignMapBox = ({ mapId }: CampaignMapProps) => {
           <div className="flex flex-row justify-center gap-4">
             <Button
               className="w-36"
-              light={!upNext && !inProgress}
+              light={!upNext}
               disabled={locked}
               loading={redirectLoading}
               onClick={() => {

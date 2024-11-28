@@ -1,3 +1,4 @@
+import { clamp } from 'lodash';
 import { useEffect } from 'react';
 
 import CampaignMapBox from './CampaignMapBox';
@@ -12,14 +13,16 @@ const CampaignMapsSection = () => {
   );
 
   useEffect(() => {
-    if (maxAchievedIndex === -1) return;
+    if (maxAchievedIndex <= 0) return;
 
     const nextMap = document.getElementById(
-      `campaign-map-${Math.min(maxAchievedIndex + 1, campaignMaps.length - 1)}`,
+      `campaign-map-${
+        campaignMaps[clamp(maxAchievedIndex + 1, 0, campaignMaps.length - 1)].id
+      }`,
     );
     const mapsContainer = document.getElementById('campaign-maps-container');
 
-    if (!maxAchievedIndex || !mapsContainer || !nextMap) return;
+    if (!mapsContainer || !nextMap) return;
 
     mapsContainer.scrollTo({
       left:
