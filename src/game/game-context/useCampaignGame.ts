@@ -54,7 +54,7 @@ export const useCampaignGame = (gameId: string) => {
       console.error('User not loaded.');
       return;
     }
-    if (!game || !nextTurn || !isFullGame(game)) {
+    if (!game || !isFullGame(game)) {
       console.error('Game or user next turn not loaded.');
       return;
     }
@@ -66,7 +66,7 @@ export const useCampaignGame = (gameId: string) => {
 
     const { newBoardState, newPlayers, winner } = updateBoardTurn({
       game,
-      nextTurns: [aiNextTurn, nextTurn],
+      nextTurns: [aiNextTurn, nextTurn ?? { pressures: [] }],
       players: [aiId, auth.currentUser.uid],
     });
 

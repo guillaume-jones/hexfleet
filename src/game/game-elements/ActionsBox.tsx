@@ -2,6 +2,8 @@ import { GameContext } from '../game-context/GameContext';
 import { useContext, useEffect, useState } from 'react';
 import { ArrowRightCircle, RotateCcw } from 'react-feather';
 
+import { minPressureInterval } from 'functions/src/game-logic/GameConstants';
+
 import Modal from 'src/components/containers/Modal';
 import Button from 'src/components/interactive/Button';
 
@@ -89,7 +91,11 @@ const ActionsBox = ({ className }: ActionsBoxProps) => {
         {hasStarted && (
           <Button
             loading={sendLoading}
-            disabled={!nextTurn || userInfluenceRemaining < 0 || nextTurnSent}
+            disabled={
+              (userInfluenceRemaining >= minPressureInterval && !nextTurn) ||
+              userInfluenceRemaining < Math.min(0, userInfluence) ||
+              nextTurnSent
+            }
             onClick={() => {
               setSendLoading(true);
               sendNextTurn()

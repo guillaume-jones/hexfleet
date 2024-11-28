@@ -36,9 +36,10 @@ export const updateBoardTurn = ({
       );
 
       // Verifies that player did not overspend their influence
-      const influenceToSpend = playerInfluences[players[i]];
+      const influenceToSpend = Math.max(playerInfluences[players[i]], 0);
       const influenceCost = getInfluenceSpent({ pressures: validPressures });
-      if (!influenceToSpend || influenceCost > influenceToSpend) return false;
+
+      if (influenceCost > influenceToSpend) return false;
 
       return { pressures: validPressures };
     })
