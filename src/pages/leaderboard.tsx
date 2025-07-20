@@ -3,7 +3,6 @@ import {
   collection,
   doc,
   limit,
-  or,
   orderBy,
   query,
   where,
@@ -34,7 +33,7 @@ export default function Leaderboard() {
   const [scoresDocs] = useCollection<Partial<Score>>(
     query<Partial<Score>, Partial<Score>>(
       collection(firestore, 'scores'),
-      or(where('wins1v1', '>', 0), where('winsFFA', '>', 0)),
+      where('pastGames', '!=', []),
       orderBy('elo1v1', 'desc'),
       limit(maxScores),
     ),
@@ -52,7 +51,7 @@ export default function Leaderboard() {
       if (!scoresDocs) return;
 
       const newScores = await Promise.all(
-        scoresDocs?.docs.map(async (doc) => ({
+        scoresDocs.docs.map(async (doc) => ({
           ...doc.data(),
           id: doc.id,
           name: await getNameForId(doc.id),
@@ -63,7 +62,7 @@ export default function Leaderboard() {
 
       if (userScore && !newScores.find((score) => score.id === userScore.id)) {
         newScores.push({
-          ...userScore,
+          ...userScore.data(),
           id: userScore.id,
           name: await getNameForId(userScore.id),
         });
