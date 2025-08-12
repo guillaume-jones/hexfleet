@@ -1,17 +1,14 @@
 # HexFleet
 
-Hexagon-tile based game with simultaneous turns.
-Supports singleplay and online multiplayer.
+Hexagon-tile based game with simultaneous turns and unique rules.
+Supports singleplayer and online multiplayer with a leaderboard.
 
-## Installation
+Built with Tailwind + React + Next.js.
 
-1. Run `npm i`
+## Development
 
-## Usage
-
-To start the local server: `npm run dev`
-
-Then navigate to [http://localhost:3000](http://localhost:3000) in browser to see the web app.
+1. Run `npm i` to fetch all packages.
+2. Run `npm run dev` to start the local server. Default port is 3000.
 
 ## Deployment
 
