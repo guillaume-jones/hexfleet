@@ -24,8 +24,14 @@ class CustomDocument extends Document {
             name="description"
             content="HexFleet is a simple, balanced, online game for 2 to 6 players. Send out your fleet to conquer a galaxy of hexagonal tiles!"
           />
-          <link rel="icon" href="favicon.ico" />
-          <link rel="apple-touch-icon" href="logo/apple-touch-icon.png" />
+          <link
+            rel="icon"
+            href={`${process.env.NEXT_PUBLIC_BASE_PATH}/favicon.ico`}
+          />
+          <link
+            rel="apple-touch-icon"
+            href={`${process.env.NEXT_PUBLIC_BASE_PATH}/logo/apple-touch-icon.png`}
+          />
 
           {/* Facebook */}
           <meta name="og:title" content="HexFleet - Hex-based tile conquest." />
@@ -33,11 +39,11 @@ class CustomDocument extends Document {
             name="og:description"
             content="HexFleet is a simple, balanced, online game for 2 to 6 players. Send out your fleet to conquer a galaxy of hexagonal tiles!"
           />
-          <meta name="og:url" content="https://www.hexfleet.com/" />
+          <meta name="og:url" content="https://guillaumejones.com/hexfleet/" />
           <meta name="og:type" content="website" />
           {/* <meta
             name="og:image"
-            content="https://www.hexfleet.com/sharing/og-image.png"
+            content="https://guillaumejones.com/hexfleet/sharing/og-image.png"
           />
           <meta name="og:image:type" content="image/png" />
           <meta name="og:image:width" content="1200" />
@@ -55,7 +61,7 @@ class CustomDocument extends Document {
           />
           {/* <meta
             name="twitter:image"
-            content="https://www.hexfleet.com/sharing/og-image.png"
+            content="https://guillaumejones.com/hexfleet/sharing/og-image.png"
           /> */}
         </Head>
         <body>

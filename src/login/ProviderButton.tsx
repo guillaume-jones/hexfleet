@@ -24,7 +24,7 @@ export default function ProviderButton({
       className="border border-zinc-300">
       <div className="flex h-10 w-52 items-center gap-4">
         <Image
-          src={`/login/${provider}.svg`}
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/login/${provider}.svg`}
           width={24}
           height={24}
           className="h-auto"

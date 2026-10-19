@@ -33,7 +33,7 @@ const GameCodeBox = () => {
           onClick={() => {
             setJustCopied(true);
             void navigator.clipboard.writeText(
-              `www.hexfleet.com?shortId=${shortId}`,
+              `${window.location.origin}${process.env.NEXT_PUBLIC_BASE_PATH}/?shortId=${shortId}`,
             );
             setTimeout(() => setJustCopied(false), 1000);
           }}

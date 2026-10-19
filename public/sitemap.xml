@@ -1,8 +1,7 @@
-<xml version="1.0" encoding="UTF-8">
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-        <url>
-            <loc>https://www.hexfleet.com</loc>
-            <lastmod>2024-03-01</lastmod>
-            <priority>1</priority>
-        </url>
-</xml>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://guillaumejones.com/hexfleet/</loc>
+        <priority>1</priority>
+    </url>
+</urlset>

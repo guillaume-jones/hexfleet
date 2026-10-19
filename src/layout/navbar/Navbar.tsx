@@ -23,7 +23,7 @@ export default function Navbar() {
           href={'/'}
           currentPath={pathname}>
           <Image
-            src="/logo/android-chrome-192x192.webp"
+            src={`${process.env.NEXT_PUBLIC_BASE_PATH}/logo/android-chrome-192x192.webp`}
             width={192}
             height={192}
             alt="logo"

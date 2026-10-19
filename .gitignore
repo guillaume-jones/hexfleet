@@ -58,3 +58,7 @@ functions/lib
 
 # TypeScript v1 declaration files
 typings/
+
+# cloudflare
+/site/
+.wrangler

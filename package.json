@@ -11,7 +11,9 @@
     "test": "jest",
     "deploy-firebase": "firebase login --reauth --interactive && firebase deploy --only functions",
     "types": "npx tsc --noEmit",
-    "find-deadcode": "ts-prune"
+    "find-deadcode": "ts-prune",
+    "build:site": "npm run build && rm -rf site && mkdir site && mv out site/hexfleet",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.8",
@@ -52,9 +54,14 @@
     "prettier-plugin-tailwindcss": "^0.2.2",
     "tailwindcss": "^3.4.1",
     "ts-prune": "^0.10.3",
-    "typescript": "5.4.3"
+    "typescript": "5.4.3",
+    "wrangler": "^4.151.1"
   },
   "compilerOptions": {
     "esModuleInterop": true
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "workerd": true
   }
 }

@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "hexfleet",
+  "compatibility_date": "2026-09-27",
+  "build": { "command": "npm run build:site" },
+  "routes": [
+    { "pattern": "guillaumejones.com/hexfleet*", "zone_name": "guillaumejones.com" }
+  ],
+  "assets": {
+    "directory": "./site",
+    "not_found_handling": "404-page"
+  }
+}
