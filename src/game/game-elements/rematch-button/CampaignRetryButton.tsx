@@ -13,7 +13,7 @@ type CampaignRetryButtonProps = {
 const CampaignRetryButton = ({ onRematch }: CampaignRetryButtonProps) => {
   const router = useRouter();
 
-  const gameId = router.query.gameId as string;
+  const gameId = router.query.id as string;
 
   const { game, setGame, deleteGame } = useCampaignGameDoc(gameId);
 

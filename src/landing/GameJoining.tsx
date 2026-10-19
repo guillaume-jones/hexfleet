@@ -34,7 +34,7 @@ const GameJoining = ({ className }: GameJoiningProps) => {
         if (!user) await signInAnonymously(auth);
         const result = await joinGame({ shortId: id });
         if (result && typeof result.data === 'string') {
-          void router.push(`/game/${result.data}`);
+          void router.push(`/game?id=${result.data}`);
         } else {
           throw new Error('Did not receive a game id.');
         }

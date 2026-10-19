@@ -86,7 +86,7 @@ export default function PastGame({ index, removeGame }: PastGameProps) {
           <Button
             className="max-w-32 flex-1 sm:flex-none"
             light={winner != null}
-            href={`/game/${gameId}`}>
+            href={`/game?id=${gameId}`}>
             {winner ? 'View game' : 'Rejoin Game'}
           </Button>
           {hasStarted === false && (

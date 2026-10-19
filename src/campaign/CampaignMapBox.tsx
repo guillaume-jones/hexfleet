@@ -96,7 +96,7 @@ const CampaignMapBox = ({ mapId }: CampaignMapProps) => {
 
                     await setGame(game);
                   }
-                  await router.push(`/campaign/${campaignMap.id}`);
+                  await router.push(`/campaign/game?id=${campaignMap.id}`);
                 };
 
                 setRedirectLoading(true);
@@ -126,7 +126,9 @@ const CampaignMapBox = ({ mapId }: CampaignMapProps) => {
             {game?.winner && (
               <Button
                 light
-                onClick={() => void router.push(`/campaign/${campaignMap.id}`)}>
+                onClick={() =>
+                  void router.push(`/campaign/game?id=${campaignMap.id}`)
+                }>
                 View Game
               </Button>
             )}

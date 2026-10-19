@@ -97,7 +97,7 @@ const CreateNewGame = ({ onCancel, playerIds }: CreateNewGameProps) => {
               await new Promise((resolve) => setTimeout(resolve, 200));
 
               await router.push(
-                `/game/${returned.id}${playerIds ? '?invites=true' : ''}`,
+                `/game?id=${returned.id}${playerIds ? '&invites=true' : ''}`,
               );
             };
             asyncFunction()

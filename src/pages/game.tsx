@@ -6,7 +6,7 @@ import { GameProvider } from 'src/game/game-context/GameContext';
 
 export default function Game() {
   const { query } = useRouter();
-  const gameId = query.gameId;
+  const gameId = query.id;
 
   return (
     <>

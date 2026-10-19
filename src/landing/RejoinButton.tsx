@@ -52,7 +52,7 @@ const RejoinButton = ({ className }: RejoinButtonProps) => {
       className={`transition-all ${
         !pastGames || pastGames.empty ? 'opacity-0' : 'opacity-100'
       } ${className}`}
-      href={`/game/${pastGames?.docs[0].id}`}>
+      href={`/game?id=${pastGames?.docs[0].id}`}>
       Rejoin Last Game
     </Button>
   );

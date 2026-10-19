@@ -6,7 +6,7 @@ import { CampaignProvider } from 'src/game/game-context/CampaignContext';
 
 export default function Game() {
   const { query } = useRouter();
-  const gameId = query.gameId;
+  const gameId = query.id;
 
   return (
     <>
