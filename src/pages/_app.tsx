@@ -1,7 +1,6 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 
-import Footer from 'src/layout/footer/Footer';
 import GameInviteModal from 'src/layout/modal/GameInviteModal';
 import Navbar from 'src/layout/navbar/Navbar';
 import 'src/styles/globals.css';
@@ -17,7 +16,6 @@ export default function App({ Component, pageProps }: AppProps) {
         <GameInviteModal />
         <div className="fixed bottom-0 top-14 -z-10 flex w-full flex-col overflow-x-hidden ">
           <Component {...pageProps} />
-          <Footer />
         </div>
       </div>
     </>
