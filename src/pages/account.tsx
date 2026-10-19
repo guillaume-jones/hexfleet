@@ -12,6 +12,7 @@ export default function Account() {
     <>
       <Head>
         <title>HexFleet - Account</title>
+        <meta name="robots" content="noindex" />
       </Head>
       <SettingsProvider>
         <div className="mx-6 mt-8 flex max-w-lg flex-1 flex-col gap-4 pb-10">
