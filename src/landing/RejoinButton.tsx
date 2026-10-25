@@ -44,18 +44,17 @@ const RejoinButton = ({ className }: RejoinButtonProps) => {
       ),
   );
 
-  return (
+  const lastGame = pastGames?.docs[0];
+
+  return lastGame ? (
     <Button
       light
-      disabled={!pastGames || pastGames.empty}
       fontClassName="font-medium text-sm"
-      className={`transition-all ${
-        !pastGames || pastGames.empty ? 'opacity-0' : 'opacity-100'
-      } ${className}`}
-      href={`/game?id=${pastGames?.docs[0].id}`}>
+      className={className}
+      href={`/game?id=${lastGame.id}`}>
       Rejoin Last Game
     </Button>
-  );
+  ) : null;
 };
 
 export default RejoinButton;
