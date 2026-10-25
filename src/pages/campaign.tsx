@@ -1,10 +1,17 @@
+import { signInAnonymously } from 'firebase/auth';
 import Head from 'next/head';
+import { useEffect } from 'react';
+import { useIdToken } from 'react-firebase-hooks/auth';
 
 import CampaignMapsSection from 'src/campaign/CampaignMapsSection';
-import useRedirectIfNotAuth from 'src/utilityHooks/useRedirectIfNotAuth';
+import { auth } from 'src/firebase/firebaseApp';
 
 export default function Games() {
-  useRedirectIfNotAuth();
+  const [user, userLoading] = useIdToken(auth);
+
+  useEffect(() => {
+    if (!userLoading && !user) void signInAnonymously(auth);
+  }, [user, userLoading]);
 
   return (
     <>
